@@ -28,6 +28,7 @@ onMounted(async () => {
     <section v-for="(s, i) in material.sections" :key="i" class="section">
       <h2>{{ s.heading }}</h2>
       <p class="content">{{ s.content }}</p>
+      <div v-if="s.image" class="diagram" v-html="s.image"></div>
       <pre v-if="s.code" class="code-block"><code>{{ s.code }}</code></pre>
     </section>
 
@@ -65,6 +66,17 @@ onMounted(async () => {
   white-space: pre-wrap;
   line-height: 1.7;
   margin-bottom: 10px;
+}
+
+.diagram {
+  margin: 12px 0;
+  overflow-x: auto;
+}
+
+.diagram :deep(svg) {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 .code-block {
