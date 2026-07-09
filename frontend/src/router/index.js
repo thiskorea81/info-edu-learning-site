@@ -7,6 +7,7 @@ import WrongNotes from '../views/WrongNotes.vue'
 import SimilarPractice from '../views/SimilarPractice.vue'
 import Stats from '../views/Stats.vue'
 import ProblemList from '../views/ProblemList.vue'
+import ProblemCategory from '../views/ProblemCategory.vue'
 import ProblemSolve from '../views/ProblemSolve.vue'
 import AddQuestion from '../views/AddQuestion.vue'
 
@@ -31,6 +32,12 @@ const router = createRouter({
     },
     { path: '/stats', name: 'stats', component: Stats },
     { path: '/problems', name: 'problems', component: ProblemList },
+    {
+      path: '/problems/category/:categoryKey',
+      name: 'problem-category',
+      component: ProblemCategory,
+      props: true,
+    },
     { path: '/problems/:id', name: 'problem-solve', component: ProblemSolve, props: true },
     { path: '/add-question', name: 'add-question', component: AddQuestion },
   ],

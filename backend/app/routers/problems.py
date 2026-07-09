@@ -12,33 +12,69 @@ from ..schemas import SubmitCodeRequest, SubmitResult, TestCaseResult
 router = APIRouter(prefix="/api/problems", tags=["problems"])
 
 
+_DIFFICULTY_LETTER = {"쉬움": "A", "보통": "B", "어려움": "C"}
+
+
+def _letter(difficulty: str | None) -> str:
+    return _DIFFICULTY_LETTER.get(difficulty or "", "?")
+
+
+def _category_of(problem: dict[str, Any]) -> str:
+    source = problem.get("source") or ""
+    if source == "basic_problems":
+        return "basic"
+    if source.startswith("daily_"):
+        return "daily"
+    return problem.get("standard_id") or "기타"
+
+
 def _public(problem: dict[str, Any]) -> dict[str, Any]:
-    return {k: v for k, v in problem.items() if k != "tests"}
+    result = {k: v for k, v in problem.items() if k != "tests"}
+    result["letter"] = _letter(problem.get("difficulty"))
+    result["category"] = _category_of(problem)
+    return result
 
 
 @router.get("")
-def list_problems(standard_id: str | None = Query(default=None)):
+def list_problems(
+    standard_id: str | None = Query(default=None),
+    category: str | None = Query(default=None),
+):
     problems = data_loader.list_problems()
     if standard_id:
         problems = [p for p in problems if p.get("standard_id") == standard_id]
+    if category:
+        problems = [p for p in problems if _category_of(p) == category]
     return [_public(p) for p in problems]
 
 
-@router.get("/groups/by-standard")
-def list_problem_groups():
+@router.get("/categories")
+def list_categories():
     standards_index = data_loader.standards_by_id()
-    groups: dict[str, dict[str, Any]] = {}
+    counts: dict[str, int] = {}
+    order: list[str] = []
     for p in data_loader.list_problems():
-        sid = p.get("standard_id")
-        key = sid or "기타"
-        group = groups.setdefault(key, {
-            "standard_id": sid,
-            "성취기준명": p.get("성취기준명") or standards_index.get(sid, {}).get("성취기준명", ""),
-            "단원": p.get("단원") or standards_index.get(sid, {}).get("단원", ""),
-            "problems": [],
-        })
-        group["problems"].append({"id": p["id"], "title": p["title"], "difficulty": p["difficulty"]})
-    return list(groups.values())
+        key = _category_of(p)
+        if key not in counts:
+            order.append(key)
+        counts[key] = counts.get(key, 0) + 1
+
+    def build(key: str) -> dict[str, Any]:
+        if key == "basic":
+            return {"key": "basic", "label": "기본 예제", "count": counts[key]}
+        if key == "daily":
+            return {"key": "daily", "label": "일일 문제 (매일 자동 생성)", "count": counts[key]}
+        std = standards_index.get(key, {})
+        return {
+            "key": key,
+            "label": f"[{key}] {std.get('단원', '')}",
+            "성취기준명": std.get("성취기준명", ""),
+            "count": counts[key],
+        }
+
+    standard_keys = sorted(k for k in order if k not in ("basic", "daily"))
+    ordered_keys = [k for k in ("basic", "daily") if k in counts] + standard_keys
+    return [build(k) for k in ordered_keys]
 
 
 @router.get("/{problem_id}")

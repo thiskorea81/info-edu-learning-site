@@ -3,20 +3,14 @@ import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
 
-const groups = ref([])
+const categories = ref([])
 const loading = ref(true)
 
 onMounted(async () => {
-  const { data } = await api.get('/api/problems/groups/by-standard')
-  groups.value = data
+  const { data } = await api.get('/api/problems/categories')
+  categories.value = data
   loading.value = false
 })
-
-function difficultyClass(d) {
-  if (d === '쉬움') return 'easy'
-  if (d === '어려움') return 'hard'
-  return 'medium'
-}
 </script>
 
 <template>
@@ -24,21 +18,18 @@ function difficultyClass(d) {
   <p class="hint">AtCoder Beginner Contest 스타일의 알고리즘 문제를 직접 풀고 제출해보세요.</p>
 
   <p v-if="loading">불러오는 중…</p>
-
-  <details v-for="g in groups" :key="g.standard_id ?? 'etc'" class="group" open>
-    <summary>
-      <span class="group-title">{{ g.standard_id ? `[${g.standard_id}] ${g.성취기준명}` : '기본 예제' }}</span>
-      <span class="group-count">{{ g.problems.length }}문제</span>
-    </summary>
-    <ul class="list">
-      <li v-for="p in g.problems" :key="p.id">
-        <RouterLink :to="`/problems/${p.id}`" class="item">
-          <span class="title">{{ p.title }}</span>
-          <span class="badge" :class="difficultyClass(p.difficulty)">{{ p.difficulty }}</span>
-        </RouterLink>
-      </li>
-    </ul>
-  </details>
+  <div v-else class="grid">
+    <RouterLink
+      v-for="c in categories"
+      :key="c.key"
+      :to="{ name: 'problem-category', params: { categoryKey: c.key } }"
+      class="card"
+    >
+      <h2>{{ c.label }}</h2>
+      <p v-if="c.성취기준명" class="std-name">{{ c.성취기준명 }}</p>
+      <p class="meta">{{ c.count }}문제</p>
+    </RouterLink>
+  </div>
 </template>
 
 <style scoped>
@@ -47,86 +38,44 @@ function difficultyClass(d) {
   margin-bottom: 20px;
 }
 
-.group {
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  display: block;
   border: 1px solid var(--border);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  overflow: hidden;
-}
-
-.group summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  cursor: pointer;
-  background: var(--bg-soft);
-  font-weight: 600;
-  color: var(--text-h);
-  list-style: none;
-}
-
-.group summary::-webkit-details-marker {
-  display: none;
-}
-
-.group-title {
-  font-size: 14px;
-}
-
-.group-count {
-  font-size: 12px;
-  color: var(--text-dim);
-  font-weight: 400;
-}
-
-.list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-top: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
   text-decoration: none;
-  color: var(--text);
+  color: inherit;
+  transition: border-color 0.15s, background 0.15s;
 }
 
-.item:hover {
-  background: var(--bg-soft);
-}
-
-.title {
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-.badge {
-  font-size: 12px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-}
-
-.badge.easy {
-  color: var(--correct);
-  border-color: var(--correct);
-  background: var(--correct-bg);
-}
-
-.badge.medium {
-  color: var(--accent);
+.card:hover {
   border-color: var(--accent-border);
   background: var(--accent-bg);
 }
 
-.badge.hard {
-  color: var(--wrong);
-  border-color: var(--wrong);
-  background: var(--wrong-bg);
+.card h2 {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.std-name {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.meta {
+  font-size: 13px;
+  color: var(--text-dim);
 }
 </style>

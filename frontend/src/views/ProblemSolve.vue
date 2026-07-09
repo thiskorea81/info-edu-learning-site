@@ -82,8 +82,11 @@ function verdictLabel(v) {
 <template>
   <div v-if="problem" class="solve">
     <div class="header">
+      <span class="letter" :class="problem.difficulty === '쉬움' ? 'easy' : problem.difficulty === '보통' ? 'medium' : 'hard'">
+        {{ problem.letter }}
+      </span>
       <h1>{{ problem.title }}</h1>
-      <span class="badge" :class="problem.difficulty === '쉬움' ? 'easy' : 'medium'">
+      <span class="badge" :class="problem.difficulty === '쉬움' ? 'easy' : problem.difficulty === '보통' ? 'medium' : 'hard'">
         {{ problem.difficulty }}
       </span>
     </div>
@@ -389,6 +392,33 @@ table.cases tr.bad td:nth-child(2) {
   font-size: 12px;
 }
 
+.letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.letter.easy {
+  color: var(--correct);
+  background: var(--correct-bg);
+}
+
+.letter.medium {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.letter.hard {
+  color: var(--wrong);
+  background: var(--wrong-bg);
+}
+
 .badge {
   font-size: 12px;
   padding: 3px 10px;
@@ -406,6 +436,12 @@ table.cases tr.bad td:nth-child(2) {
   color: var(--accent);
   border-color: var(--accent-border);
   background: var(--accent-bg);
+}
+
+.badge.hard {
+  color: var(--wrong);
+  border-color: var(--wrong);
+  background: var(--wrong-bg);
 }
 
 .badge.wrong {
