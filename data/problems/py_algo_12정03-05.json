@@ -1,0 +1,462 @@
+[
+  {
+    "id": "p03_05_01",
+    "title": "여러 줄 입력의 합계",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "정수의 개수 N이 첫 줄에 주어지고, 이어서 N개의 줄에 정수가 하나씩 주어진다. 이 정수들의 합을 출력하시오.",
+    "constraints": "1 ≤ N ≤ 1000, 각 정수는 -10000 이상 10000 이하",
+    "input_format": "N\nA_1\nA_2\n...\nA_N (한 줄에 하나씩)",
+    "output_format": "합계",
+    "samples": [
+      {
+        "input": "5\n1\n2\n3\n4\n5\n",
+        "output": "15\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n1\n2\n3\n4\n5\n",
+        "output": "15\n"
+      },
+      {
+        "input": "1\n10\n",
+        "output": "10\n"
+      },
+      {
+        "input": "4\n-5\n5\n-5\n5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\n100\n200\n300\n",
+        "output": "600\n"
+      },
+      {
+        "input": "4\n0\n0\n0\n0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "5\n7\n-3\n12\n-8\n1\n",
+        "output": "9\n"
+      }
+    ],
+    "standard_id": "12정03-05",
+    "성취기준명": "표준입출력과 파일입출력을 활용한 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_05_02",
+    "title": "한 줄 입력의 평균",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "한 줄에 공백으로 구분된 실수들이 몇 개인지 정해지지 않은 채로 주어진다. 이 값들의 평균을 소수 둘째 자리까지 출력하시오. (입력을 한 줄 읽어 공백 기준으로 나눈 뒤 개수를 파악한다)",
+    "constraints": "한 줄에 1개 이상 100개 이하의 실수, 각 값은 -1000 이상 1000 이하",
+    "input_format": "V_1 V_2 ... V_k",
+    "output_format": "평균 (소수 둘째 자리까지)",
+    "samples": [
+      {
+        "input": "1.5 2.5 3.0\n",
+        "output": "2.33\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "1.5 2.5 3.0\n",
+        "output": "2.33\n"
+      },
+      {
+        "input": "10.0\n",
+        "output": "10.00\n"
+      },
+      {
+        "input": "-1.0 1.0\n",
+        "output": "0.00\n"
+      },
+      {
+        "input": "3.3 3.3 3.3 3.3\n",
+        "output": "3.30\n"
+      },
+      {
+        "input": "100.0 0.0 50.0\n",
+        "output": "50.00\n"
+      },
+      {
+        "input": "2.25 4.75 1.0 8.0\n",
+        "output": "4.00\n"
+      }
+    ],
+    "standard_id": "12정03-05",
+    "성취기준명": "표준입출력과 파일입출력을 활용한 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_05_03",
+    "title": "파일에 저장 후 합계 계산",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "정수의 개수 N과 N개의 정수가 주어진다. 입력받은 정수들을 output.txt 파일에 한 줄에 하나씩 저장한 다음, 그 파일을 다시 열어서 값을 읽어들여 합계를 계산해 출력하시오. (반드시 파일에 쓰고 다시 읽는 방식으로 구현한다)",
+    "constraints": "1 ≤ N ≤ 1000, 각 정수는 -10000 이상 10000 이하",
+    "input_format": "N\nA_1 ... A_N",
+    "output_format": "합계",
+    "samples": [
+      {
+        "input": "5\n1 2 3 4 5\n",
+        "output": "15\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n1 2 3 4 5\n",
+        "output": "15\n"
+      },
+      {
+        "input": "1\n10\n",
+        "output": "10\n"
+      },
+      {
+        "input": "4\n-5 5 -5 5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\n100 200 300\n",
+        "output": "600\n"
+      },
+      {
+        "input": "3\n0 0 0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "5\n7 -3 12 -8 1\n",
+        "output": "9\n"
+      }
+    ],
+    "standard_id": "12정03-05",
+    "성취기준명": "표준입출력과 파일입출력을 활용한 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_05_04",
+    "title": "최고 점수 학생 찾기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "학생 수 N과 N명의 이름, 점수가 한 줄에 하나씩 주어진다. 가장 높은 점수를 받은 학생의 이름을 출력하시오. 점수가 같으면 먼저 입력된 학생을 출력한다.",
+    "constraints": "1 ≤ N ≤ 100, 이름은 공백 없는 문자열, 0 ≤ 점수 ≤ 100(정수)",
+    "input_format": "N\n이름_1 점수_1\n...\n이름_N 점수_N",
+    "output_format": "최고 점수 학생의 이름",
+    "samples": [
+      {
+        "input": "4\n철수 80\n영희 95\n민수 95\n지수 70\n",
+        "output": "영희\n",
+        "explanation": "95점인 영희와 민수 중 먼저 입력된 영희가 출력된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4\n철수 80\n영희 95\n민수 95\n지수 70\n",
+        "output": "영희\n"
+      },
+      {
+        "input": "1\nA 50\n",
+        "output": "A\n"
+      },
+      {
+        "input": "3\n가 60\n나 90\n다 90\n",
+        "output": "나\n"
+      },
+      {
+        "input": "2\nTom 10\nJerry 20\n",
+        "output": "Jerry\n"
+      },
+      {
+        "input": "3\nx 0\ny 0\nz 0\n",
+        "output": "x\n"
+      },
+      {
+        "input": "3\np1 100\np2 99\np3 100\n",
+        "output": "p1\n"
+      }
+    ],
+    "standard_id": "12정03-05",
+    "성취기준명": "표준입출력과 파일입출력을 활용한 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_05_05",
+    "title": "표준입력 끝까지 읽어 합계 구하기",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "몇 줄이 입력될지 알 수 없는 상태로, 정수가 한 줄에 하나씩 입력이 끝날 때까지(EOF까지) 주어진다. 입력받은 모든 정수의 합을 출력하시오. (sys.stdin 등을 이용해 EOF까지 반복해서 읽어야 한다)",
+    "constraints": "입력되는 줄의 수는 1 이상 1000 이하, 각 정수는 -10000 이상 10000 이하",
+    "input_format": "A_1\nA_2\n...\n(EOF까지, 한 줄에 하나씩)",
+    "output_format": "합계",
+    "samples": [
+      {
+        "input": "3\n5\n7\n",
+        "output": "15\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "3\n5\n7\n",
+        "output": "15\n"
+      },
+      {
+        "input": "10\n",
+        "output": "10\n"
+      },
+      {
+        "input": "-1\n-2\n-3\n-4\n",
+        "output": "-10\n"
+      },
+      {
+        "input": "0\n0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "100\n200\n300\n400\n500\n",
+        "output": "1500\n"
+      },
+      {
+        "input": "42\n",
+        "output": "42\n"
+      }
+    ],
+    "standard_id": "12정03-05",
+    "성취기준명": "표준입출력과 파일입출력을 활용한 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_05_06",
+    "title": "CSV 형식 파싱",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "\"이름,국어,영어,수학\" 형식으로 콤마(,)로 구분된 한 줄이 주어진다. 이름과 세 과목의 평균(소수 첫째 자리까지)을 공백으로 구분해 출력하시오.",
+    "constraints": "점수는 0 이상 100 이하의 정수",
+    "input_format": "이름,국어,영어,수학",
+    "output_format": "이름 평균",
+    "samples": [
+      {
+        "input": "김철수,90,80,70\n",
+        "output": "김철수 80.0\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "김철수,90,80,70\n",
+        "output": "김철수 80.0\n"
+      },
+      {
+        "input": "이영희,100,100,100\n",
+        "output": "이영희 100.0\n"
+      },
+      {
+        "input": "박민수,0,0,0\n",
+        "output": "박민수 0.0\n"
+      },
+      {
+        "input": "정지수,85,95,75\n",
+        "output": "정지수 85.0\n"
+      },
+      {
+        "input": "최다인,60,70,80\n",
+        "output": "최다인 70.0\n"
+      },
+      {
+        "input": "한소희,77,88,99\n",
+        "output": "한소희 88.0\n"
+      }
+    ],
+    "standard_id": "12정03-05",
+    "성취기준명": "표준입출력과 파일입출력을 활용한 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_05_07",
+    "title": "파일에 로그 기록 후 줄 수 세기",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "문자열의 개수 N과 N개의 문자열이 주어진다. 이 문자열들을 log.txt 파일에 한 줄에 하나씩 저장한 후, 그 파일을 다시 열어 총 줄 수를 세어 출력하시오. (반드시 파일에 쓰고 다시 읽어서 줄 수를 계산한다)",
+    "constraints": "1 ≤ N ≤ 1000",
+    "input_format": "N\nS_1\n...\nS_N",
+    "output_format": "파일의 총 줄 수",
+    "samples": [
+      {
+        "input": "3\nerror1\nerror2\nwarning1\n",
+        "output": "3\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "3\nerror1\nerror2\nwarning1\n",
+        "output": "3\n"
+      },
+      {
+        "input": "1\nsingle\n",
+        "output": "1\n"
+      },
+      {
+        "input": "5\na\nb\nc\nd\ne\n",
+        "output": "5\n"
+      },
+      {
+        "input": "4\nlog\nlog\nlog\nlog\n",
+        "output": "4\n"
+      },
+      {
+        "input": "3\nstart\nprocess\nend\n",
+        "output": "3\n"
+      },
+      {
+        "input": "2\nx\ny\n",
+        "output": "2\n"
+      }
+    ],
+    "standard_id": "12정03-05",
+    "성취기준명": "표준입출력과 파일입출력을 활용한 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_05_08",
+    "title": "문자열을 길이순으로 정렬하기",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "문자열의 개수 N과 N개의 문자열이 한 줄에 하나씩 주어진다. 길이가 짧은 순서대로 정렬하여 출력하시오. 길이가 같으면 사전순으로 정렬한다.",
+    "constraints": "1 ≤ N ≤ 100, 각 문자열은 영문 소문자로만 이루어지며 길이는 1~50",
+    "input_format": "N\nS_1\n...\nS_N",
+    "output_format": "정렬된 문자열 (한 줄에 하나씩)",
+    "samples": [
+      {
+        "input": "4\napple\nkiwi\nfig\nbanana\n",
+        "output": "fig\nkiwi\napple\nbanana\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "4\napple\nkiwi\nfig\nbanana\n",
+        "output": "fig\nkiwi\napple\nbanana\n"
+      },
+      {
+        "input": "1\na\n",
+        "output": "a\n"
+      },
+      {
+        "input": "3\nbb\naa\ncc\n",
+        "output": "aa\nbb\ncc\n"
+      },
+      {
+        "input": "4\nlongestword\nmid\na\nab\n",
+        "output": "a\nab\nmid\nlongestword\n"
+      },
+      {
+        "input": "4\nsame\nsize\nhere\nfour\n",
+        "output": "four\nhere\nsame\nsize\n"
+      },
+      {
+        "input": "3\nz\nyy\nxxx\n",
+        "output": "z\nyy\nxxx\n"
+      }
+    ],
+    "standard_id": "12정03-05",
+    "성취기준명": "표준입출력과 파일입출력을 활용한 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_05_09",
+    "title": "파일에 저장 후 최댓값 읽기",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "정수의 개수 N과 N개의 정수가 주어진다. 입력받은 정수들을 nums.txt 파일에 한 줄에 하나씩 저장한 다음, 파일을 다시 읽어 그 중 최댓값을 출력하시오.",
+    "constraints": "1 ≤ N ≤ 1000, 각 정수는 -10000 이상 10000 이하",
+    "input_format": "N\nA_1 ... A_N",
+    "output_format": "최댓값",
+    "samples": [
+      {
+        "input": "5\n3 7 1 9 4\n",
+        "output": "9\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n3 7 1 9 4\n",
+        "output": "9\n"
+      },
+      {
+        "input": "1\n5\n",
+        "output": "5\n"
+      },
+      {
+        "input": "3\n-1 -5 -2\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "3\n100 200 50\n",
+        "output": "200\n"
+      },
+      {
+        "input": "3\n0 0 1\n",
+        "output": "1\n"
+      },
+      {
+        "input": "3\n-10 -20 -5\n",
+        "output": "-5\n"
+      }
+    ],
+    "standard_id": "12정03-05",
+    "성취기준명": "표준입출력과 파일입출력을 활용한 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_05_10",
+    "title": "이름과 점수 표 형식으로 출력",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "학생 수 N과 N명의 이름, 점수가 한 줄에 하나씩 주어진다. 입력받은 순서 그대로 \"이름: 점수\" 형식으로 한 줄에 하나씩 출력하시오.",
+    "constraints": "1 ≤ N ≤ 100, 이름은 공백 없는 문자열, 0 ≤ 점수 ≤ 100(정수)",
+    "input_format": "N\n이름_1 점수_1\n...\n이름_N 점수_N",
+    "output_format": "\"이름: 점수\" 형식 (한 줄에 하나씩)",
+    "samples": [
+      {
+        "input": "2\n철수 80\n영희 95\n",
+        "output": "철수: 80\n영희: 95\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "2\n철수 80\n영희 95\n",
+        "output": "철수: 80\n영희: 95\n"
+      },
+      {
+        "input": "1\nA 100\n",
+        "output": "A: 100\n"
+      },
+      {
+        "input": "3\n가 0\n나 50\n다 100\n",
+        "output": "가: 0\n나: 50\n다: 100\n"
+      },
+      {
+        "input": "3\nx 1\ny 2\nz 3\n",
+        "output": "x: 1\ny: 2\nz: 3\n"
+      },
+      {
+        "input": "1\np 77\n",
+        "output": "p: 77\n"
+      },
+      {
+        "input": "4\nm1 10\nm2 20\nm3 30\nm4 40\n",
+        "output": "m1: 10\nm2: 20\nm3: 30\nm4: 40\n"
+      }
+    ],
+    "standard_id": "12정03-05",
+    "성취기준명": "표준입출력과 파일입출력을 활용한 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  }
+]

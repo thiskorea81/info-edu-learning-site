@@ -1,0 +1,264 @@
+[
+  {
+    "id": "p_ab01",
+    "title": "A + B",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "정수 A와 B가 공백으로 구분되어 한 줄에 주어진다. A + B를 출력하시오.",
+    "constraints": "0 ≤ A, B ≤ 100",
+    "input_format": "A B",
+    "output_format": "A + B의 값 (정수 하나)",
+    "samples": [
+      {
+        "input": "3 5\n",
+        "output": "8\n",
+        "explanation": "3 + 5 = 8"
+      }
+    ],
+    "tests": [
+      {
+        "input": "3 5\n",
+        "output": "8\n"
+      },
+      {
+        "input": "1 1\n",
+        "output": "2\n"
+      },
+      {
+        "input": "100 100\n",
+        "output": "200\n"
+      },
+      {
+        "input": "0 0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "37 63\n",
+        "output": "100\n"
+      },
+      {
+        "input": "99 1\n",
+        "output": "100\n"
+      }
+    ]
+  },
+  {
+    "id": "p_ab02",
+    "title": "문자열 뒤집기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "영문 소문자로 이루어진 문자열 S가 한 줄에 주어진다. S를 뒤집어서 출력하시오.",
+    "constraints": "1 ≤ len(S) ≤ 100, S는 영문 소문자로만 이루어짐",
+    "input_format": "S",
+    "output_format": "S를 뒤집은 문자열",
+    "samples": [
+      {
+        "input": "hello\n",
+        "output": "olleh\n",
+        "explanation": "hello를 뒤집으면 olleh"
+      }
+    ],
+    "tests": [
+      {
+        "input": "python\n",
+        "output": "nohtyp\n"
+      },
+      {
+        "input": "hello\n",
+        "output": "olleh\n"
+      },
+      {
+        "input": "a\n",
+        "output": "a\n"
+      },
+      {
+        "input": "racecar\n",
+        "output": "racecar\n"
+      },
+      {
+        "input": "programming\n",
+        "output": "gnimmargorp\n"
+      },
+      {
+        "input": "ai\n",
+        "output": "ia\n"
+      }
+    ]
+  },
+  {
+    "id": "p_ab03",
+    "title": "최댓값 찾기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "첫 줄에 정수의 개수 N이 주어지고, 둘째 줄에 N개의 정수가 공백으로 구분되어 주어진다. 이 중 최댓값을 출력하시오.",
+    "constraints": "1 ≤ N ≤ 1000, 각 정수는 -1000 이상 1000 이하",
+    "input_format": "N\nA_1 A_2 ... A_N",
+    "output_format": "최댓값 (정수 하나)",
+    "samples": [
+      {
+        "input": "5\n3 1 4 1 5\n",
+        "output": "5\n",
+        "explanation": "5개의 수 중 최댓값은 5"
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n3 1 4 1 5\n",
+        "output": "5\n"
+      },
+      {
+        "input": "1\n7\n",
+        "output": "7\n"
+      },
+      {
+        "input": "3\n-1 -5 -3\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "6\n10 9 8 7 6 100\n",
+        "output": "100\n"
+      },
+      {
+        "input": "3\n0 0 0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "10\n31 -36 -47 44 -15 -19 -22 -33 44 -37\n",
+        "output": "44\n"
+      }
+    ]
+  },
+  {
+    "id": "p_ab04",
+    "title": "소수 판별",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "정수 N이 한 줄에 주어진다. N이 소수이면 YES, 아니면 NO를 출력하시오.",
+    "constraints": "0 ≤ N ≤ 10000",
+    "input_format": "N",
+    "output_format": "YES 또는 NO",
+    "samples": [
+      {
+        "input": "7\n",
+        "output": "YES\n",
+        "explanation": "7은 소수이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "2\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "1\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "17\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "100\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "97\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "4\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "561\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "0\n",
+        "output": "NO\n"
+      }
+    ]
+  },
+  {
+    "id": "p_ab05",
+    "title": "팰린드롬 판별",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "영문 소문자로 이루어진 문자열 S가 한 줄에 주어진다. S가 팰린드롬(앞뒤로 읽어도 같은 문자열)이면 YES, 아니면 NO를 출력하시오.",
+    "constraints": "1 ≤ len(S) ≤ 100",
+    "input_format": "S",
+    "output_format": "YES 또는 NO",
+    "samples": [
+      {
+        "input": "level\n",
+        "output": "YES\n",
+        "explanation": "level은 뒤집어도 같으므로 팰린드롬이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "level\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "python\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "a\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "racecar\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "abccba\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "abcda\n",
+        "output": "NO\n"
+      }
+    ]
+  },
+  {
+    "id": "p_ab06",
+    "title": "구구단 합",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "정수 N이 주어진다. N단의 합(N*1 + N*2 + ... + N*9)을 출력하시오.",
+    "constraints": "1 ≤ N ≤ 9",
+    "input_format": "N",
+    "output_format": "N단의 합",
+    "samples": [
+      {
+        "input": "2\n",
+        "output": "90\n",
+        "explanation": "2*1+2*2+...+2*9 = 90"
+      }
+    ],
+    "tests": [
+      {
+        "input": "2\n",
+        "output": "90\n"
+      },
+      {
+        "input": "9\n",
+        "output": "405\n"
+      },
+      {
+        "input": "5\n",
+        "output": "225\n"
+      },
+      {
+        "input": "1\n",
+        "output": "45\n"
+      },
+      {
+        "input": "7\n",
+        "output": "315\n"
+      }
+    ]
+  }
+]

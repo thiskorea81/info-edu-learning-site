@@ -1,0 +1,462 @@
+[
+  {
+    "id": "p03_08_01",
+    "title": "Student 클래스로 평균 구하기",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "이름을 속성으로, 점수들의 평균을 구하는 메서드를 가지는 Student 클래스를 작성하시오. 이름과 점수의 개수 N이 한 줄에 주어지고, 다음 줄에 N개의 점수가 주어진다. \"이름의 평균: 값\" 형식으로 평균을 소수 첫째 자리까지 출력하시오.",
+    "constraints": "1 ≤ N ≤ 100, 0 ≤ 점수 ≤ 100(정수), 이름은 공백 없는 문자열",
+    "input_format": "이름 N\n점수_1 ... 점수_N",
+    "output_format": "\"이름의 평균: 값\" (소수 첫째 자리까지)",
+    "samples": [
+      {
+        "input": "철수 3\n80 90 100\n",
+        "output": "철수의 평균: 90.0\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "철수 3\n80 90 100\n",
+        "output": "철수의 평균: 90.0\n"
+      },
+      {
+        "input": "영희 1\n50\n",
+        "output": "영희의 평균: 50.0\n"
+      },
+      {
+        "input": "민수 4\n0 0 0 0\n",
+        "output": "민수의 평균: 0.0\n"
+      },
+      {
+        "input": "지수 5\n100 99 98 97 96\n",
+        "output": "지수의 평균: 98.0\n"
+      },
+      {
+        "input": "가나다 2\n70 80\n",
+        "output": "가나다의 평균: 75.0\n"
+      },
+      {
+        "input": "A 6\n55 65 75 85 95 65\n",
+        "output": "A의 평균: 73.3\n"
+      }
+    ],
+    "standard_id": "12정03-08",
+    "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_08_02",
+    "title": "Account 클래스로 입출금 처리",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "잔액을 속성으로 가지고 입금(deposit), 출금(withdraw) 메서드를 가지는 Account 클래스를 작성하시오. 초기 잔액과 처리할 명령의 개수 M이 한 줄에 주어지고, 이어서 M개의 명령이 \"D 금액\"(입금) 또는 \"W 금액\"(출금) 형식으로 주어진다. 출금 시 잔액이 부족하면 해당 명령은 무시한다. 모든 명령 처리 후 최종 잔액을 출력하시오.",
+    "constraints": "0 ≤ 초기 잔액 ≤ 10^7, 0 ≤ M ≤ 1000, 각 금액은 1 이상 10^7 이하",
+    "input_format": "초기잔액 M\n명령_1\n...\n명령_M",
+    "output_format": "최종 잔액",
+    "samples": [
+      {
+        "input": "10000 3\nD 5000\nW 3000\nW 20000\n",
+        "output": "12000\n",
+        "explanation": "10000+5000-3000=12000, 마지막 20000 출금은 잔액 부족으로 무시된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "10000 3\nD 5000\nW 3000\nW 20000\n",
+        "output": "12000\n"
+      },
+      {
+        "input": "0 1\nD 100\n",
+        "output": "100\n"
+      },
+      {
+        "input": "5000 1\nW 10000\n",
+        "output": "5000\n"
+      },
+      {
+        "input": "100000 3\nW 50000\nW 50000\nW 1\n",
+        "output": "0\n"
+      },
+      {
+        "input": "1000 3\nD 1000\nD 1000\nW 2500\n",
+        "output": "500\n"
+      },
+      {
+        "input": "500 0\n",
+        "output": "500\n"
+      }
+    ],
+    "standard_id": "12정03-08",
+    "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_08_03",
+    "title": "Point 클래스로 두 점 사이 거리 구하기",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "x, y 좌표를 속성으로 가지는 Point 클래스를 작성하시오. 두 점의 좌표 x1 y1 x2 y2가 한 줄에 주어진다. 두 점 사이의 유클리드 거리를 소수 둘째 자리까지 출력하시오.",
+    "constraints": "-1000 ≤ 좌표값 ≤ 1000 (정수)",
+    "input_format": "x1 y1 x2 y2",
+    "output_format": "두 점 사이의 거리 (소수 둘째 자리까지)",
+    "samples": [
+      {
+        "input": "0 0 3 4\n",
+        "output": "5.00\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "0 0 3 4\n",
+        "output": "5.00\n"
+      },
+      {
+        "input": "1 1 1 1\n",
+        "output": "0.00\n"
+      },
+      {
+        "input": "-2 -3 2 3\n",
+        "output": "7.21\n"
+      },
+      {
+        "input": "0 0 0 5\n",
+        "output": "5.00\n"
+      },
+      {
+        "input": "5 5 10 10\n",
+        "output": "7.07\n"
+      },
+      {
+        "input": "-1 2 3 -2\n",
+        "output": "5.66\n"
+      }
+    ],
+    "standard_id": "12정03-08",
+    "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_08_04",
+    "title": "Rectangle 클래스로 넓이와 둘레 구하기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "가로와 세로 길이를 속성으로 가지며 넓이와 둘레를 구하는 메서드를 가지는 Rectangle 클래스를 작성하시오. 가로와 세로 길이가 한 줄에 주어진다. 둘레와 넓이를 공백으로 구분해 출력하시오.",
+    "constraints": "1 ≤ 가로, 세로 ≤ 1000 (정수)",
+    "input_format": "가로 세로",
+    "output_format": "둘레 넓이",
+    "samples": [
+      {
+        "input": "3 4\n",
+        "output": "14 12\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "3 4\n",
+        "output": "14 12\n"
+      },
+      {
+        "input": "1 1\n",
+        "output": "4 1\n"
+      },
+      {
+        "input": "10 5\n",
+        "output": "30 50\n"
+      },
+      {
+        "input": "7 2\n",
+        "output": "18 14\n"
+      },
+      {
+        "input": "100 100\n",
+        "output": "400 10000\n"
+      },
+      {
+        "input": "6 9\n",
+        "output": "30 54\n"
+      }
+    ],
+    "standard_id": "12정03-08",
+    "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_08_05",
+    "title": "Clock 클래스로 시간 더하기",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "시(0~23)와 분(0~59)을 속성으로 가지는 Clock 클래스를 작성하시오. 현재 시각(시, 분)과 더할 분(정수, 음수 가능)이 한 줄에 주어진다. 분을 더한 뒤(24시간을 넘거나 자정 이전으로 넘어가면 순환한다) 최종 시각을 \"시 분\" 형식으로 출력하시오.",
+    "constraints": "0 ≤ 시 ≤ 23, 0 ≤ 분 ≤ 59, -100000 ≤ 더할 분 ≤ 100000",
+    "input_format": "시 분 더할분",
+    "output_format": "시 분",
+    "samples": [
+      {
+        "input": "23 50 20\n",
+        "output": "0 10\n",
+        "explanation": "23시50분에서 20분을 더하면 자정을 넘어 0시 10분이 된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "23 50 20\n",
+        "output": "0 10\n"
+      },
+      {
+        "input": "0 0 0\n",
+        "output": "0 0\n"
+      },
+      {
+        "input": "12 30 45\n",
+        "output": "13 15\n"
+      },
+      {
+        "input": "23 59 1\n",
+        "output": "0 0\n"
+      },
+      {
+        "input": "10 0 -70\n",
+        "output": "8 50\n"
+      },
+      {
+        "input": "0 10 -20\n",
+        "output": "23 50\n"
+      }
+    ],
+    "standard_id": "12정03-08",
+    "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_08_06",
+    "title": "Inventory 클래스로 재고 조회",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "물품명과 수량을 저장하는 Inventory 클래스를 작성하시오. 물품의 종류 수 N과 N개의 \"물품명 수량\"이 주어지고, 마지막 줄에 조회할 물품명이 주어진다. 해당 물품의 수량을 출력하시오. 목록에 없는 물품이면 0을 출력한다. (물품명은 서로 중복되지 않는다)",
+    "constraints": "1 ≤ N ≤ 1000, 0 ≤ 수량 ≤ 100000",
+    "input_format": "N\n물품명_1 수량_1\n...\n물품명_N 수량_N\n조회물품명",
+    "output_format": "수량",
+    "samples": [
+      {
+        "input": "2\napple 10\nbanana 5\napple\n",
+        "output": "10\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "2\napple 10\nbanana 5\napple\n",
+        "output": "10\n"
+      },
+      {
+        "input": "1\npen 3\npencil\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\na 1\nb 2\nc 3\nc\n",
+        "output": "3\n"
+      },
+      {
+        "input": "1\nx 100\nx\n",
+        "output": "100\n"
+      },
+      {
+        "input": "2\nphone 0\nlaptop 7\nphone\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\ndesk 4\nchair 8\nlamp 2\nlamp\n",
+        "output": "2\n"
+      }
+    ],
+    "standard_id": "12정03-08",
+    "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_08_07",
+    "title": "Person 클래스로 최고령자 찾기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "이름과 나이를 속성으로 가지는 Person 클래스를 작성하시오. 사람 수 N과 N명의 \"이름 나이\"가 주어진다. 나이가 가장 많은 사람의 이름을 출력하시오. 나이가 같으면 먼저 입력된 사람을 출력한다.",
+    "constraints": "1 ≤ N ≤ 100, 1 ≤ 나이 ≤ 150(정수), 이름은 공백 없는 문자열",
+    "input_format": "N\n이름_1 나이_1\n...\n이름_N 나이_N",
+    "output_format": "가장 나이 많은 사람의 이름",
+    "samples": [
+      {
+        "input": "3\n철수 17\n영희 18\n민수 18\n",
+        "output": "영희\n",
+        "explanation": "18세인 영희와 민수 중 먼저 입력된 영희가 출력된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3\n철수 17\n영희 18\n민수 18\n",
+        "output": "영희\n"
+      },
+      {
+        "input": "1\nA 20\n",
+        "output": "A\n"
+      },
+      {
+        "input": "3\n가 15\n나 15\n다 15\n",
+        "output": "가\n"
+      },
+      {
+        "input": "2\nTom 30\nJerry 25\n",
+        "output": "Tom\n"
+      },
+      {
+        "input": "3\np1 1\np2 100\np3 50\n",
+        "output": "p2\n"
+      },
+      {
+        "input": "3\nx 10\ny 20\nz 5\n",
+        "output": "y\n"
+      }
+    ],
+    "standard_id": "12정03-08",
+    "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_08_08",
+    "title": "Stack 클래스 구현",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "push, pop 메서드를 가지는 Stack 클래스를 작성하시오. 명령의 개수 M과 M개의 명령이 주어진다. 명령은 \"push 값\" 또는 \"pop\" 형식이다. pop 명령을 실행할 때마다 꺼낸 값을 한 줄에 출력하고, 스택이 비어있는 상태에서 pop을 실행하면 \"empty\"를 출력한다. (push 명령은 아무것도 출력하지 않는다)",
+    "constraints": "1 ≤ M ≤ 1000, push하는 값은 공백 없는 문자열",
+    "input_format": "M\n명령_1\n...\n명령_M",
+    "output_format": "각 pop 명령의 결과 (한 줄에 하나씩, pop이 없으면 출력 없음)",
+    "samples": [
+      {
+        "input": "5\npush 1\npush 2\npop\npop\npop\n",
+        "output": "2\n1\nempty\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\npush 1\npush 2\npop\npop\npop\n",
+        "output": "2\n1\nempty\n"
+      },
+      {
+        "input": "1\npop\n",
+        "output": "empty\n"
+      },
+      {
+        "input": "4\npush a\npush b\npush c\npop\n",
+        "output": "c\n"
+      },
+      {
+        "input": "4\npush x\npop\npush y\npop\n",
+        "output": "x\ny\n"
+      },
+      {
+        "input": "7\npush 1\npush 2\npush 3\npop\npush 4\npop\npop\n",
+        "output": "3\n4\n2\n"
+      },
+      {
+        "input": "1\npush only\n",
+        "output": "\n"
+      }
+    ],
+    "standard_id": "12정03-08",
+    "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_08_09",
+    "title": "Queue 클래스 구현",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "enqueue, dequeue 메서드를 가지는 Queue 클래스를 작성하시오. 명령의 개수 M과 M개의 명령이 주어진다. 명령은 \"enqueue 값\" 또는 \"dequeue\" 형식이다. dequeue 명령을 실행할 때마다 꺼낸 값을 한 줄에 출력하고, 큐가 비어있는 상태에서 dequeue를 실행하면 \"empty\"를 출력한다. (enqueue 명령은 아무것도 출력하지 않는다)",
+    "constraints": "1 ≤ M ≤ 1000, enqueue하는 값은 공백 없는 문자열",
+    "input_format": "M\n명령_1\n...\n명령_M",
+    "output_format": "각 dequeue 명령의 결과 (한 줄에 하나씩, dequeue가 없으면 출력 없음)",
+    "samples": [
+      {
+        "input": "5\nenqueue 1\nenqueue 2\ndequeue\ndequeue\ndequeue\n",
+        "output": "1\n2\nempty\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\nenqueue 1\nenqueue 2\ndequeue\ndequeue\ndequeue\n",
+        "output": "1\n2\nempty\n"
+      },
+      {
+        "input": "1\ndequeue\n",
+        "output": "empty\n"
+      },
+      {
+        "input": "4\nenqueue a\nenqueue b\nenqueue c\ndequeue\n",
+        "output": "a\n"
+      },
+      {
+        "input": "4\nenqueue x\ndequeue\nenqueue y\ndequeue\n",
+        "output": "x\ny\n"
+      },
+      {
+        "input": "7\nenqueue 1\nenqueue 2\nenqueue 3\ndequeue\nenqueue 4\ndequeue\ndequeue\n",
+        "output": "1\n2\n3\n"
+      },
+      {
+        "input": "1\nenqueue only\n",
+        "output": "\n"
+      }
+    ],
+    "standard_id": "12정03-08",
+    "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_08_10",
+    "title": "도형 클래스 넓이 비교",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "원(Circle) 또는 사각형(Rectangle)을 나타내는 도형 정보 N개가 주어진다. 각 줄은 \"C 반지름\"(원, 원주율 3.14) 또는 \"R 가로 세로\"(사각형) 형식이다. 넓이가 가장 큰 도형의 번호(0번부터 시작하는 입력 순서)를 출력하시오. 넓이가 같으면 먼저 입력된 도형의 번호를 출력한다.",
+    "constraints": "1 ≤ N ≤ 100, 각 값은 1 이상 1000 이하의 정수",
+    "input_format": "N\n도형_1\n...\n도형_N",
+    "output_format": "넓이가 가장 큰 도형의 번호",
+    "samples": [
+      {
+        "input": "2\nC 5\nR 5 5\n",
+        "output": "0\n",
+        "explanation": "원의 넓이 = 3.14*5*5 = 78.5, 사각형 넓이 = 25 이므로 원이 더 크다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "2\nC 5\nR 5 5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "1\nR 3 3\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\nC 1\nC 2\nR 4 4\n",
+        "output": "2\n"
+      },
+      {
+        "input": "3\nR 10 1\nR 1 10\nC 2\n",
+        "output": "2\n"
+      },
+      {
+        "input": "2\nC 10\nC 10\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\nR 2 3\nC 1\nR 5 1\n",
+        "output": "0\n"
+      }
+    ],
+    "standard_id": "12정03-08",
+    "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  }
+]

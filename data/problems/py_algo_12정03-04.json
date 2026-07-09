@@ -1,0 +1,470 @@
+[
+  {
+    "id": "p03_04_01",
+    "title": "문자열의 자료형 판별",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "문자열 하나가 주어진다. 이 문자열을 정수로 변환할 수 있으면 int, 정수로는 안 되지만 실수로 변환할 수 있으면 float, 둘 다 안 되면 str을 출력하시오. (파이썬의 int(), float() 변환 기준을 따른다)",
+    "constraints": "문자열의 길이는 1 이상 50 이하",
+    "input_format": "S",
+    "output_format": "int, float, str 중 하나",
+    "samples": [
+      {
+        "input": "3.5\n",
+        "output": "float\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "3\n",
+        "output": "int\n"
+      },
+      {
+        "input": "3.5\n",
+        "output": "float\n"
+      },
+      {
+        "input": "abc\n",
+        "output": "str\n"
+      },
+      {
+        "input": "-5\n",
+        "output": "int\n"
+      },
+      {
+        "input": "3.0\n",
+        "output": "float\n"
+      },
+      {
+        "input": "007\n",
+        "output": "int\n"
+      },
+      {
+        "input": "-2.5\n",
+        "output": "float\n"
+      },
+      {
+        "input": "hello123\n",
+        "output": "str\n"
+      }
+    ],
+    "standard_id": "12정03-04",
+    "성취기준명": "자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_04_02",
+    "title": "몫과 나머지 구하기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "정수 A와 B가 주어진다. 파이썬의 // 연산자와 % 연산자를 사용하여 A//B와 A%B를 공백으로 구분해 출력하시오. (파이썬의 몫/나머지 연산 규칙을 그대로 따른다)",
+    "constraints": "-1000 ≤ A, B ≤ 1000, B ≠ 0",
+    "input_format": "A B",
+    "output_format": "A//B A%B",
+    "samples": [
+      {
+        "input": "7 2\n",
+        "output": "3 1\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "7 2\n",
+        "output": "3 1\n"
+      },
+      {
+        "input": "-7 2\n",
+        "output": "-4 1\n"
+      },
+      {
+        "input": "7 -2\n",
+        "output": "-4 -1\n"
+      },
+      {
+        "input": "-7 -2\n",
+        "output": "3 -1\n"
+      },
+      {
+        "input": "10 5\n",
+        "output": "2 0\n"
+      },
+      {
+        "input": "1 3\n",
+        "output": "0 1\n"
+      }
+    ],
+    "standard_id": "12정03-04",
+    "성취기준명": "자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_04_03",
+    "title": "실수 반올림",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "실수 하나가 주어진다. 소수 둘째 자리까지 반올림하여 출력하시오. (파이썬의 :.2f 형식을 기준으로 한다)",
+    "constraints": "-1000 ≤ 실수 ≤ 1000",
+    "input_format": "X",
+    "output_format": "반올림된 실수 (소수 둘째 자리까지)",
+    "samples": [
+      {
+        "input": "3.14159\n",
+        "output": "3.14\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "3.14159\n",
+        "output": "3.14\n"
+      },
+      {
+        "input": "2.005\n",
+        "output": "2.00\n"
+      },
+      {
+        "input": "10.0\n",
+        "output": "10.00\n"
+      },
+      {
+        "input": "-1.236\n",
+        "output": "-1.24\n"
+      },
+      {
+        "input": "0.001\n",
+        "output": "0.00\n"
+      },
+      {
+        "input": "99.995\n",
+        "output": "100.00\n"
+      }
+    ],
+    "standard_id": "12정03-04",
+    "성취기준명": "자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_04_04",
+    "title": "정수의 논리값 판정",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "정수 하나가 주어진다. 파이썬에서 bool(정수)를 계산했을 때의 결과(True 또는 False)를 출력하시오. (0은 False, 그 외의 정수는 모두 True이다)",
+    "constraints": "-1000 ≤ 정수 ≤ 1000",
+    "input_format": "N",
+    "output_format": "True 또는 False",
+    "samples": [
+      {
+        "input": "0\n",
+        "output": "False\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "0\n",
+        "output": "False\n"
+      },
+      {
+        "input": "1\n",
+        "output": "True\n"
+      },
+      {
+        "input": "-5\n",
+        "output": "True\n"
+      },
+      {
+        "input": "100\n",
+        "output": "True\n"
+      },
+      {
+        "input": "0\n",
+        "output": "False\n"
+      },
+      {
+        "input": "7\n",
+        "output": "True\n"
+      }
+    ],
+    "standard_id": "12정03-04",
+    "성취기준명": "자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_04_05",
+    "title": "문자열 숫자의 각 자릿수 합",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "숫자로만 이루어진 문자열이 주어진다. 각 자릿수를 정수로 변환하여 모두 더한 값을 출력하시오.",
+    "constraints": "문자열의 길이는 1 이상 100 이하이며, 0~9의 숫자로만 이루어진다",
+    "input_format": "S",
+    "output_format": "각 자릿수의 합",
+    "samples": [
+      {
+        "input": "12345\n",
+        "output": "15\n",
+        "explanation": "1+2+3+4+5 = 15"
+      }
+    ],
+    "tests": [
+      {
+        "input": "12345\n",
+        "output": "15\n"
+      },
+      {
+        "input": "0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "999\n",
+        "output": "27\n"
+      },
+      {
+        "input": "100200\n",
+        "output": "3\n"
+      },
+      {
+        "input": "7\n",
+        "output": "7\n"
+      },
+      {
+        "input": "1010101\n",
+        "output": "4\n"
+      }
+    ],
+    "standard_id": "12정03-04",
+    "성취기준명": "자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_04_06",
+    "title": "문자의 아스키 코드 값",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "알파벳, 숫자, 공백 중 한 글자가 주어진다. 이 문자의 아스키(ASCII) 코드 값을 정수로 출력하시오. (파이썬의 ord() 함수 기준)",
+    "constraints": "입력은 길이 1인 문자 하나",
+    "input_format": "C",
+    "output_format": "아스키 코드 값 (정수)",
+    "samples": [
+      {
+        "input": "A\n",
+        "output": "65\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "A\n",
+        "output": "65\n"
+      },
+      {
+        "input": "a\n",
+        "output": "97\n"
+      },
+      {
+        "input": "z\n",
+        "output": "122\n"
+      },
+      {
+        "input": "Z\n",
+        "output": "90\n"
+      },
+      {
+        "input": "0\n",
+        "output": "48\n"
+      },
+      {
+        "input": " \n",
+        "output": "32\n"
+      }
+    ],
+    "standard_id": "12정03-04",
+    "성취기준명": "자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_04_07",
+    "title": "문자열을 형변환하여 계산하기",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "실수 형태의 문자열 A와 정수 형태의 문자열 B가 한 줄에 공백으로 구분되어 주어진다. A를 실수로, B를 정수로 변환한 뒤 더한 값을 소수 첫째 자리까지 출력하시오.",
+    "constraints": "-1000 ≤ A, B의 값 ≤ 1000",
+    "input_format": "A B",
+    "output_format": "float(A) + int(B) (소수 첫째 자리까지)",
+    "samples": [
+      {
+        "input": "3.7 2\n",
+        "output": "5.7\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "3.7 2\n",
+        "output": "5.7\n"
+      },
+      {
+        "input": "0.5 10\n",
+        "output": "10.5\n"
+      },
+      {
+        "input": "100.25 0\n",
+        "output": "100.2\n"
+      },
+      {
+        "input": "-3.5 5\n",
+        "output": "1.5\n"
+      },
+      {
+        "input": "9.99 1\n",
+        "output": "11.0\n"
+      },
+      {
+        "input": "0.0 -4\n",
+        "output": "-4.0\n"
+      }
+    ],
+    "standard_id": "12정03-04",
+    "성취기준명": "자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_04_08",
+    "title": "10진수를 2진수로 변환",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "0 이상의 정수 N이 주어진다. N을 2진수로 표현한 문자열을 출력하시오. (앞에 접두어 없이 숫자만 출력하며, N이 0이면 0을 출력한다)",
+    "constraints": "0 ≤ N ≤ 100000",
+    "input_format": "N",
+    "output_format": "2진수 표현 (문자열)",
+    "samples": [
+      {
+        "input": "10\n",
+        "output": "1010\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "10\n",
+        "output": "1010\n"
+      },
+      {
+        "input": "0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "1\n",
+        "output": "1\n"
+      },
+      {
+        "input": "255\n",
+        "output": "11111111\n"
+      },
+      {
+        "input": "1023\n",
+        "output": "1111111111\n"
+      },
+      {
+        "input": "7\n",
+        "output": "111\n"
+      }
+    ],
+    "standard_id": "12정03-04",
+    "성취기준명": "자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_04_09",
+    "title": "튜플로 저장 후 최댓값 찾기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "정수의 개수 N과 N개의 정수가 주어진다. 이 값을 튜플(tuple) 자료형으로 저장한 뒤, 튜플에서 최댓값을 찾아 출력하시오.",
+    "constraints": "1 ≤ N ≤ 1000, 각 값은 -10000 이상 10000 이하",
+    "input_format": "N\nA_1 ... A_N",
+    "output_format": "최댓값",
+    "samples": [
+      {
+        "input": "5\n3 7 1 9 4\n",
+        "output": "9\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n3 7 1 9 4\n",
+        "output": "9\n"
+      },
+      {
+        "input": "1\n5\n",
+        "output": "5\n"
+      },
+      {
+        "input": "3\n-1 -5 -2\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "3\n100 100 99\n",
+        "output": "100\n"
+      },
+      {
+        "input": "3\n0 0 0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "4\n-10 20 -30 40\n",
+        "output": "40\n"
+      }
+    ],
+    "standard_id": "12정03-04",
+    "성취기준명": "자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  },
+  {
+    "id": "p03_04_10",
+    "title": "문자열 반복하기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 2000,
+    "statement": "문자열 S와 정수 N이 한 줄에 공백으로 구분되어 주어진다. S를 N번 반복한 문자열을 출력하시오. (N이 0이면 빈 줄을 출력한다)",
+    "constraints": "1 ≤ len(S) ≤ 20, 0 ≤ N ≤ 100, S는 특수문자를 포함할 수 있으나 공백은 없다",
+    "input_format": "S N",
+    "output_format": "S를 N번 반복한 문자열",
+    "samples": [
+      {
+        "input": "ab 3\n",
+        "output": "ababab\n",
+        "explanation": ""
+      }
+    ],
+    "tests": [
+      {
+        "input": "ab 3\n",
+        "output": "ababab\n"
+      },
+      {
+        "input": "x 5\n",
+        "output": "xxxxx\n"
+      },
+      {
+        "input": "hello 1\n",
+        "output": "hello\n"
+      },
+      {
+        "input": "! 0\n",
+        "output": "\n"
+      },
+      {
+        "input": "py 4\n",
+        "output": "pypypypy\n"
+      },
+      {
+        "input": "a 10\n",
+        "output": "aaaaaaaaaa\n"
+      }
+    ],
+    "standard_id": "12정03-04",
+    "성취기준명": "자료형의 종류와 특성을 알고, 적합한 자료형을 선택하여 프로그램을 작성한다.",
+    "단원": "3. 알고리즘과 프로그래밍"
+  }
+]
