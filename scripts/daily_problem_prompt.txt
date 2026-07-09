@@ -1,0 +1,35 @@
+당신은 /home/student/Documents/study/std01 사이트(정보교육학습사이트)에 매일 코딩테스트 문제를 추가하는 무인 자동화 작업입니다. 사람이 지켜보지 않으므로 스스로 검증하고, 문제가 있으면 커밋하지 말고 중단하세요.
+
+작업 디렉터리: /home/student/Documents/study/std01
+
+다음을 순서대로 수행하세요:
+
+1. `data/problems/*.json`의 기존 문제들을 읽어 이미 사용된 id와 제목/주제를 파악하세요. 오늘 만들 문제는 기존 문제와 주제가 겹치지 않게 하세요.
+
+2. 오늘 날짜(로컬 기준, YYYY-MM-DD)를 `date +%F` 로 확인하세요.
+
+3. AtCoder Beginner Contest 스타일의 파이썬 자동 채점 문제를 2개 만드세요:
+   - A 문제 (difficulty: "쉬움"): 간단한 산술/문자열/조건 처리 수준
+   - B 문제 (difficulty: "보통"): 반복문이나 약간의 로직이 필요한 수준
+   두 문제 모두 정답이 하나로만 명확히 결정되도록 문제/제약조건을 정확하게 서술하세요 (시간/범위 명시, "가장 큰" 등 표현에는 기준 명시).
+
+4. 각 문제는 `data/problems/basic_problems.json`과 같은 스키마를 정확히 따르세요:
+   - id: "p_daily_<YYYYMMDD>_a", "p_daily_<YYYYMMDD>_b" (오늘 날짜 사용, 기존 id와 겹치지 않게)
+   - title, difficulty, time_limit_ms(1500~2000 사이), statement, constraints, input_format, output_format
+   - samples: 최소 1개 (input/output/explanation 포함)
+   - tests: 최소 6개 (일반적인 경우와 경계값 포함)
+
+5. 매우 중요 — 절대 손으로 정답을 계산하지 마세요: 각 문제마다 파이썬 정답 코드를 실제로 작성해서 실행하고, 그 출력을 tests의 expected output으로 사용하세요. 두 문제 모두 저장하기 전에 실제로 정답 코드를 각 테스트 입력에 대해 실행해서 저장된 output과 정확히 일치하는지 재검증하세요.
+
+6. 검증까지 끝난 2문제를 `data/problems/daily_<YYYY-MM-DD>.json` 파일 하나에 배열로 저장하세요. (이미 오늘 날짜 파일이 있다면 내용을 확인하고 문제가 없으면 그대로 두고 종료하세요 — 중복 생성하지 마세요.)
+
+7. 저장한 JSON 파일이 유효한 JSON인지 `python3 -c "import json; json.load(open('data/problems/daily_<날짜>.json', encoding='utf-8'))"` 로 확인하세요.
+
+8. `systemctl --user restart study-backend.service` 를 실행해 새 문제가 사이트에 반영되게 하세요.
+
+9. `curl -s http://localhost:8000/api/problems | python3 -c "import json,sys; print(len(json.load(sys.stdin)))"` 로 문제 총 개수가 정상적으로 늘어났는지 확인하세요.
+
+10. 마지막으로 로컬 git에만 커밋하세요 (push는 하지 마세요):
+    `git add data/problems/daily_<날짜>.json && git commit -m "일일 문제 자동 추가: <날짜>"`
+
+11. 이 중 어느 단계에서든 실패하거나(JSON 파싱 오류, 검증 불일치 등) 애매하면 즉시 중단하고 무엇이 잘못됐는지 한두 문장으로 요약해 출력하세요. 검증되지 않은 데이터는 절대 저장/커밋하지 마세요.
