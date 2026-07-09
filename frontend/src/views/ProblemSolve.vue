@@ -124,6 +124,22 @@ function verdictLabel(v) {
       </div>
     </div>
 
+    <div class="help-section">
+      <details v-if="problem.힌트" class="help-block">
+        <summary>💡 힌트 보기</summary>
+        <p class="help-text">{{ problem.힌트 }}</p>
+      </details>
+      <details v-if="problem.해설" class="help-block">
+        <summary>📝 해설 보기</summary>
+        <p class="help-text">{{ problem.해설 }}</p>
+      </details>
+      <details v-if="problem.정답_코드" class="help-block">
+        <summary>✅ 모범 답안 보기</summary>
+        <p v-if="problem.시간복잡도" class="complexity"><strong>시간복잡도</strong> {{ problem.시간복잡도 }}</p>
+        <pre class="code-block"><code>{{ problem.정답_코드 }}</code></pre>
+      </details>
+    </div>
+
     <h2>코드 작성</h2>
     <textarea
       v-model="code"
@@ -267,6 +283,50 @@ pre {
 
 .sample-result.bad strong {
   color: var(--wrong);
+}
+
+.help-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.help-block {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 14px;
+}
+
+.help-block summary {
+  padding: 10px 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-h);
+  font-size: 14px;
+}
+
+.help-block .help-text {
+  font-size: 14px;
+  line-height: 1.6;
+  padding-bottom: 12px;
+  white-space: pre-wrap;
+}
+
+.help-block .complexity {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin: 0 0 8px;
+}
+
+.help-block .code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  font-size: 13px;
+  margin: 0 0 12px;
 }
 
 .code-input {

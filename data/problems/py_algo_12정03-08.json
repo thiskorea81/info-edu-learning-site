@@ -43,7 +43,11 @@
     ],
     "standard_id": "12정03-08",
     "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "__init__에서 이름과 점수 리스트를 저장하고, average()라는 메서드에서 sum/len으로 평균을 계산해보자.",
+    "해설": "Student 클래스는 생성자(__init__)에서 이름과 점수 리스트를 인스턴스 속성으로 저장한다. average() 메서드는 self.scores의 합을 개수로 나눈 값을 반환한다.",
+    "정답_코드": "class Student:\n    def __init__(self, name, scores):\n        self.name = name\n        self.scores = scores\n\n    def average(self):\n        return sum(self.scores) / len(self.scores)\n\n\nname, n = input().split()\nscores = list(map(int, input().split()))\n\ns = Student(name, scores)\nprint(f\"{s.name}의 평균: {s.average():.1f}\")\n",
+    "시간복잡도": "O(N) — 점수 개수만큼 합을 구한다."
   },
   {
     "id": "p03_08_02",
@@ -89,7 +93,11 @@
     ],
     "standard_id": "12정03-08",
     "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "deposit(입금)과 withdraw(출금) 메서드를 만들고, withdraw에서는 잔액이 부족하면 아무 일도 하지 않도록 조건을 걸자.",
+    "해설": "Account 클래스는 잔액(balance)을 속성으로 가진다. deposit()은 balance를 늘리고, withdraw()는 잔액이 충분할 때만 balance를 줄인다(부족하면 무시).",
+    "정답_코드": "class Account:\n    def __init__(self, balance):\n        self.balance = balance\n\n    def deposit(self, amount):\n        self.balance += amount\n\n    def withdraw(self, amount):\n        if amount <= self.balance:  # 잔액이 충분할 때만 출금\n            self.balance -= amount\n\n\nbalance, m = map(int, input().split())\nacc = Account(balance)\nfor _ in range(m):\n    op, amount = input().split()\n    amount = int(amount)\n    if op == 'D':\n        acc.deposit(amount)\n    else:\n        acc.withdraw(amount)\n\nprint(acc.balance)\n",
+    "시간복잡도": "O(M) — 명령 개수만큼 한 번씩 처리한다."
   },
   {
     "id": "p03_08_03",
@@ -135,7 +143,11 @@
     ],
     "standard_id": "12정03-08",
     "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "두 점 사이의 거리는 math.sqrt((x2-x1)**2 + (y2-y1)**2) 공식(피타고라스 정리)으로 구한다.",
+    "해설": "Point 클래스는 x, y 좌표를 속성으로 가진다. 두 Point 사이의 거리는 x좌표 차이와 y좌표 차이를 각각 제곱해 더한 뒤 제곱근을 취해 구한다.",
+    "정답_코드": "import math\n\nclass Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\n    def distance(self, other):\n        return math.sqrt((other.x - self.x) ** 2 + (other.y - self.y) ** 2)\n\n\nx1, y1, x2, y2 = map(int, input().split())\np1, p2 = Point(x1, y1), Point(x2, y2)\n\nprint(f\"{p1.distance(p2):.2f}\")\n",
+    "시간복잡도": "O(1) — 좌표 두 쌍으로 한 번의 거리 계산."
   },
   {
     "id": "p03_08_04",
@@ -181,7 +193,11 @@
     ],
     "standard_id": "12정03-08",
     "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "Rectangle 클래스에 area()와 perimeter() 두 메서드를 각각 만들면 된다.",
+    "해설": "가로(width)와 세로(height)를 속성으로 갖는 Rectangle 클래스를 정의하고, 넓이는 width*height, 둘레는 2*(width+height)를 반환하는 메서드를 만든다.",
+    "정답_코드": "class Rectangle:\n    def __init__(self, width, height):\n        self.width = width\n        self.height = height\n\n    def perimeter(self):\n        return 2 * (self.width + self.height)\n\n    def area(self):\n        return self.width * self.height\n\n\nw, h = map(int, input().split())\nr = Rectangle(w, h)\n\nprint(r.perimeter(), r.area())\n",
+    "시간복잡도": "O(1) — 곱셈과 덧셈 각각 한 번."
   },
   {
     "id": "p03_08_05",
@@ -227,7 +243,11 @@
     ],
     "standard_id": "12정03-08",
     "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "전체를 분으로 환산한 뒤 더할 분을 더하고, 1440(하루 총 분)으로 나머지 연산을 하면 자정을 넘나드는 것도 자동으로 처리된다.",
+    "해설": "시:분을 '자정부터 몇 분 지났는지'로 환산(h*60+m)하고 더할 분을 더한 뒤, 1440으로 나눈 나머지를 구하면 범위를 벗어나는 값이 자동으로 순환된다. 파이썬의 %는 음수에도 항상 0 이상의 값을 주므로 음수 분을 더해도 안전하다.",
+    "정답_코드": "class Clock:\n    def __init__(self, hour, minute):\n        self.hour = hour\n        self.minute = minute\n\n    def add_minutes(self, add):\n        total = (self.hour * 60 + self.minute + add) % 1440  # 1440분 = 24시간\n        return total // 60, total % 60\n\n\nh, m, add = map(int, input().split())\nclock = Clock(h, m)\nnew_h, new_m = clock.add_minutes(add)\n\nprint(new_h, new_m)\n",
+    "시간복잡도": "O(1) — 나눗셈과 나머지 연산 몇 번."
   },
   {
     "id": "p03_08_06",
@@ -273,7 +293,11 @@
     ],
     "standard_id": "12정03-08",
     "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "딕셔너리로 물품명-수량을 저장해두고, get() 메서드를 쓰면 없는 키에 대해 기본값(0)을 바로 반환할 수 있다.",
+    "해설": "Inventory 클래스는 내부에 딕셔너리를 두어 물품명을 키, 수량을 값으로 저장한다. 조회 시 dict.get(name, 0)을 쓰면 없는 물품은 자동으로 0이 반환된다.",
+    "정답_코드": "class Inventory:\n    def __init__(self):\n        self.items = {}\n\n    def add(self, name, qty):\n        self.items[name] = qty\n\n    def query(self, name):\n        return self.items.get(name, 0)  # 없으면 기본값 0\n\n\nn = int(input())\ninv = Inventory()\nfor _ in range(n):\n    name, qty = input().split()\n    inv.add(name, int(qty))\n\nquery = input()\nprint(inv.query(query))\n",
+    "시간복잡도": "O(N) — 물품 등록에 N번, 조회는 딕셔너리 특성상 평균 O(1)이다."
   },
   {
     "id": "p03_08_07",
@@ -319,7 +343,11 @@
     ],
     "standard_id": "12정03-08",
     "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "지금까지 확인한 최고 나이를 저장해두고, '더 많을 때만' 갱신하면 동점자 중 먼저 나온 사람이 유지된다.",
+    "해설": "best_age를 계속 추적하며, 새로운 사람의 나이가 지금까지의 최고 나이보다 클 때만 갱신한다. 같거나 작으면 그대로 두어 먼저 입력된 사람이 남게 한다.",
+    "정답_코드": "class Person:\n    def __init__(self, name, age):\n        self.name = name\n        self.age = age\n\n\nn = int(input())\nbest = None\nfor _ in range(n):\n    name, age = input().split()\n    p = Person(name, int(age))\n    if best is None or p.age > best.age:  # 더 많을 때만 갱신\n        best = p\n\nprint(best.name)\n",
+    "시간복잡도": "O(N) — 사람 수만큼 한 번씩 비교한다."
   },
   {
     "id": "p03_08_08",
@@ -365,7 +393,11 @@
     ],
     "standard_id": "12정03-08",
     "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "파이썬 리스트의 append()와 pop()은 각각 스택의 push, pop과 정확히 같은 동작을 한다.",
+    "해설": "Stack 클래스는 내부적으로 리스트를 사용한다. push는 append(), pop은 리스트가 비어있지 않으면 pop()을, 비어있으면 'empty'를 반환하도록 만든다.",
+    "정답_코드": "class Stack:\n    def __init__(self):\n        self.data = []\n\n    def push(self, value):\n        self.data.append(value)\n\n    def pop(self):\n        if self.data:\n            return self.data.pop()  # 리스트의 맨 뒤 = 스택의 맨 위\n        return 'empty'\n\n\nm = int(input())\nstack = Stack()\nresults = []\nfor _ in range(m):\n    cmd = input().split()\n    if cmd[0] == 'push':\n        stack.push(cmd[1])\n    else:\n        results.append(stack.pop())\n\nprint('\\n'.join(results))\n",
+    "시간복잡도": "O(1) — push/pop 모두 리스트의 끝에서만 일어나 각각 O(1)이다."
   },
   {
     "id": "p03_08_09",
@@ -411,7 +443,11 @@
     ],
     "standard_id": "12정03-08",
     "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "collections.deque를 쓰면 양쪽 끝에서의 추가/제거가 모두 빠르다. enqueue는 append, dequeue는 popleft를 쓰자.",
+    "해설": "큐는 먼저 들어온 것이 먼저 나가야(FIFO) 하므로, deque의 append()로 뒤에 추가하고 popleft()로 앞에서 꺼낸다. 일반 리스트의 pop(0)은 느리지만 deque의 popleft()는 빠르다.",
+    "정답_코드": "from collections import deque\n\nclass Queue:\n    def __init__(self):\n        self.data = deque()\n\n    def enqueue(self, value):\n        self.data.append(value)\n\n    def dequeue(self):\n        if self.data:\n            return self.data.popleft()  # 맨 앞에서 꺼낸다 (먼저 들어온 것이 먼저 나감)\n        return 'empty'\n\n\nm = int(input())\nq = Queue()\nresults = []\nfor _ in range(m):\n    cmd = input().split()\n    if cmd[0] == 'enqueue':\n        q.enqueue(cmd[1])\n    else:\n        results.append(q.dequeue())\n\nprint('\\n'.join(results))\n",
+    "시간복잡도": "O(1) — deque는 양쪽 끝에서의 추가/제거가 모두 O(1)이다."
   },
   {
     "id": "p03_08_10",
@@ -457,6 +493,10 @@
     ],
     "standard_id": "12정03-08",
     "성취기준명": "객체를 구현하는 클래스와 인스턴스를 활용하여 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "원과 사각형을 하나의 넓이 계산 함수(또는 각 클래스의 area 메서드)로 통일해서 다루면, 종류에 상관없이 넓이만 비교하면 된다.",
+    "해설": "Circle과 Rectangle 각각에 area() 메서드를 정의해두면, 어떤 도형이든 같은 방식(obj.area())으로 넓이를 구할 수 있다. 모든 도형의 넓이를 구한 뒤 가장 큰 값의 인덱스를 찾는다.",
+    "정답_코드": "class Circle:\n    def __init__(self, r):\n        self.r = r\n\n    def area(self):\n        return 3.14 * self.r * self.r\n\n\nclass Rectangle:\n    def __init__(self, w, h):\n        self.w = w\n        self.h = h\n\n    def area(self):\n        return self.w * self.h\n\n\nn = int(input())\nshapes = []\nfor _ in range(n):\n    parts = input().split()\n    if parts[0] == 'C':\n        shapes.append(Circle(int(parts[1])))\n    else:\n        shapes.append(Rectangle(int(parts[1]), int(parts[2])))\n\n# 같은 방식(area())으로 모든 도형의 넓이를 비교\nbest = 0\nfor i in range(1, n):\n    if shapes[i].area() > shapes[best].area():\n        best = i\n\nprint(best)\n",
+    "시간복잡도": "O(N) — 도형 개수만큼 넓이를 계산하고 비교한다."
   }
 ]

@@ -25,6 +25,9 @@ async function load() {
 onMounted(load)
 
 const isDaily = computed(() => props.categoryKey === 'daily')
+const isStandardCategory = computed(
+  () => props.categoryKey !== 'basic' && props.categoryKey !== 'daily'
+)
 
 // group daily problems by year-month, newest month first, newest problem first within month
 const monthGroups = computed(() => {
@@ -55,6 +58,9 @@ function difficultyClass(letter) {
   <RouterLink to="/problems" class="back">← 코딩테스트</RouterLink>
   <h1>{{ category?.label ?? '' }}</h1>
   <p v-if="category?.성취기준명" class="hint">{{ category.성취기준명 }}</p>
+  <RouterLink v-if="isStandardCategory" :to="`/materials/${categoryKey}`" class="theory-link">
+    📖 이론 보기
+  </RouterLink>
 
   <p v-if="loading">불러오는 중…</p>
   <p v-else-if="problems.length === 0" class="empty">문제가 없습니다.</p>
@@ -104,6 +110,19 @@ function difficultyClass(letter) {
 
 .empty {
   color: var(--text-dim);
+}
+
+.theory-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .month-group {

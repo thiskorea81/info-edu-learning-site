@@ -1,0 +1,31 @@
+{
+  "standard_id": "12정03-03",
+  "title": "탐색 알고리즘",
+  "성취기준명": "데이터를 탐색하는 다양한 알고리즘의 특징과 효율을 비교ㆍ분석한다.",
+  "단원": "3. 알고리즘과 프로그래밍",
+  "sections": [
+    {
+      "heading": "탐색이란?",
+      "content": "탐색(Search)은 자료 안에서 원하는 값을 찾는 작업이다. 대표적으로 순차 탐색과 이진 탐색이 있으며, 두 방법의 가장 큰 차이는 '자료가 정렬되어 있는가'이다."
+    },
+    {
+      "heading": "순차 탐색 (Sequential Search)",
+      "content": "순차 탐색은 자료의 처음부터 끝까지 하나씩 순서대로 확인하며 원하는 값을 찾는 가장 단순한 방법이다. 정렬 여부와 관계없이 항상 사용할 수 있지만, 찾는 값이 마지막에 있거나 아예 없으면 전체를 다 확인해야 한다.",
+      "code": "def sequential_search(arr, target):\n    count = 0\n    for i, v in enumerate(arr):\n        count += 1\n        if v == target:\n            return i, count\n    return -1, count\n\ndata = [12, 45, 7, 23, 56, 89]\nidx, cnt = sequential_search(data, 56)\nprint(f\"인덱스: {idx}, 비교 횟수: {cnt}\")\n"
+    },
+    {
+      "heading": "이진 탐색 (Binary Search)",
+      "content": "이진 탐색은 정렬된 자료에서만 사용할 수 있는 대신 훨씬 빠르다. 탐색 범위의 중간(mid) 값과 찾는 값을 비교해서, 찾는 값이 더 크면 오른쪽 절반만, 더 작으면 왼쪽 절반만 다시 탐색한다. 이렇게 매번 범위를 절반으로 줄여나가기 때문에 자료가 아무리 많아도 비교 횟수가 매우 적다. 아래 예시는 8개의 자료에서 14를 찾는 과정으로, 단 3번의 비교만에 찾는다.",
+      "code": "def binary_search(arr, target):\n    lo, hi = 0, len(arr) - 1\n    count = 0\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        count += 1\n        print(f\"  범위 [{lo}, {hi}], mid={mid}(값={arr[mid]})\")\n        if arr[mid] == target:\n            return mid, count\n        elif arr[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1, count\n\ndata = [2, 4, 6, 8, 10, 12, 14, 16]\nidx, cnt = binary_search(data, 14)\nprint(f\"인덱스: {idx}, 비교 횟수: {cnt}\")\n"
+    },
+    {
+      "heading": "직접 확인해보기: 100만 개 중에서 찾기",
+      "content": "정렬된 100만 개의 숫자 중 맨 끝에 있는 값을 순차 탐색과 이진 탐색으로 각각 찾아 걸린 시간을 비교했다. 순차 탐색은 최악의 경우 100만 번을 확인해야 하지만, 이진 탐색은 log₂(1,000,000) ≈ 20번 정도의 비교만으로 충분하다. 아래 실행 결과에서 이진 탐색이 순차 탐색보다 훨씬 빠른 것을 확인할 수 있다 (정확한 배수는 실행 환경에 따라 달라질 수 있다).",
+      "code": "import time\n\ndata = list(range(1_000_000))  # 0 ~ 999999, 정렬되어 있음\ntarget = 999_999                # 최악의 경우: 맨 끝에 있는 값\n\nstart = time.perf_counter()\nidx = data.index(target)  # 순차 탐색과 동일한 방식\nseq_time = time.perf_counter() - start\n\ndef binary_search(arr, x):\n    lo, hi = 0, len(arr) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if arr[mid] == x:\n            return mid\n        elif arr[mid] < x:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1\n\nstart = time.perf_counter()\nidx2 = binary_search(data, target)\nbin_time = time.perf_counter() - start\n\nprint(f\"순차 탐색: {seq_time*1000:.3f}ms\")\nprint(f\"이진 탐색: {bin_time*1000:.3f}ms\")\nprint(f\"이진 탐색이 약 {seq_time/bin_time:.0f}배 빠름\")\n"
+    },
+    {
+      "heading": "정리",
+      "content": "자료가 정렬되어 있다면 이진 탐색(O(log N))을, 정렬되어 있지 않거나 정렬 비용이 더 크다면 순차 탐색(O(N))을 사용한다. 특히 탐색을 여러 번 반복해야 하는 문제라면, 처음에 한 번 정렬해두고 이진 탐색을 여러 번 쓰는 것이 매번 순차 탐색하는 것보다 훨씬 유리하다."
+    }
+  ]
+}

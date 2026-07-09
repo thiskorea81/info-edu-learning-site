@@ -43,7 +43,11 @@
     ],
     "standard_id": "12정03-06",
     "성취기준명": "다차원 데이터 구조를 활용한 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "2차원 리스트는 list comprehension으로 한 줄씩 읽어 만들 수 있다. 같은 위치의 원소끼리 더하면 된다.",
+    "해설": "N개의 행을 각각 읽어 2차원 리스트로 저장한 뒤, 같은 행(i)·같은 열(j) 위치의 값끼리 더해 새 행렬을 만든다.",
+    "정답_코드": "n, m = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(n)]\nb = [list(map(int, input().split())) for _ in range(n)]\n\n# 같은 위치(i, j)의 원소끼리 더한다\nfor i in range(n):\n    row = [a[i][j] + b[i][j] for j in range(m)]\n    print(' '.join(map(str, row)))\n",
+    "시간복잡도": "O(N*M) — 행렬의 모든 원소를 한 번씩 방문한다."
   },
   {
     "id": "p03_06_02",
@@ -89,7 +93,11 @@
     ],
     "standard_id": "12정03-06",
     "성취기준명": "다차원 데이터 구조를 활용한 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "전치행렬은 행과 열의 인덱스를 서로 바꿔주면 된다. mat[i][j] 대신 mat[j][i] 형태로 접근하자.",
+    "해설": "전치행렬은 원래 행렬의 i행 j열 원소가 전치행렬에서는 j행 i열로 옮겨간 것이다. 바깥 반복문을 열(j) 기준으로, 안쪽을 행(i) 기준으로 돌며 mat[i][j]를 읽으면 된다.",
+    "정답_코드": "n, m = map(int, input().split())\nmat = [list(map(int, input().split())) for _ in range(n)]\n\n# 열(j)을 기준으로 순회하며 각 열의 값을 모아 새로운 행으로 만든다\nfor j in range(m):\n    row = [mat[i][j] for i in range(n)]\n    print(' '.join(map(str, row)))\n",
+    "시간복잡도": "O(N*M) — 모든 원소를 한 번씩 옮긴다."
   },
   {
     "id": "p03_06_03",
@@ -135,7 +143,11 @@
     ],
     "standard_id": "12정03-06",
     "성취기준명": "다차원 데이터 구조를 활용한 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "주대각선의 원소는 행 번호와 열 번호가 같은 mat[i][i]들이다.",
+    "해설": "정사각행렬의 주대각선 원소는 인덱스가 (0,0), (1,1), (2,2)... 처럼 행과 열이 같은 위치다. mat[i][i]를 i=0부터 N-1까지 더한다.",
+    "정답_코드": "n, _ = map(int, input().split())\nmat = [list(map(int, input().split())) for _ in range(n)]\n\n# 대각선 원소 mat[i][i]들의 합\ndiag_sum = sum(mat[i][i] for i in range(n))\n\nprint(diag_sum)\n",
+    "시간복잡도": "O(N) — 대각선 원소 N개만 확인한다 (행렬 읽기 자체는 O(N²))."
   },
   {
     "id": "p03_06_04",
@@ -181,7 +193,11 @@
     ],
     "standard_id": "12정03-06",
     "성취기준명": "다차원 데이터 구조를 활용한 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "행렬을 이중 반복문으로 순회하면서, 지금까지 본 최댓값보다 크면 값과 위치를 함께 갱신하자.",
+    "해설": "왼쪽 위부터 행 우선으로 순회하며 현재 값이 지금까지의 최댓값보다 '클 때만' 갱신한다. 이렇게 하면 같은 값이 여러 번 나와도 가장 먼저 나온 위치가 유지된다.",
+    "정답_코드": "n, m = map(int, input().split())\nmat = [list(map(int, input().split())) for _ in range(n)]\n\nbest, bi, bj = mat[0][0], 0, 0\nfor i in range(n):\n    for j in range(m):\n        if mat[i][j] > best:   # 더 클 때만 갱신 -> 먼저 나온 위치 유지\n            best, bi, bj = mat[i][j], i, j\n\nprint(best, bi, bj)\n",
+    "시간복잡도": "O(N*M) — 행렬의 모든 원소를 한 번씩 확인한다."
   },
   {
     "id": "p03_06_05",
@@ -227,7 +243,11 @@
     ],
     "standard_id": "12정03-06",
     "성취기준명": "다차원 데이터 구조를 활용한 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "각 행의 합은 sum(행)으로 바로 구할 수 있고, 각 열의 합은 열 인덱스를 고정하고 모든 행을 순회하며 더해야 한다.",
+    "해설": "행별 합은 각 행 리스트에 sum()을 적용하면 된다. 열별 합은 열 번호 j를 고정한 채 모든 행 i에 대해 mat[i][j]를 더해야 한다.",
+    "정답_코드": "n, m = map(int, input().split())\nmat = [list(map(int, input().split())) for _ in range(n)]\n\nrow_sums = [sum(row) for row in mat]\ncol_sums = [sum(mat[i][j] for i in range(n)) for j in range(m)]\n\nprint(' '.join(map(str, row_sums)))\nprint(' '.join(map(str, col_sums)))\n",
+    "시간복잡도": "O(N*M) — 행별 합과 열별 합 모두 전체 원소를 한 번씩 더한다."
   },
   {
     "id": "p03_06_06",
@@ -273,7 +293,11 @@
     ],
     "standard_id": "12정03-06",
     "성취기준명": "다차원 데이터 구조를 활용한 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "파이썬의 reversed()나 슬라이싱 [::-1]을 쓰면 리스트의 순서를 손쉽게 뒤집을 수 있다.",
+    "해설": "행 리스트 전체를 reversed()로 뒤집어서 순서대로 출력하면, 행 내부 원소 순서는 그대로 유지한 채 행의 등장 순서만 반전된다.",
+    "정답_코드": "n, m = map(int, input().split())\nmat = [list(map(int, input().split())) for _ in range(n)]\n\n# 행의 순서만 거꾸로 (각 행 내부 순서는 유지)\nfor row in reversed(mat):\n    print(' '.join(map(str, row)))\n",
+    "시간복잡도": "O(N*M) — 모든 원소를 한 번씩 출력한다."
   },
   {
     "id": "p03_06_07",
@@ -319,7 +343,11 @@
     ],
     "standard_id": "12정03-06",
     "성취기준명": "다차원 데이터 구조를 활용한 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "결과 행렬의 (i, j) 원소는 A의 i행과 B의 j열을 각 위치끼리 곱해서 더한 값이다. 삼중 반복문이 필요하다.",
+    "해설": "행렬 곱 (A×B)[i][j]는 A의 i번째 행과 B의 j번째 열을 원소별로 곱해서 합한 값이다. i, j, 그리고 곱해서 더할 인덱스 x까지 삼중 반복문으로 계산한다.",
+    "정답_코드": "n, k, p = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(n)]\nb = [list(map(int, input().split())) for _ in range(k)]\n\nfor i in range(n):\n    row = []\n    for j in range(p):\n        # A의 i행과 B의 j열을 원소별로 곱해서 더한다\n        s = sum(a[i][x] * b[x][j] for x in range(k))\n        row.append(s)\n    print(' '.join(map(str, row)))\n",
+    "시간복잡도": "O(N*K*P) — 결과 행렬의 각 원소(N*P개)마다 K번의 곱셈-덧셈이 필요하다."
   },
   {
     "id": "p03_06_08",
@@ -365,7 +393,11 @@
     ],
     "standard_id": "12정03-06",
     "성취기준명": "다차원 데이터 구조를 활용한 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "각 칸마다 주변 8칸(상하좌우+대각선)을 확인해서 폭탄 개수를 세면 된다. 격자 범위를 벗어나지 않도록 조건을 체크하자.",
+    "해설": "빈 칸마다 8방향(di, dj가 각각 -1,0,1인 조합, 단 (0,0) 제외)의 이웃을 확인해 격자 안에 있고 값이 '*'인 경우를 센다. 폭탄 칸은 그대로 '*'로 둔다.",
+    "정답_코드": "n, m = map(int, input().split())\ngrid = [input() for _ in range(n)]\n\nfor i in range(n):\n    row = ''\n    for j in range(m):\n        if grid[i][j] == '*':\n            row += '*'\n            continue\n        cnt = 0\n        for di in (-1, 0, 1):\n            for dj in (-1, 0, 1):\n                if di == 0 and dj == 0:\n                    continue\n                ni, nj = i + di, j + dj\n                # 격자 범위 안에 있고 폭탄인지 확인\n                if 0 <= ni < n and 0 <= nj < m and grid[ni][nj] == '*':\n                    cnt += 1\n        row += str(cnt)\n    print(row)\n",
+    "시간복잡도": "O(N*M) — 각 칸마다 8방향(상수)만 확인하므로 전체는 격자 크기에 비례한다."
   },
   {
     "id": "p03_06_09",
@@ -411,7 +443,11 @@
     ],
     "standard_id": "12정03-06",
     "성취기준명": "다차원 데이터 구조를 활용한 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "이중 for문(또는 중첩 comprehension)으로 각 행의 원소를 순서대로 하나의 리스트에 모으면 된다.",
+    "해설": "행렬을 첫 행부터 순서대로 순회하며 각 행의 원소를 하나의 리스트에 이어 붙이면 평탄화(flatten)된 1차원 리스트가 만들어진다.",
+    "정답_코드": "n, m = map(int, input().split())\nmat = [list(map(int, input().split())) for _ in range(n)]\n\n# 각 행의 원소를 순서대로 하나의 리스트로 모은다\nflat = [v for row in mat for v in row]\n\nprint(' '.join(map(str, flat)))\n",
+    "시간복잡도": "O(N*M) — 모든 원소를 한 번씩 옮긴다."
   },
   {
     "id": "p03_06_10",
@@ -457,6 +493,10 @@
     ],
     "standard_id": "12정03-06",
     "성취기준명": "다차원 데이터 구조를 활용한 프로그램을 작성한다.",
-    "단원": "3. 알고리즘과 프로그래밍"
+    "단원": "3. 알고리즘과 프로그래밍",
+    "힌트": "행 번호가 짝수면 그대로, 홀수면 reversed()로 뒤집어서 이어 붙이면 지그재그 순서가 된다.",
+    "해설": "짝수 번째 행(0, 2, 4...)은 왼쪽에서 오른쪽으로, 홀수 번째 행은 오른쪽에서 왼쪽으로 방문해야 하므로 enumerate()로 행 번호를 확인하며 필요할 때만 reversed()를 적용해 결과 리스트에 이어 붙인다.",
+    "정답_코드": "n, m = map(int, input().split())\nmat = [list(map(int, input().split())) for _ in range(n)]\n\nresult = []\nfor i, row in enumerate(mat):\n    if i % 2 == 0:\n        result.extend(row)              # 짝수 행: 왼쪽 -> 오른쪽\n    else:\n        result.extend(reversed(row))    # 홀수 행: 오른쪽 -> 왼쪽\n\nprint(' '.join(map(str, result)))\n",
+    "시간복잡도": "O(N*M) — 모든 원소를 한 번씩 방문한다."
   }
 ]

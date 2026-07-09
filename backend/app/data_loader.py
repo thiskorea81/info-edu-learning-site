@@ -2,7 +2,7 @@ import json
 from functools import lru_cache
 from typing import Any
 
-from .config import PROBLEMS_DIR, QUESTIONS_DIR, STANDARDS_FILE, USER_QUESTIONS_FILE
+from .config import MATERIALS_DIR, PROBLEMS_DIR, QUESTIONS_DIR, STANDARDS_FILE, USER_QUESTIONS_FILE
 
 
 @lru_cache
@@ -71,6 +71,25 @@ def get_problem(problem_id: str) -> dict[str, Any] | None:
     return load_problems().get(problem_id)
 
 
+@lru_cache
+def load_materials() -> dict[str, dict[str, Any]]:
+    """standard_id -> material dict."""
+    materials: dict[str, dict[str, Any]] = {}
+    for path in sorted(MATERIALS_DIR.glob("*.json")):
+        with open(path, encoding="utf-8") as f:
+            material = json.load(f)
+        materials[material["standard_id"]] = material
+    return materials
+
+
+def list_materials() -> list[dict[str, Any]]:
+    return list(load_materials().values())
+
+
+def get_material(standard_id: str) -> dict[str, Any] | None:
+    return load_materials().get(standard_id)
+
+
 def add_questions(new_questions: list[dict[str, Any]]) -> None:
     existing: list[dict[str, Any]] = []
     if USER_QUESTIONS_FILE.exists():
@@ -87,3 +106,4 @@ def reload_data() -> None:
     standards_by_id.cache_clear()
     load_exams.cache_clear()
     load_problems.cache_clear()
+    load_materials.cache_clear()

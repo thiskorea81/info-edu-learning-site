@@ -13,13 +13,17 @@
    - B 문제 (difficulty: "보통"): 반복문이나 약간의 로직이 필요한 수준
    두 문제 모두 정답이 하나로만 명확히 결정되도록 문제/제약조건을 정확하게 서술하세요 (시간/범위 명시, "가장 큰" 등 표현에는 기준 명시).
 
-4. 각 문제는 `data/problems/basic_problems.json`과 같은 스키마를 정확히 따르세요:
+4. 각 문제는 `data/problems/basic_problems.json`과 같은 스키마를 정확히 따르되, 아래 4개 필드를 추가로 포함하세요 (`data/problems/py_algo_12정03-01.json` 등을 참고):
    - id: "p_daily_<YYYYMMDD>_a", "p_daily_<YYYYMMDD>_b" (오늘 날짜 사용, 기존 id와 겹치지 않게)
    - title, difficulty, time_limit_ms(1500~2000 사이), statement, constraints, input_format, output_format
    - samples: 최소 1개 (input/output/explanation 포함)
    - tests: 최소 6개 (일반적인 경우와 경계값 포함)
+   - 힌트: 정답을 바로 드러내지 않는 1~2문장 힌트
+   - 해설: 어떤 아이디어/접근으로 풀어야 하는지에 대한 설명
+   - 정답_코드: 한글 주석이 포함된, 여러 줄로 읽기 좋게 정리한 파이썬 정답 코드
+   - 시간복잡도: 예) "O(N) — 리스트를 한 번만 순회한다." 형식으로 간단한 근거와 함께 표기
 
-5. 매우 중요 — 절대 손으로 정답을 계산하지 마세요: 각 문제마다 파이썬 정답 코드를 실제로 작성해서 실행하고, 그 출력을 tests의 expected output으로 사용하세요. 두 문제 모두 저장하기 전에 실제로 정답 코드를 각 테스트 입력에 대해 실행해서 저장된 output과 정확히 일치하는지 재검증하세요.
+5. 매우 중요 — 절대 손으로 정답을 계산하지 마세요: 각 문제마다 정답_코드를 실제로 실행해서, 그 출력을 tests의 expected output으로 사용하세요. 두 문제 모두 저장하기 전에 실제로 정답_코드를 각 테스트 입력에 대해 실행해서 저장된 output과 정확히 일치하는지 재검증하세요.
 
 6. 검증까지 끝난 2문제를 `data/problems/daily_<YYYY-MM-DD>.json` 파일 하나에 배열로 저장하세요. (이미 오늘 날짜 파일이 있다면 내용을 확인하고 문제가 없으면 그대로 두고 종료하세요 — 중복 생성하지 마세요.)
 

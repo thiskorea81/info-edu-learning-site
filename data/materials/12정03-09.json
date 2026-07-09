@@ -1,0 +1,26 @@
+{
+  "standard_id": "12정03-09",
+  "title": "실생활 문제 해결 프로그래밍",
+  "성취기준명": "실생활 및 다양한 학문 분야의 문제 해결을 위한 프로그램을 협력적으로 설계ㆍ구현한다.",
+  "단원": "3. 알고리즘과 프로그래밍",
+  "sections": [
+    {
+      "heading": "실생활 문제를 프로그램으로 만드는 과정",
+      "content": "실생활 문제를 해결하는 프로그램을 만들 때는 보통 다음 순서를 거친다.\n1) 문제 분석: 무엇을 입력받아 무엇을 출력해야 하는지 파악한다\n2) 규칙(조건) 파악: 현실의 규칙(요금 기준, 등급 기준 등)을 정리한다\n3) 모델링: 정리한 규칙을 수식과 조건문으로 표현한다\n4) 구현: 파이썬 코드로 옮긴다\n5) 검증: 다양한 입력으로 결과가 맞는지 확인한다\n\n이 과정은 앞서 배운 '분해와 모델링'을 실전 문제에 적용하는 것과 같다."
+    },
+    {
+      "heading": "예시: 택시 요금 계산기 설계하기",
+      "content": "택시 요금이라는 실생활 규칙을 코드로 옮기는 과정을 살펴보자. 먼저 입력(이동 거리)과 출력(요금)을 정하고, '2km까지는 기본요금, 이후는 1km마다 추가요금'이라는 규칙을 함수 하나로 표현했다. 이렇게 규칙을 함수로 분리해두면 나중에 '기본요금이 바뀌었다'는 요구가 와도 함수 내부의 숫자 하나만 고치면 된다.",
+      "code": "# 문제: 택시 요금 계산기\n# 1) 입력/출력 파악: 이동 거리(km)를 입력받아 요금(원)을 출력\n# 2) 규칙 파악: 2km까지 기본 3800원, 이후 1km마다 100원 추가\n# 3) 식으로 표현(모델링)\n\nimport math\n\ndef taxi_fare(distance_km):\n    base = 3800\n    if distance_km <= 2:\n        return base\n    extra_km = math.ceil(distance_km - 2)\n    return base + extra_km * 100\n\nfor d in [1.5, 2.0, 2.3, 5.0]:\n    print(f\"{d}km -> {taxi_fare(d)}원\")\n"
+    },
+    {
+      "heading": "예시: 여러 사람의 데이터를 다루는 문제",
+      "content": "여러 사람의 성적을 관리하는 문제처럼 규모가 커지면, '데이터 수집 → 계산 → 판정 → 출력'처럼 역할을 나누어 각각을 함수로 만드는 것이 좋다. 이렇게 하면 나중에 '평균 대신 총합을 보고 싶다'거나 '등급 기준을 바꾸고 싶다'는 요구가 생겨도 해당 함수만 수정하면 되므로 유지보수가 훨씬 쉬워진다.",
+      "code": "# 문제: 여러 명의 성적을 입력받아 통계 내기\n# 설계: 1) 데이터 수집  2) 평균 계산  3) 등급 판정  4) 결과 출력\n# 이렇게 단계를 나누면 각 단계를 함수로 구현하기 쉬워진다\n\ndef collect_scores(pairs):\n    return {name: score for name, score in pairs}\n\ndef average(scores):\n    return sum(scores.values()) / len(scores)\n\ndef grade_of(avg):\n    if avg >= 90: return \"A\"\n    if avg >= 80: return \"B\"\n    if avg >= 70: return \"C\"\n    return \"D\"\n\ndata = [(\"철수\", 85), (\"영희\", 92), (\"민수\", 78)]\nscores = collect_scores(data)\navg = average(scores)\nprint(f\"평균: {avg:.1f}, 학급 등급: {grade_of(avg)}\")\nfor name, score in scores.items():\n    print(f\"  {name}: {score}점 ({grade_of(score)})\")\n"
+    },
+    {
+      "heading": "정리",
+      "content": "실생활 문제 해결의 핵심은 '현실의 복잡한 규칙을 컴퓨터가 이해할 수 있는 조건문·수식으로 바꾸는 것'이다. 문제를 작은 단계로 나누고, 각 단계를 함수로 구현하고, 실제 값을 넣어 검증하는 습관을 들이면 어떤 실생활 문제를 만나도 차근차근 프로그램으로 옮길 수 있다."
+    }
+  ]
+}
