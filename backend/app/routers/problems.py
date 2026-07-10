@@ -14,6 +14,8 @@ router = APIRouter(prefix="/api/problems", tags=["problems"])
 
 _DIFFICULTY_LETTER = {"쉬움": "A", "보통": "B", "어려움": "C"}
 
+TYPE_ORDER = ["A", "B", "C", "D", "E", "F", "G"]
+
 
 def _letter(difficulty: str | None) -> str:
     return _DIFFICULTY_LETTER.get(difficulty or "", "?")
@@ -25,6 +27,9 @@ def _category_of(problem: dict[str, Any]) -> str:
         return "basic"
     if source.startswith("daily_"):
         return "daily"
+    유형 = problem.get("유형")
+    if 유형 in TYPE_ORDER:
+        return f"type_{유형}"
     return problem.get("standard_id") or "기타"
 
 
@@ -64,6 +69,9 @@ def list_categories():
             return {"key": "basic", "label": "기본 예제", "count": counts[key]}
         if key == "daily":
             return {"key": "daily", "label": "일일 문제 (매일 자동 생성)", "count": counts[key]}
+        if key.startswith("type_"):
+            letter = key.removeprefix("type_")
+            return {"key": key, "label": f"{letter}형 문제", "count": counts[key]}
         std = standards_index.get(key, {})
         return {
             "key": key,
@@ -72,8 +80,11 @@ def list_categories():
             "count": counts[key],
         }
 
-    standard_keys = sorted(k for k in order if k not in ("basic", "daily"))
-    ordered_keys = [k for k in ("basic", "daily") if k in counts] + standard_keys
+    standard_keys = sorted(
+        k for k in order if k not in ("basic", "daily") and not k.startswith("type_")
+    )
+    type_keys = [f"type_{letter}" for letter in TYPE_ORDER if f"type_{letter}" in counts]
+    ordered_keys = [k for k in ("basic", "daily") if k in counts] + standard_keys + type_keys
     return [build(k) for k in ordered_keys]
 
 

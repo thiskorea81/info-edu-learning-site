@@ -1,0 +1,50 @@
+[
+  {
+    "id": "p_type_a_temp_range",
+    "유형": "A",
+    "title": "최고 기온과 최저 기온의 차",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "N일 동안 측정한 기온이 주어진다. 측정된 기온 중 최고 기온과 최저 기온의 차이를 출력하시오.",
+    "constraints": "1 ≤ N ≤ 100\n각 기온은 -50 이상 50 이하의 정수이다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 기온 N개가 공백으로 구분되어 주어진다.",
+    "output_format": "최고 기온과 최저 기온의 차이(정수 하나)를 출력한다.",
+    "samples": [
+      {
+        "input": "5\n3 -2 10 7 0\n",
+        "output": "12\n",
+        "explanation": "최고 기온은 10, 최저 기온은 -2이므로 차이는 10-(-2)=12이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n3 -2 10 7 0\n",
+        "output": "12\n"
+      },
+      {
+        "input": "1\n5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\n-50 50 0\n",
+        "output": "100\n"
+      },
+      {
+        "input": "4\n5 5 5 5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2\n-1 -10\n",
+        "output": "9\n"
+      },
+      {
+        "input": "6\n1 2 3 4 5 6\n",
+        "output": "5\n"
+      }
+    ],
+    "힌트": "파이썬 내장 함수 max()와 min()을 이용하면 편리하다.",
+    "해설": "모든 기온을 리스트에 저장한 뒤 최댓값에서 최솟값을 빼면 답이 된다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    temps = list(map(int, data[1:1 + n]))\n    print(max(temps) - min(temps))  # 최고 기온 - 최저 기온\n\nsolve()\n",
+    "시간복잡도": "O(N) — 리스트를 한 번 순회하며 최댓값과 최솟값을 구한다."
+  }
+]

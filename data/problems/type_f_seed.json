@@ -1,0 +1,50 @@
+[
+  {
+    "id": "p_type_f_union_find",
+    "유형": "F",
+    "title": "친구 네트워크",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N명의 사람이 있고, M개의 친구 관계가 주어진다(친구 관계로 직접 연결된 두 사람뿐 아니라, 친구의 친구도 같은 친구 그룹으로 본다). 이후 Q개의 질문이 주어질 때, 각 질문에서 두 사람이 같은 친구 그룹에 속하는지 판단하시오.",
+    "constraints": "1 ≤ N ≤ 100000\n0 ≤ M ≤ 100000\n1 ≤ Q ≤ 100000\n사람은 1부터 N까지 번호가 매겨진다.",
+    "input_format": "첫째 줄에 N과 M. 이후 M개의 줄에 걸쳐 친구 관계 a b가 주어진다. 그다음 줄에 Q, 이후 Q개의 줄에 걸쳐 질문 a b가 주어진다.",
+    "output_format": "각 질문에 대해 같은 그룹이면 YES, 아니면 NO를 한 줄씩 출력한다.",
+    "samples": [
+      {
+        "input": "5 3\n1 2\n2 3\n4 5\n2\n1 3\n1 4\n",
+        "output": "YES\nNO\n",
+        "explanation": "1-2-3은 하나의 친구 그룹이고 4-5는 또 다른 친구 그룹이므로, 1과 3은 같은 그룹(YES)이고 1과 4는 다른 그룹(NO)이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5 3\n1 2\n2 3\n4 5\n2\n1 3\n1 4\n",
+        "output": "YES\nNO\n"
+      },
+      {
+        "input": "3 0\n2\n1 2\n1 1\n",
+        "output": "NO\nYES\n"
+      },
+      {
+        "input": "4 2\n1 2\n3 4\n1\n2 3\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "6 5\n1 2\n2 3\n3 4\n4 5\n5 6\n1\n1 6\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "2 1\n1 2\n1\n1 2\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "5 4\n1 2\n2 3\n3 4\n4 5\n3\n1 5\n1 3\n2 5\n",
+        "output": "YES\nYES\nYES\n"
+      }
+    ],
+    "힌트": "유니온-파인드(Union-Find, 서로소 집합) 자료구조를 사용하면 그룹을 효율적으로 관리할 수 있다.",
+    "해설": "친구 관계를 간선으로 하는 그래프에서 연결된 사람들을 하나의 집합으로 묶는 문제이다. 유니온-파인드 자료구조로 각 친구 관계마다 두 사람을 합치고(union), 질문마다 두 사람의 대표(루트)가 같은지 확인(find)하면 효율적으로 답할 수 있다.",
+    "정답_코드": "def solve():\n    import sys\n\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); m = int(data[idx + 1]); idx += 2\n\n    parent = list(range(n + 1))\n\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]  # 경로 압축\n            x = parent[x]\n        return x\n\n    def union(a, b):\n        ra, rb = find(a), find(b)\n        if ra != rb:\n            parent[ra] = rb\n\n    for _ in range(m):\n        a, b = int(data[idx]), int(data[idx + 1])\n        idx += 2\n        union(a, b)\n\n    q = int(data[idx]); idx += 1\n    out = []\n    for _ in range(q):\n        a, b = int(data[idx]), int(data[idx + 1])\n        idx += 2\n        out.append(\"YES\" if find(a) == find(b) else \"NO\")\n    print(\"\\n\".join(out))\n\nsolve()\n",
+    "시간복잡도": "O((N+M+Q)·α(N)) — 경로 압축을 적용한 유니온-파인드를 사용하면 각 연산이 거의 상수 시간에 처리된다(α는 애커만 함수의 역함수)."
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "p_type_d_coin_change",
+    "유형": "D",
+    "title": "동전 교환 최소 개수",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "N가지 종류의 동전이 있고 각 동전은 원하는 개수만큼 사용할 수 있다. 금액 K를 정확히 만들기 위해 필요한 동전의 최소 개수를 구하시오. K를 정확히 만들 수 없다면 -1을 출력한다.",
+    "constraints": "1 ≤ N ≤ 20\n0 ≤ K ≤ 10000\n각 동전의 액면은 1 이상 10000 이하의 서로 다른 정수이다.",
+    "input_format": "첫째 줄에 N과 K, 둘째 줄에 동전의 액면 N개가 공백으로 구분되어 주어진다.",
+    "output_format": "필요한 최소 동전 개수를 출력한다. 만들 수 없으면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "3 11\n1 2 5\n",
+        "output": "3\n",
+        "explanation": "5+5+1=11이므로 동전 3개로 만들 수 있고, 이보다 적게는 만들 수 없다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3 11\n1 2 5\n",
+        "output": "3\n"
+      },
+      {
+        "input": "1 7\n3\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "2 3\n2 4\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "3 0\n1 2 5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "1 1\n1\n",
+        "output": "1\n"
+      },
+      {
+        "input": "4 15\n1 5 10 25\n",
+        "output": "2\n"
+      }
+    ],
+    "힌트": "dp[i]를 금액 i를 만드는 데 필요한 최소 동전 개수로 정의하고 점화식을 세워 보자.",
+    "해설": "dp[0]=0에서 시작해 dp[i] = min(dp[i-coin]+1) (i-coin ≥ 0인 모든 coin에 대해)로 점화식을 세우는 동적 계획법 문제이다. dp[K]가 갱신되지 않았다면(무한대로 남아 있다면) K를 만들 수 없는 경우이므로 -1을 출력한다.",
+    "정답_코드": "def solve():\n    import sys\n\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); k = int(data[idx + 1]); idx += 2\n    coins = list(map(int, data[idx:idx + n]))\n\n    INF = float(\"inf\")\n    dp = [INF] * (k + 1)\n    dp[0] = 0  # 금액 0을 만드는 데 필요한 동전은 0개\n    for amount in range(1, k + 1):\n        for c in coins:\n            if c <= amount and dp[amount - c] + 1 < dp[amount]:\n                dp[amount] = dp[amount - c] + 1\n\n    print(dp[k] if dp[k] != INF else -1)\n\nsolve()\n",
+    "시간복잡도": "O(N·K) — 금액 1부터 K까지 각각에 대해 N가지 동전을 시도한다."
+  }
+]

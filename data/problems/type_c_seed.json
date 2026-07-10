@@ -1,0 +1,50 @@
+[
+  {
+    "id": "p_type_c_meeting_room",
+    "유형": "C",
+    "title": "회의실 배정",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "하나의 회의실에서 N개의 회의를 진행하려 한다. 각 회의 i는 시작 시각 Sᵢ와 끝나는 시각 Eᵢ가 주어지며, 한 회의가 끝나는 시각과 동시에 다음 회의를 시작할 수 있다. 회의실은 한 번에 하나의 회의만 진행할 수 있을 때, 회의실을 최대한 많이 사용하려면 몇 개의 회의를 선택할 수 있는지 출력하시오.",
+    "constraints": "1 ≤ N ≤ 1000\n0 ≤ Sᵢ < Eᵢ ≤ 100000",
+    "input_format": "첫째 줄에 N, 이후 N개의 줄에 걸쳐 각 회의의 시작 시각과 끝나는 시각이 공백으로 구분되어 주어진다.",
+    "output_format": "진행할 수 있는 최대 회의 수를 출력한다.",
+    "samples": [
+      {
+        "input": "3\n1 4\n3 5\n0 6\n",
+        "output": "1\n",
+        "explanation": "세 회의가 서로 겹치므로 그중 하나만 선택할 수 있다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3\n1 4\n3 5\n0 6\n",
+        "output": "1\n"
+      },
+      {
+        "input": "1\n1 2\n",
+        "output": "1\n"
+      },
+      {
+        "input": "4\n1 2\n2 3\n3 4\n1 4\n",
+        "output": "3\n"
+      },
+      {
+        "input": "5\n1 3\n2 4\n3 5\n0 6\n5 7\n",
+        "output": "3\n"
+      },
+      {
+        "input": "2\n1 2\n2 3\n",
+        "output": "2\n"
+      },
+      {
+        "input": "3\n0 1\n1 2\n2 3\n",
+        "output": "3\n"
+      }
+    ],
+    "힌트": "끝나는 시각이 빠른 회의부터 먼저 고려하면 이후 남은 시간을 최대로 활용할 수 있다.",
+    "해설": "대표적인 그리디(탐욕) 알고리즘 문제인 활동 선택 문제(activity selection)이다. 회의를 끝나는 시각 기준으로 정렬한 뒤, 마지막으로 선택한 회의의 끝나는 시각보다 시작 시각이 크거나 같은 회의를 순서대로 선택하면 최대 개수를 보장할 수 있다.",
+    "정답_코드": "def solve():\n    import sys\n\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    meetings = []\n    for _ in range(n):\n        s, e = int(data[idx]), int(data[idx + 1])\n        idx += 2\n        meetings.append((e, s))  # 끝나는 시각 기준으로 정렬하기 위해 (e, s) 순서로 저장\n\n    meetings.sort()\n\n    count = 0\n    last_end = -1\n    for e, s in meetings:\n        if s >= last_end:  # 이전에 선택한 회의와 겹치지 않으면 선택\n            count += 1\n            last_end = e\n\n    print(count)\n\nsolve()\n",
+    "시간복잡도": "O(N log N) — 끝나는 시각 기준으로 정렬한 뒤 한 번만 순회한다."
+  }
+]

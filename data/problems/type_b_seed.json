@@ -1,0 +1,50 @@
+[
+  {
+    "id": "p_type_b_most_frequent_char",
+    "유형": "B",
+    "title": "가장 많이 나온 문자",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "소문자 알파벳으로만 이루어진 문자열 S가 주어진다. S에서 가장 많이 등장한 문자를 출력하시오. 가장 많이 등장한 문자가 여러 개이면 그중 알파벳 순으로 가장 앞선 문자를 출력한다.",
+    "constraints": "1 ≤ |S| ≤ 1000\nS는 소문자 알파벳으로만 이루어진다.",
+    "input_format": "첫째 줄에 문자열 S가 주어진다.",
+    "output_format": "가장 많이 등장한 문자 하나를 출력한다.",
+    "samples": [
+      {
+        "input": "aabbbcc\n",
+        "output": "b\n",
+        "explanation": "a는 2번, b는 3번, c는 2번 등장하므로 가장 많이 등장한 문자는 b이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "aabbbcc\n",
+        "output": "b\n"
+      },
+      {
+        "input": "z\n",
+        "output": "z\n"
+      },
+      {
+        "input": "abcabc\n",
+        "output": "a\n"
+      },
+      {
+        "input": "aaaaaa\n",
+        "output": "a\n"
+      },
+      {
+        "input": "xyzxyzx\n",
+        "output": "x\n"
+      },
+      {
+        "input": "ba\n",
+        "output": "a\n"
+      }
+    ],
+    "힌트": "collections.Counter를 사용하면 각 문자의 등장 횟수를 쉽게 셀 수 있다.",
+    "해설": "각 문자의 등장 횟수를 센 뒤, 최댓값과 같은 횟수를 가진 문자들 중 알파벳 순으로 가장 앞선 문자를 찾으면 된다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import Counter\n\n    s = sys.stdin.readline().strip()\n    counts = Counter(s)\n    best = max(counts.values())\n    # 등장 횟수가 가장 많은 문자들 중 알파벳 순으로 가장 앞선 문자를 고른다.\n    candidates = sorted(ch for ch, c in counts.items() if c == best)\n    print(candidates[0])\n\nsolve()\n",
+    "시간복잡도": "O(|S| log|S|) — 문자별 등장 횟수를 센 뒤(O(|S|)) 동률 후보를 정렬한다(문자 종류가 최대 26개이므로 사실상 O(|S|)에 가깝다)."
+  }
+]
