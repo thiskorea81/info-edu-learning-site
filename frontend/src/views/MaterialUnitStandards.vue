@@ -10,6 +10,7 @@ const props = defineProps({
 
 const allSubjects = ref([])
 const materials = ref([])
+const unitReport = ref(null)
 const loading = ref(true)
 
 const materialsById = computed(() => new Map(materials.value.map((m) => [m.standard_id, m])))
@@ -20,12 +21,14 @@ const currentUnit = computed(() => {
 
 async function load() {
   loading.value = true
-  const [{ data: subjects }, { data: mats }] = await Promise.all([
+  const [{ data: subjects }, { data: mats }, { data: reports }] = await Promise.all([
     api.get('/api/subjects'),
     api.get('/api/materials'),
+    api.get('/api/unit-reports', { params: { 교과: props.subject, 단원: props.unit } }),
   ])
   allSubjects.value = subjects
   materials.value = mats
+  unitReport.value = reports[0] ?? null
   loading.value = false
 }
 
@@ -58,6 +61,16 @@ watch(() => [props.subject, props.unit], load)
       </div>
     </template>
   </div>
+
+  <section v-if="unitReport" class="report-box">
+    <h2>📋 심화 탐구 보고서 — {{ unitReport.제목 }}</h2>
+    <p class="report-content">{{ unitReport.안내 }}</p>
+    <p class="report-label">탐구 질문</p>
+    <ol class="report-questions">
+      <li v-for="(q, i) in unitReport.탐구질문" :key="i">{{ q }}</li>
+    </ol>
+    <p class="report-format"><strong>제출 형식</strong> {{ unitReport.제출형식 }}</p>
+  </section>
 </template>
 
 <style scoped>
@@ -112,5 +125,43 @@ watch(() => [props.subject, props.unit], load)
 .std-name {
   font-size: 13px;
   color: var(--text-dim);
+}
+
+.report-box {
+  margin-top: 32px;
+  padding: 20px;
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  background: var(--accent-bg);
+}
+
+.report-box h2 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.report-content {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.report-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.report-questions {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  line-height: 1.8;
+}
+
+.report-format {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
 }
 </style>

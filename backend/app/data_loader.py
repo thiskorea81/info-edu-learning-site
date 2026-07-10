@@ -2,7 +2,14 @@ import json
 from functools import lru_cache
 from typing import Any
 
-from .config import MATERIALS_DIR, PROBLEMS_DIR, QUESTIONS_DIR, STANDARDS_FILE, USER_QUESTIONS_FILE
+from .config import (
+    MATERIALS_DIR,
+    PROBLEMS_DIR,
+    QUESTIONS_DIR,
+    STANDARDS_FILE,
+    UNIT_REPORTS_FILE,
+    USER_QUESTIONS_FILE,
+)
 
 
 @lru_cache
@@ -90,6 +97,21 @@ def get_material(standard_id: str) -> dict[str, Any] | None:
     return load_materials().get(standard_id)
 
 
+@lru_cache
+def load_unit_reports() -> list[dict[str, Any]]:
+    if not UNIT_REPORTS_FILE.exists():
+        return []
+    with open(UNIT_REPORTS_FILE, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def get_unit_report(교과: str, 단원: str) -> dict[str, Any] | None:
+    for report in load_unit_reports():
+        if report["교과"] == 교과 and report["단원"] == 단원:
+            return report
+    return None
+
+
 def add_questions(new_questions: list[dict[str, Any]]) -> None:
     existing: list[dict[str, Any]] = []
     if USER_QUESTIONS_FILE.exists():
@@ -107,3 +129,4 @@ def reload_data() -> None:
     load_exams.cache_clear()
     load_problems.cache_clear()
     load_materials.cache_clear()
+    load_unit_reports.cache_clear()

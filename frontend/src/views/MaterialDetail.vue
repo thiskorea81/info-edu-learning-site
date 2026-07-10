@@ -14,6 +14,8 @@ const practiceCode = reactive({})
 
 const panelOpen = ref(false)
 const activeIndex = ref(null)
+const hasProblems = ref(false)
+const hasQuestions = ref(false)
 
 onMounted(async () => {
   const { data } = await api.get(`/api/materials/${props.standardId}`)
@@ -24,6 +26,13 @@ onMounted(async () => {
   const first = data.sections.findIndex((s) => s.code)
   if (first !== -1) activeIndex.value = first
   loading.value = false
+
+  const [{ data: problems }, { data: questions }] = await Promise.all([
+    api.get('/api/problems', { params: { standard_id: props.standardId } }),
+    api.get('/api/questions', { params: { standard_id: props.standardId, include_similar: true } }),
+  ])
+  hasProblems.value = problems.length > 0
+  hasQuestions.value = questions.length > 0
 })
 
 const codeSections = computed(() =>
@@ -75,9 +84,18 @@ function blockCopy(e) {
       </section>
     </template>
 
-    <RouterLink :to="`/problems/category/${material.standard_id}`" class="practice-link">
-      관련 코딩테스트 문제 풀기 →
-    </RouterLink>
+    <div class="cta-row">
+      <RouterLink
+        v-if="hasProblems"
+        :to="`/problems/category/${material.standard_id}`"
+        class="practice-link"
+      >
+        관련 코딩테스트 문제 풀기 →
+      </RouterLink>
+      <RouterLink v-if="hasQuestions" :to="`/practice/${material.standard_id}`" class="practice-link">
+        관련 평가 문제 풀기 →
+      </RouterLink>
+    </div>
 
     <button
       v-if="codeSections.length && !panelOpen"
@@ -246,6 +264,12 @@ function blockCopy(e) {
   box-sizing: border-box;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .practice-link {

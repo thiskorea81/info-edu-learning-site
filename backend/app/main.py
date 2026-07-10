@@ -2,7 +2,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .database import Base, engine
-from .routers import attempts, code_runner, exams, materials, problems, stats, subjects
+from .routers import (
+    attempts,
+    code_runner,
+    exams,
+    materials,
+    problems,
+    stats,
+    subjects,
+    unit_reports,
+)
 
 Base.metadata.create_all(bind=engine)
 
@@ -22,6 +31,7 @@ app.include_router(code_runner.router)
 app.include_router(subjects.router)
 app.include_router(problems.router)
 app.include_router(materials.router)
+app.include_router(unit_reports.router)
 
 
 @app.get("/api/health")

@@ -6,4 +6,5 @@ data/study.db
 frontend/node_modules/
 frontend/dist/
 logs/
+textbook/
 
