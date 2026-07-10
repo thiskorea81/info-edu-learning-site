@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
 import CodeEditor from '../components/CodeEditor.vue'
+import { parsePipeTable } from '../utils/markdownTable'
 
 const props = defineProps({
   standardId: { type: String, required: true },
@@ -53,6 +54,10 @@ function clearPractice(i) {
 function blockCopy(e) {
   e.preventDefault()
 }
+
+function sectionTable(s) {
+  return parsePipeTable(s.표)
+}
 </script>
 
 <template>
@@ -73,6 +78,18 @@ function blockCopy(e) {
           <span v-if="s.advanced" class="advanced-badge">심화</span>
         </h2>
         <p class="content">{{ s.content }}</p>
+        <table v-if="sectionTable(s)" class="section-table">
+          <thead>
+            <tr>
+              <th v-for="(h, hi) in sectionTable(s).headers" :key="hi">{{ h }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, ri) in sectionTable(s).rows" :key="ri">
+              <td v-for="(cell, ci) in row" :key="ci">{{ cell }}</td>
+            </tr>
+          </tbody>
+        </table>
         <div v-if="s.image" class="diagram" v-html="s.image"></div>
         <div v-if="s.code" class="code-block-wrap">
           <div class="col-label-row">
