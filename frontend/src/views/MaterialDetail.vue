@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
 import CodeEditor from '../components/CodeEditor.vue'
@@ -12,14 +12,30 @@ const material = ref(null)
 const loading = ref(true)
 const practiceCode = reactive({})
 
+const panelOpen = ref(false)
+const activeIndex = ref(null)
+
 onMounted(async () => {
   const { data } = await api.get(`/api/materials/${props.standardId}`)
   material.value = data
   data.sections.forEach((s, i) => {
     if (s.code) practiceCode[i] = ''
   })
+  const first = data.sections.findIndex((s) => s.code)
+  if (first !== -1) activeIndex.value = first
   loading.value = false
 })
+
+const codeSections = computed(() =>
+  (material.value?.sections ?? [])
+    .map((s, i) => ({ i, heading: s.heading }))
+    .filter((s) => material.value.sections[s.i].code)
+)
+
+function openPractice(i) {
+  activeIndex.value = i
+  panelOpen.value = true
+}
 
 function clearPractice(i) {
   practiceCode[i] = ''
@@ -49,22 +65,12 @@ function blockCopy(e) {
         </h2>
         <p class="content">{{ s.content }}</p>
         <div v-if="s.image" class="diagram" v-html="s.image"></div>
-        <div v-if="s.code" class="code-pair">
-          <div class="code-col">
+        <div v-if="s.code" class="code-block-wrap">
+          <div class="col-label-row">
             <span class="col-label">📖 예제 코드 (읽기 전용)</span>
-            <pre class="code-block readonly" @copy="blockCopy" @contextmenu.prevent><code>{{ s.code }}</code></pre>
+            <button class="try-btn" @click="openPractice(i)">✏️ 직접 타이핑해보기</button>
           </div>
-          <div class="code-col">
-            <div class="col-label-row">
-              <span class="col-label">✏️ 직접 타이핑해보기</span>
-              <button v-if="practiceCode[i]" class="clear-btn" @click="clearPractice(i)">지우기</button>
-            </div>
-            <CodeEditor
-              v-model:code="practiceCode[i]"
-              no-paste
-              placeholder="왼쪽 예제 코드를 보고 한 줄씩 직접 입력해보세요"
-            />
-          </div>
+          <pre class="code-block readonly" @copy="blockCopy" @contextmenu.prevent><code>{{ s.code }}</code></pre>
         </div>
       </section>
     </template>
@@ -72,6 +78,35 @@ function blockCopy(e) {
     <RouterLink :to="`/problems/category/${material.standard_id}`" class="practice-link">
       관련 코딩테스트 문제 풀기 →
     </RouterLink>
+
+    <button
+      v-if="codeSections.length && !panelOpen"
+      class="fab"
+      @click="panelOpen = true"
+    >
+      ✏️ 직접 타이핑해보기
+    </button>
+
+    <div v-if="panelOpen" class="panel-backdrop" @click="panelOpen = false"></div>
+    <aside v-if="panelOpen" class="practice-panel">
+      <div class="panel-header">
+        <select v-model.number="activeIndex" class="panel-select">
+          <option v-for="cs in codeSections" :key="cs.i" :value="cs.i">{{ cs.heading }}</option>
+        </select>
+        <button class="panel-close" @click="panelOpen = false">✕</button>
+      </div>
+      <div v-if="activeIndex !== null" class="panel-body">
+        <div class="col-label-row">
+          <span class="col-label">✏️ 직접 타이핑해보기</span>
+          <button v-if="practiceCode[activeIndex]" class="clear-btn" @click="clearPractice(activeIndex)">지우기</button>
+        </div>
+        <CodeEditor
+          v-model:code="practiceCode[activeIndex]"
+          no-paste
+          placeholder="왼쪽 본문의 예제 코드를 보고 한 줄씩 직접 입력해보세요"
+        />
+      </div>
+    </aside>
   </template>
 </template>
 
@@ -152,27 +187,15 @@ function blockCopy(e) {
   height: auto;
 }
 
-.code-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+.code-block-wrap {
   margin: 12px 0;
-}
-
-@media (max-width: 720px) {
-  .code-pair {
-    grid-template-columns: 1fr;
-  }
-}
-
-.code-col {
-  min-width: 0;
 }
 
 .col-label-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 6px;
 }
 
 .col-label {
@@ -180,7 +203,21 @@ function blockCopy(e) {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-dim);
-  margin-bottom: 6px;
+}
+
+.try-btn {
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.try-btn:hover {
+  background: var(--accent-border);
 }
 
 .clear-btn {
@@ -206,7 +243,6 @@ function blockCopy(e) {
   overflow-x: auto;
   font-size: 14px;
   line-height: 1.5;
-  height: 100%;
   box-sizing: border-box;
   user-select: none;
   -webkit-user-select: none;
@@ -221,5 +257,105 @@ function blockCopy(e) {
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
+}
+
+.fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 40;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.fab:hover {
+  filter: brightness(1.08);
+}
+
+.panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 45;
+}
+
+.practice-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  max-width: 92vw;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.2);
+  z-index: 46;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  animation: slide-in 0.18s ease-out;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 560px) {
+  .practice-panel {
+    width: 100vw;
+    max-width: 100vw;
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.panel-select {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text-h);
+  font-size: 13px;
+}
+
+.panel-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.panel-close:hover {
+  color: var(--wrong);
+}
+
+.panel-body {
+  flex: 1;
 }
 </style>
