@@ -53,39 +53,61 @@ def list_problems(
     return [_public(p) for p in problems]
 
 
-@router.get("/categories")
-def list_categories():
-    standards_index = data_loader.standards_by_id()
+def _counts_by_category() -> dict[str, int]:
     counts: dict[str, int] = {}
-    order: list[str] = []
     for p in data_loader.list_problems():
         key = _category_of(p)
-        if key not in counts:
-            order.append(key)
         counts[key] = counts.get(key, 0) + 1
+    return counts
 
-    def build(key: str) -> dict[str, Any]:
-        if key == "basic":
-            return {"key": "basic", "label": "기본 예제", "count": counts[key]}
-        if key == "daily":
-            return {"key": "daily", "label": "일일 문제 (매일 자동 생성)", "count": counts[key]}
-        if key.startswith("type_"):
-            letter = key.removeprefix("type_")
-            return {"key": key, "label": f"{letter}형 문제", "count": counts[key]}
-        std = standards_index.get(key, {})
-        return {
-            "key": key,
-            "label": f"[{key}] {std.get('단원', '')}",
-            "성취기준명": std.get("성취기준명", ""),
-            "count": counts[key],
-        }
 
-    standard_keys = sorted(
-        k for k in order if k not in ("basic", "daily") and not k.startswith("type_")
-    )
+def _standard_keys(counts: dict[str, int]) -> list[str]:
+    return sorted(k for k in counts if k not in ("basic", "daily") and not k.startswith("type_"))
+
+
+def _standard_category(key: str, counts: dict[str, int], standards_index: dict[str, Any]) -> dict[str, Any]:
+    std = standards_index.get(key, {})
+    return {
+        "key": key,
+        "label": f"[{key}] {std.get('단원', '')}",
+        "성취기준명": std.get("성취기준명", ""),
+        "count": counts[key],
+    }
+
+
+@router.get("/categories")
+def list_categories():
+    counts = _counts_by_category()
+    standard_keys = _standard_keys(counts)
     type_keys = [f"type_{letter}" for letter in TYPE_ORDER if f"type_{letter}" in counts]
-    ordered_keys = [k for k in ("basic", "daily") if k in counts] + standard_keys + type_keys
-    return [build(k) for k in ordered_keys]
+
+    result: list[dict[str, Any]] = []
+    if "basic" in counts:
+        result.append({"key": "basic", "label": "기본 예제", "count": counts["basic"]})
+    if "daily" in counts:
+        result.append(
+            {"key": "daily", "label": "일일 문제 (매일 자동 생성)", "count": counts["daily"]}
+        )
+    if standard_keys:
+        result.append(
+            {
+                "key": "textbook",
+                "label": "교과서문제",
+                "count": sum(counts[k] for k in standard_keys),
+                "folder": True,
+            }
+        )
+    for key in type_keys:
+        letter = key.removeprefix("type_")
+        result.append({"key": key, "label": f"{letter}형 문제", "count": counts[key]})
+    return result
+
+
+@router.get("/categories/textbook")
+def list_textbook_categories():
+    counts = _counts_by_category()
+    standards_index = data_loader.standards_by_id()
+    return [_standard_category(k, counts, standards_index) for k in _standard_keys(counts)]
 
 
 @router.get("/{problem_id}")

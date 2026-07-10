@@ -11,10 +11,19 @@ const category = ref(null)
 const problems = ref([])
 const loading = ref(true)
 
+const isDaily = computed(() => props.categoryKey === 'daily')
+const isStandardCategory = computed(
+  () => !['basic', 'daily'].includes(props.categoryKey) && !props.categoryKey.startsWith('type_')
+)
+const backTo = computed(() => (isStandardCategory.value ? '/problems/textbook' : '/problems'))
+
 async function load() {
   loading.value = true
+  const catsUrl = isStandardCategory.value
+    ? '/api/problems/categories/textbook'
+    : '/api/problems/categories'
   const [{ data: cats }, { data: probs }] = await Promise.all([
-    api.get('/api/problems/categories'),
+    api.get(catsUrl),
     api.get('/api/problems', { params: { category: props.categoryKey } }),
   ])
   category.value = cats.find((c) => c.key === props.categoryKey) ?? null
@@ -23,11 +32,6 @@ async function load() {
 }
 
 onMounted(load)
-
-const isDaily = computed(() => props.categoryKey === 'daily')
-const isStandardCategory = computed(
-  () => props.categoryKey !== 'basic' && props.categoryKey !== 'daily'
-)
 
 // group daily problems by year-month, newest month first, newest problem first within month
 const monthGroups = computed(() => {
@@ -55,7 +59,7 @@ function difficultyClass(letter) {
 </script>
 
 <template>
-  <RouterLink to="/problems" class="back">← 코딩테스트</RouterLink>
+  <RouterLink :to="backTo" class="back">{{ isStandardCategory ? '← 교과서문제' : '← 코딩테스트' }}</RouterLink>
   <h1>{{ category?.label ?? '' }}</h1>
   <p v-if="category?.성취기준명" class="hint">{{ category.성취기준명 }}</p>
   <RouterLink v-if="isStandardCategory" :to="`/materials/${categoryKey}`" class="theory-link">
