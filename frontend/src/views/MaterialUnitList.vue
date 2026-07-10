@@ -6,19 +6,28 @@ import api from '../api'
 const props = defineProps({ subject: { type: String, required: true } })
 
 const allSubjects = ref([])
+const materialIds = ref(new Set())
 const loading = ref(true)
 
 const current = computed(() => allSubjects.value.find((s) => s.교과 === props.subject))
 
+function materialCount(unit) {
+  return unit.standards.filter((s) => materialIds.value.has(s.standard_id)).length
+}
+
 onMounted(async () => {
-  const { data } = await api.get('/api/subjects')
-  allSubjects.value = data
+  const [{ data: subjects }, { data: materials }] = await Promise.all([
+    api.get('/api/subjects'),
+    api.get('/api/materials'),
+  ])
+  allSubjects.value = subjects
+  materialIds.value = new Set(materials.map((m) => m.standard_id))
   loading.value = false
 })
 </script>
 
 <template>
-  <RouterLink to="/" class="back">← 과목 목록</RouterLink>
+  <RouterLink to="/materials" class="back">← 학습자료</RouterLink>
   <h1>{{ subject }}</h1>
 
   <p v-if="loading">불러오는 중…</p>
@@ -28,13 +37,13 @@ onMounted(async () => {
     <RouterLink
       v-for="u in current.units"
       :key="u.단원"
-      :to="{ name: 'unit-questions', params: { subject, unit: u.단원 } }"
+      :to="{ name: 'material-unit-standards', params: { subject, unit: u.단원 } }"
       class="card"
-      :class="{ disabled: u.question_count === 0 }"
+      :class="{ disabled: materialCount(u) === 0 }"
     >
       <h2>{{ u.단원 }}</h2>
       <p class="meta">
-        성취기준 {{ u.standards.length }}개 · 문제 {{ u.question_count }}개
+        성취기준 {{ u.standards.length }}개 · 학습자료 {{ materialCount(u) }}개
       </p>
     </RouterLink>
   </div>

@@ -10,7 +10,9 @@ import ProblemList from '../views/ProblemList.vue'
 import ProblemCategory from '../views/ProblemCategory.vue'
 import ProblemSolve from '../views/ProblemSolve.vue'
 import AddQuestion from '../views/AddQuestion.vue'
-import MaterialList from '../views/MaterialList.vue'
+import MaterialSubjectList from '../views/MaterialSubjectList.vue'
+import MaterialUnitList from '../views/MaterialUnitList.vue'
+import MaterialUnitStandards from '../views/MaterialUnitStandards.vue'
 import MaterialDetail from '../views/MaterialDetail.vue'
 
 const router = createRouter({
@@ -42,7 +44,19 @@ const router = createRouter({
     },
     { path: '/problems/:id', name: 'problem-solve', component: ProblemSolve, props: true },
     { path: '/add-question', name: 'add-question', component: AddQuestion },
-    { path: '/materials', name: 'materials', component: MaterialList },
+    { path: '/materials', name: 'materials', component: MaterialSubjectList },
+    {
+      path: '/materials/subjects/:subject',
+      name: 'material-subject-units',
+      component: MaterialUnitList,
+      props: true,
+    },
+    {
+      path: '/materials/subjects/:subject/units/:unit',
+      name: 'material-unit-standards',
+      component: MaterialUnitStandards,
+      props: true,
+    },
     {
       path: '/materials/:standardId',
       name: 'material-detail',

@@ -3,30 +3,30 @@ import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
 
-const materials = ref([])
+const subjects = ref([])
 const loading = ref(true)
 
 onMounted(async () => {
-  const { data } = await api.get('/api/materials')
-  materials.value = data
+  const { data } = await api.get('/api/subjects')
+  subjects.value = data
   loading.value = false
 })
 </script>
 
 <template>
   <h1>학습자료</h1>
-  <p class="hint">알고리즘과 프로그래밍의 핵심 개념을 교과서처럼 차근차근 읽고, 실제 코드로 확인해보세요.</p>
+  <p class="hint">교과서처럼 개념을 차근차근 설명합니다. 과목을 선택해 단원별로 살펴보세요.</p>
 
   <p v-if="loading">불러오는 중…</p>
   <div v-else class="grid">
     <RouterLink
-      v-for="m in materials"
-      :key="m.standard_id"
-      :to="`/materials/${m.standard_id}`"
+      v-for="s in subjects"
+      :key="s.교과"
+      :to="{ name: 'material-subject-units', params: { subject: s.교과 } }"
       class="card"
     >
-      <h2>{{ m.title }}</h2>
-      <p class="std-name">[{{ m.standard_id }}] {{ m.성취기준명 }}</p>
+      <h2>{{ s.교과 }}</h2>
+      <p class="meta">{{ s.units.length }}개 단원</p>
     </RouterLink>
   </div>
 </template>
@@ -39,7 +39,7 @@ onMounted(async () => {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 14px;
 }
 
@@ -47,7 +47,7 @@ onMounted(async () => {
   display: block;
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 18px;
+  padding: 20px;
   text-decoration: none;
   color: inherit;
   transition: border-color 0.15s, background 0.15s;
@@ -59,11 +59,10 @@ onMounted(async () => {
 }
 
 .card h2 {
-  font-size: 16px;
   margin-bottom: 6px;
 }
 
-.std-name {
+.meta {
   font-size: 13px;
   color: var(--text-dim);
 }

@@ -6,9 +6,9 @@ import { RouterLink, RouterView } from 'vue-router'
   <header class="topbar">
     <RouterLink to="/" class="brand">정보교육학습사이트</RouterLink>
     <nav>
-      <RouterLink to="/" exact-active-class="active">교과서</RouterLink>
-      <RouterLink to="/problems" active-class="active">코딩테스트</RouterLink>
       <RouterLink to="/materials" active-class="active">학습자료</RouterLink>
+      <RouterLink to="/" exact-active-class="active">평가</RouterLink>
+      <RouterLink to="/problems" active-class="active">코딩테스트</RouterLink>
       <RouterLink to="/wrong-notes" active-class="active">오답노트</RouterLink>
       <RouterLink to="/stats" active-class="active">통계</RouterLink>
       <RouterLink to="/add-question" active-class="active">문제 등록</RouterLink>

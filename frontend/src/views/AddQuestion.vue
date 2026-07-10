@@ -125,7 +125,7 @@ async function downloadTemplate() {
 
 <template>
   <h1>문제 등록</h1>
-  <p class="hint">교과서 문제 목록에 새 문제를 추가합니다. 하나씩 등록하거나, JSON 파일로 여러 문제를 한 번에 등록할 수 있습니다.</p>
+  <p class="hint">평가(기출문제) 목록에 새 문제를 추가합니다. 하나씩 등록하거나, JSON 파일로 여러 문제를 한 번에 등록할 수 있습니다.</p>
 
   <section class="panel">
     <h2>문제 하나씩 등록</h2>

@@ -14,8 +14,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h1>교과서 선택</h1>
-  <p class="hint">공부할 교과서를 선택하면 단원별로 문제를 풀 수 있습니다.</p>
+  <h1>평가 - 과목 선택</h1>
+  <p class="hint">기출문제를 풀며 이해도를 평가해보세요. 결과는 오답노트와 통계에 반영됩니다.</p>
 
   <p v-if="loading">불러오는 중…</p>
   <div v-else class="grid">
