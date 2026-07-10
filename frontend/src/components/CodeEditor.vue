@@ -4,6 +4,11 @@ import api from '../api'
 
 const code = defineModel('code', { type: String, default: '' })
 
+const props = defineProps({
+  noPaste: { type: Boolean, default: false },
+  placeholder: { type: String, default: '' },
+})
+
 const stdin = ref('')
 const showStdin = ref(false)
 const running = ref(false)
@@ -19,6 +24,10 @@ function onTab(e) {
   requestAnimationFrame(() => {
     el.selectionStart = el.selectionEnd = start + 4
   })
+}
+
+function blockPaste(e) {
+  if (props.noPaste) e.preventDefault()
 }
 
 async function run() {
@@ -43,8 +52,12 @@ async function run() {
       class="code-input"
       spellcheck="false"
       rows="8"
+      :placeholder="placeholder"
       @keydown.tab="onTab"
+      @paste="blockPaste"
+      @drop="blockPaste"
     ></textarea>
+    <p v-if="noPaste" class="no-paste-hint">✏️ 붙여넣기는 막혀 있어요 — 직접 입력해보세요.</p>
 
     <div class="toolbar">
       <button class="run-btn" :disabled="running" @click="run">
@@ -104,6 +117,12 @@ async function run() {
 
 .stdin-input {
   margin-top: 8px;
+}
+
+.no-paste-hint {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--text-dim);
 }
 
 .toolbar {

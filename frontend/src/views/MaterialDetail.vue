@@ -10,19 +10,23 @@ const props = defineProps({
 
 const material = ref(null)
 const loading = ref(true)
-const editableCode = reactive({})
+const practiceCode = reactive({})
 
 onMounted(async () => {
   const { data } = await api.get(`/api/materials/${props.standardId}`)
   material.value = data
   data.sections.forEach((s, i) => {
-    if (s.code) editableCode[i] = s.code
+    if (s.code) practiceCode[i] = ''
   })
   loading.value = false
 })
 
-function resetCode(i) {
-  editableCode[i] = material.value.sections[i].code
+function clearPractice(i) {
+  practiceCode[i] = ''
+}
+
+function blockCopy(e) {
+  e.preventDefault()
 }
 </script>
 
@@ -45,15 +49,22 @@ function resetCode(i) {
         </h2>
         <p class="content">{{ s.content }}</p>
         <div v-if="s.image" class="diagram" v-html="s.image"></div>
-        <div v-if="s.code" class="editable-code">
-          <CodeEditor v-model:code="editableCode[i]" />
-          <button
-            v-if="editableCode[i] !== s.code"
-            class="reset-btn"
-            @click="resetCode(i)"
-          >
-            ↺ 원래 코드로 되돌리기
-          </button>
+        <div v-if="s.code" class="code-pair">
+          <div class="code-col">
+            <span class="col-label">📖 예제 코드 (읽기 전용)</span>
+            <pre class="code-block readonly" @copy="blockCopy" @contextmenu.prevent><code>{{ s.code }}</code></pre>
+          </div>
+          <div class="code-col">
+            <div class="col-label-row">
+              <span class="col-label">✏️ 직접 타이핑해보기</span>
+              <button v-if="practiceCode[i]" class="clear-btn" @click="clearPractice(i)">지우기</button>
+            </div>
+            <CodeEditor
+              v-model:code="practiceCode[i]"
+              no-paste
+              placeholder="왼쪽 예제 코드를 보고 한 줄씩 직접 입력해보세요"
+            />
+          </div>
         </div>
       </section>
     </template>
@@ -141,23 +152,64 @@ function resetCode(i) {
   height: auto;
 }
 
-.editable-code {
+.code-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
   margin: 12px 0;
 }
 
-.reset-btn {
-  margin-top: -4px;
+@media (max-width: 720px) {
+  .code-pair {
+    grid-template-columns: 1fr;
+  }
+}
+
+.code-col {
+  min-width: 0;
+}
+
+.col-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.col-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.clear-btn {
   background: transparent;
   border: none;
   color: var(--text-dim);
   font-size: 12px;
   cursor: pointer;
-  padding: 4px 2px;
+  padding: 0 0 6px;
 }
 
-.reset-btn:hover {
-  color: var(--accent);
+.clear-btn:hover {
+  color: var(--wrong);
   text-decoration: underline;
+}
+
+.code-block.readonly {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 0;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.5;
+  height: 100%;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .practice-link {
