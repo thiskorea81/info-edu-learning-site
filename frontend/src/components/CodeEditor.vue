@@ -26,6 +26,27 @@ function onTab(e) {
   })
 }
 
+function onEnter(e) {
+  e.preventDefault()
+  const el = e.target
+  const start = el.selectionStart
+  const end = el.selectionEnd
+  const before = code.value.slice(0, start)
+  const after = code.value.slice(end)
+  const lineStart = before.lastIndexOf('\n') + 1
+  const currentLine = before.slice(lineStart)
+  let indent = currentLine.match(/^[ \t]*/)[0]
+  if (/:\s*$/.test(currentLine.trimEnd())) {
+    indent += '  ' // 콜론으로 끝나면 2칸 추가 들여쓰기
+  }
+  const insertion = '\n' + indent
+  code.value = before + insertion + after
+  const newPos = start + insertion.length
+  requestAnimationFrame(() => {
+    el.selectionStart = el.selectionEnd = newPos
+  })
+}
+
 function blockPaste(e) {
   if (props.noPaste) e.preventDefault()
 }
@@ -54,6 +75,7 @@ async function run() {
       rows="8"
       :placeholder="placeholder"
       @keydown.tab="onTab"
+      @keydown.enter="onEnter"
       @paste="blockPaste"
       @drop="blockPaste"
     ></textarea>
