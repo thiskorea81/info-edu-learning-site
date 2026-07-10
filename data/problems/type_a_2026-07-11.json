@@ -1,0 +1,54 @@
+[
+  {
+    "id": "p_type_a_20260711",
+    "유형": "A",
+    "title": "애너그램 판별",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "알파벳 소문자로만 이루어진 두 문자열 S와 T가 주어진다. T에 포함된 문자들을 순서만 바꾸어 재배열했을 때 S와 완전히 같은 문자열을 만들 수 있으면(즉, 두 문자열이 애너그램 관계이면) \"Yes\"를, 그렇지 않으면 \"No\"를 출력하시오.",
+    "constraints": "1 ≤ |S| ≤ 100\n1 ≤ |T| ≤ 100\nS와 T는 알파벳 소문자(a-z)로만 이루어져 있다.",
+    "input_format": "첫째 줄에 문자열 S, 둘째 줄에 문자열 T가 주어진다.",
+    "output_format": "S와 T가 애너그램 관계이면 \"Yes\"를, 아니면 \"No\"를 한 줄에 출력한다.",
+    "samples": [
+      {
+        "input": "listen\nsilent\n",
+        "output": "Yes\n",
+        "explanation": "두 문자열 모두 e, i, l, n, s, t를 각각 한 번씩 포함하므로 재배열하면 서로 같아질 수 있다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "listen\nsilent\n",
+        "output": "Yes\n"
+      },
+      {
+        "input": "hello\nworld\n",
+        "output": "No\n"
+      },
+      {
+        "input": "abc\nabcd\n",
+        "output": "No\n"
+      },
+      {
+        "input": "aaa\naaa\n",
+        "output": "Yes\n"
+      },
+      {
+        "input": "a\na\n",
+        "output": "Yes\n"
+      },
+      {
+        "input": "a\nb\n",
+        "output": "No\n"
+      },
+      {
+        "input": "aabbcc\nabcabc\n",
+        "output": "Yes\n"
+      }
+    ],
+    "힌트": "각 문자열에서 알파벳별로 등장 횟수를 센 뒤 두 결과를 비교해보자.",
+    "해설": "두 문자열이 애너그램이 되려면 길이가 같아야 하고, 각 알파벳이 등장하는 횟수도 정확히 같아야 한다. collections.Counter로 두 문자열의 문자 등장 횟수를 각각 구해 비교하면 길이가 다른 경우까지 자연스럽게 처리할 수 있다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import Counter\n\n    data = sys.stdin.read().split('\\n')\n    s = data[0].strip()\n    t = data[1].strip() if len(data) > 1 else \"\"\n\n    # 두 문자열의 알파벳별 등장 횟수가 같으면 애너그램이다.\n    if Counter(s) == Counter(t):\n        print(\"Yes\")\n    else:\n        print(\"No\")\n\nsolve()\n",
+    "시간복잡도": "O(|S| + |T|) — 두 문자열 각각의 문자 등장 횟수를 한 번씩 세어 비교한다."
+  }
+]
