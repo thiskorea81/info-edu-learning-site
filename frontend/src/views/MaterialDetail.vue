@@ -25,12 +25,20 @@ onMounted(async () => {
     <h1>{{ material.title }}</h1>
     <p class="std-name">[{{ material.standard_id }}] {{ material.성취기준명 }}</p>
 
-    <section v-for="(s, i) in material.sections" :key="i" class="section">
-      <h2>{{ s.heading }}</h2>
-      <p class="content">{{ s.content }}</p>
-      <div v-if="s.image" class="diagram" v-html="s.image"></div>
-      <pre v-if="s.code" class="code-block"><code>{{ s.code }}</code></pre>
-    </section>
+    <template v-for="(s, i) in material.sections" :key="i">
+      <div v-if="s.advanced && !material.sections[i - 1]?.advanced" class="advanced-divider">
+        <span>🔍 심화 학습</span>
+      </div>
+      <section class="section" :class="{ advanced: s.advanced }">
+        <h2>
+          {{ s.heading }}
+          <span v-if="s.advanced" class="advanced-badge">심화</span>
+        </h2>
+        <p class="content">{{ s.content }}</p>
+        <div v-if="s.image" class="diagram" v-html="s.image"></div>
+        <pre v-if="s.code" class="code-block"><code>{{ s.code }}</code></pre>
+      </section>
+    </template>
 
     <RouterLink :to="`/problems/category/${material.standard_id}`" class="practice-link">
       관련 코딩테스트 문제 풀기 →
@@ -60,6 +68,42 @@ onMounted(async () => {
 .section h2 {
   font-size: 18px;
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section.advanced {
+  border-left: 3px solid var(--accent-border);
+  padding-left: 16px;
+}
+
+.advanced-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  vertical-align: middle;
+}
+
+.advanced-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 32px 0 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.advanced-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--accent-border);
 }
 
 .content {
