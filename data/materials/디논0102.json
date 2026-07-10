@@ -20,7 +20,23 @@
     },
     {
       "heading": "1의 보수를 이용한 뺄셈",
-      "content": "컴퓨터는 뺄셈 전용 회로를 따로 두지 않고, 보수를 이용해 덧셈 회로만으로 뺄셈을 수행한다. 1의 보수를 이용한 뺄셈 절차는 다음과 같다.\n\n1) 뺄 수(감수)의 1의 보수를 구한다.\n2) 뺄셈을 당하는 수(피감수)와 1)의 결과를 더한다.\n3) 자리 올림이 발생하면 그 올림수를 결과의 맨 오른쪽 자리에 다시 더한다.\n4) 자리 올림이 발생하지 않으면 결과를 다시 한 번 1의 보수로 바꾸고 앞에 '-' 부호를 붙인다.\n\n이 방법을 쓰면 뺄셈 전용 회로 없이 덧셈 회로만으로 뺄셈을 처리할 수 있어 하드웨어 구조가 단순해진다. 2의 보수를 이용하면 자리 올림수를 다시 더하는 3)번 과정 없이 곧바로 결과를 얻을 수 있어 더 간단하다."
+      "content": "컴퓨터는 뺄셈 전용 회로를 따로 두지 않고, 보수를 이용해 덧셈 회로만으로 뺄셈을 수행한다. 1의 보수를 이용한 뺄셈 절차는 다음과 같다.\n\n1) 뺄 수(감수)의 1의 보수를 구한다.\n2) 뺄셈을 당하는 수(피감수)와 1)의 결과를 더한다.\n3) 자리 올림이 발생하면 그 올림수를 결과의 맨 오른쪽 자리에 다시 더한다.\n4) 자리 올림이 발생하지 않으면 결과를 다시 한 번 1의 보수로 바꾸고 앞에 '-' 부호를 붙인다.\n\n이 방법을 쓰면 뺄셈 전용 회로 없이 덧셈 회로만으로 뺄셈을 처리할 수 있어 하드웨어 구조가 단순해진다. 2의 보수를 이용하면 자리 올림수를 다시 더하는 3)번 과정 없이 곧바로 결과를 얻을 수 있어 더 간단하다.\n\n예) (1011)₂ - (1010)₂을 1의 보수로 계산해 보자.\n1) 감수 1010의 1의 보수: 0101\n2) 피감수 1011 + 1의 보수 0101 = 10000 (5자리, 자리 올림수 1 발생)\n3) 자리 올림수가 발생했으므로 남은 4자리 0000에 자리 올림수 1을 더한다 → 0001\n∴ (1011)₂ - (1010)₂ = (0001)₂ (10진수로 11-10=1과 일치한다)",
+      "code": "def ones_complement(bits):\n    return \"\".join(\"1\" if b == \"0\" else \"0\" for b in bits)\n\ndef add_bits(a, b):\n    carry = 0\n    result = [\"\"] * len(a)\n    for i in range(len(a) - 1, -1, -1):\n        total = int(a[i]) + int(b[i]) + carry\n        result[i] = str(total % 2)\n        carry = total // 2\n    return \"\".join(result), carry\n\ndef subtract_by_ones_complement(a, b):\n    comp = ones_complement(b)          # 1) 감수의 1의 보수\n    result, carry = add_bits(a, comp)  # 2) 피감수 + 1의 보수\n    if carry:                          # 3) 자리 올림수 처리\n        result, _ = add_bits(result, \"0001\")\n        return result\n    return \"-\" + ones_complement(result)\n\na, b = \"1011\", \"1010\"\nprint(f\"{a} - {b} 를 1의 보수로 계산\")\nprint(\"감수의 1의 보수:\", ones_complement(b))\nprint(\"결과:\", subtract_by_ones_complement(a, b))\n"
+    },
+    {
+      "heading": "2의 보수를 이용한 뺄셈",
+      "content": "컴퓨터는 1의 보수보다 2의 보수를 이용한 뺄셈을 더 많이 사용하는데, 자리 올림수가 발생했을 때 그 값을 다시 더할 필요 없이 그냥 버리면 되어 더 간단하기 때문이다. 절차는 다음과 같다.\n\n1) 뺄 수(감수)의 2의 보수를 구한다.\n2) 뺄셈을 당하는 수(피감수)와 1)의 결과를 더한다.\n3) 자리 올림이 발생하면 그 값을 버린다. 자리 올림이 발생하지 않으면 결과를 다시 한 번 2의 보수로 바꾸고 앞에 '-' 부호를 붙인다.\n\n예) (1011)₂ - (1010)₂을 2의 보수로 계산해 보자.\n1) 감수 1010의 2의 보수: 0110\n2) 피감수 1011 + 2의 보수 0110 = 10001 (5자리, 자리 올림수 1 발생)\n3) 자리 올림수가 발생했으므로 그 값을 버리고 남은 4자리 0001을 결과로 삼는다\n∴ (1011)₂ - (1010)₂ = (0001)₂ (1의 보수를 이용한 결과와 같다)",
+      "code": "def ones_complement(bits):\n    return \"\".join(\"1\" if b == \"0\" else \"0\" for b in bits)\n\ndef add_bits(a, b):\n    carry = 0\n    result = [\"\"] * len(a)\n    for i in range(len(a) - 1, -1, -1):\n        total = int(a[i]) + int(b[i]) + carry\n        result[i] = str(total % 2)\n        carry = total // 2\n    return \"\".join(result), carry\n\ndef twos_complement(bits):\n    comp, _ = add_bits(ones_complement(bits), \"0001\")\n    return comp\n\ndef subtract_by_twos_complement(a, b):\n    comp = twos_complement(b)          # 1) 감수의 2의 보수\n    result, carry = add_bits(a, comp)  # 2) 피감수 + 2의 보수\n    if carry:                          # 3) 자리 올림수는 버린다\n        return result\n    return \"-\" + twos_complement(result)\n\na, b = \"1011\", \"1010\"\nprint(f\"{a} - {b} 를 2의 보수로 계산\")\nprint(\"감수의 2의 보수:\", twos_complement(b))\nprint(\"결과:\", subtract_by_twos_complement(a, b))\n"
+    },
+    {
+      "heading": "수행 활동: 카드로 진수 변환하기",
+      "content": "2진수를 10진수로 변환하는 감각을 손으로 직접 익혀 보는 활동이다. 2⁸(256)부터 2⁰(1)까지 자리값을 적은 카드 9장을 만들어, 변환하려는 2진수에서 1인 자리의 카드만 펼쳐 보이고 그 값을 모두 더하면 10진수 값이 된다.\n\n카드 배열은 다음과 같다.",
+      "표": "| 자리 | 2⁸ | 2⁷ | 2⁶ | 2⁵ | 2⁴ | 2³ | 2² | 2¹ | 2⁰ |\n| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n| 카드 값 | 256 | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |"
+    },
+    {
+      "heading": "카드 값으로 10진수 계산해 보기",
+      "content": "예) 2진수 (000001011)₂를 변환해 보자. 1인 자리는 2³(8), 2¹(2), 2⁰(1)이므로 해당 카드만 펼쳐서 더하면 8+2+1=11이 된다. 따라서 (000001011)₂는 10진수로 11이다.\n\n직접 해보기 (정답은 아래 코드로 확인할 수 있다)\n① 2진수 (000010101)₂을 카드로 변환하면?\n② 2진수 (001100011)₂을 카드로 변환하면?",
+      "code": "def open_cards(binary):\n    n = len(binary)\n    values, total = [], 0\n    for i, bit in enumerate(binary):\n        if bit == \"1\":\n            v = 2 ** (n - 1 - i)  # 펼친 카드의 자리값\n            values.append(v)\n            total += v\n    return values, total\n\nfor b in [\"000001011\", \"000010101\", \"001100011\"]:\n    values, total = open_cards(b)\n    joined = \" + \".join(str(v) for v in values)\n    print(f\"{b} -> {joined} = {total}\")\n"
     },
     {
       "heading": "정리",
