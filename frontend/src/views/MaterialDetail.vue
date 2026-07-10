@@ -1,7 +1,8 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
+import CodeEditor from '../components/CodeEditor.vue'
 
 const props = defineProps({
   standardId: { type: String, required: true },
@@ -9,12 +10,20 @@ const props = defineProps({
 
 const material = ref(null)
 const loading = ref(true)
+const editableCode = reactive({})
 
 onMounted(async () => {
   const { data } = await api.get(`/api/materials/${props.standardId}`)
   material.value = data
+  data.sections.forEach((s, i) => {
+    if (s.code) editableCode[i] = s.code
+  })
   loading.value = false
 })
+
+function resetCode(i) {
+  editableCode[i] = material.value.sections[i].code
+}
 </script>
 
 <template>
@@ -36,7 +45,16 @@ onMounted(async () => {
         </h2>
         <p class="content">{{ s.content }}</p>
         <div v-if="s.image" class="diagram" v-html="s.image"></div>
-        <pre v-if="s.code" class="code-block"><code>{{ s.code }}</code></pre>
+        <div v-if="s.code" class="editable-code">
+          <CodeEditor v-model:code="editableCode[i]" />
+          <button
+            v-if="editableCode[i] !== s.code"
+            class="reset-btn"
+            @click="resetCode(i)"
+          >
+            ↺ 원래 코드로 되돌리기
+          </button>
+        </div>
       </section>
     </template>
 
@@ -123,14 +141,23 @@ onMounted(async () => {
   height: auto;
 }
 
-.code-block {
-  background: var(--code-bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 14px 16px;
-  overflow-x: auto;
-  font-size: 13px;
-  line-height: 1.6;
+.editable-code {
+  margin: 12px 0;
+}
+
+.reset-btn {
+  margin-top: -4px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 2px;
+}
+
+.reset-btn:hover {
+  color: var(--accent);
+  text-decoration: underline;
 }
 
 .practice-link {
