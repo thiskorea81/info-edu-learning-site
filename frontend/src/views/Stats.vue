@@ -32,13 +32,15 @@ onMounted(async () => {
     </div>
   </div>
 
-  <h2 v-if="stats">성취기준별 정답률</h2>
+  <h2 v-if="stats">성취기준별 성취도</h2>
   <table v-if="stats && stats.by_standard.length">
     <thead>
       <tr>
         <th>성취기준</th>
         <th>단원</th>
-        <th>정답률</th>
+        <th>이론</th>
+        <th>실습</th>
+        <th>종합 등급</th>
       </tr>
     </thead>
     <tbody>
@@ -46,10 +48,28 @@ onMounted(async () => {
         <td class="std-id">{{ row.standard_id }}</td>
         <td>{{ row.단원 }}</td>
         <td class="acc-cell">
-          <div class="bar-track">
-            <div class="bar-fill" :style="{ width: row.accuracy + '%' }"></div>
-          </div>
-          <span class="acc-text">{{ row.correct }}/{{ row.solved }} ({{ row.accuracy }}%)</span>
+          <template v-if="row.solved">
+            <div class="bar-track">
+              <div class="bar-fill" :style="{ width: row.accuracy + '%' }"></div>
+            </div>
+            <span class="acc-text">{{ row.correct }}/{{ row.solved }} ({{ row.accuracy }}%)</span>
+          </template>
+          <span v-else class="not-attempted">미응시</span>
+        </td>
+        <td class="acc-cell">
+          <template v-if="row.practice_attempted">
+            <div class="bar-track">
+              <div class="bar-fill" :style="{ width: row.practice_accuracy + '%' }"></div>
+            </div>
+            <span class="acc-text">
+              {{ row.practice_correct }}/{{ row.practice_attempted }} ({{ row.practice_accuracy }}%)
+            </span>
+          </template>
+          <span v-else class="not-attempted">미응시</span>
+        </td>
+        <td class="grade-cell">
+          <span v-if="row.grade" class="grade-badge" :class="`grade-${row.grade}`">{{ row.grade }}</span>
+          <span v-else class="not-attempted">-</span>
         </td>
       </tr>
     </tbody>
@@ -115,6 +135,73 @@ onMounted(async () => {
   color: var(--text-dim);
   display: block;
   margin-top: 4px;
+}
+
+.not-attempted {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.grade-cell {
+  text-align: center;
+}
+
+.grade-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.grade-A {
+  background: #16a34a;
+}
+
+.grade-B {
+  background: #65a30d;
+}
+
+.grade-C {
+  background: #ca8a04;
+}
+
+.grade-D {
+  background: #ea580c;
+}
+
+.grade-E {
+  background: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+  .grade-badge {
+    color: #0b0b0d;
+  }
+
+  .grade-A {
+    background: #4ade80;
+  }
+
+  .grade-B {
+    background: #a3e635;
+  }
+
+  .grade-C {
+    background: #facc15;
+  }
+
+  .grade-D {
+    background: #fb923c;
+  }
+
+  .grade-E {
+    background: #f87171;
+  }
 }
 
 .empty {

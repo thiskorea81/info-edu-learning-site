@@ -26,6 +26,27 @@ onMounted(async () => {
   standards.value = data
 })
 
+function onCodeEnter(e) {
+  e.preventDefault()
+  const el = e.target
+  const start = el.selectionStart
+  const end = el.selectionEnd
+  const before = 코드.value.slice(0, start)
+  const after = 코드.value.slice(end)
+  const lineStart = before.lastIndexOf('\n') + 1
+  const currentLine = before.slice(lineStart)
+  let indent = currentLine.match(/^[ \t]*/)[0]
+  if (/:\s*$/.test(currentLine.trimEnd())) {
+    indent += '  ' // 콜론으로 끝나면 2칸 추가 들여쓰기
+  }
+  const insertion = '\n' + indent
+  코드.value = before + insertion + after
+  const newPos = start + insertion.length
+  requestAnimationFrame(() => {
+    el.selectionStart = el.selectionEnd = newPos
+  })
+}
+
 function resetForm() {
   문제.value = ''
   hasCode.value = false
@@ -136,6 +157,7 @@ async function downloadTemplate() {
       rows="5"
       spellcheck="false"
       placeholder="print('hello')"
+      @keydown.enter="onCodeEnter"
     ></textarea>
 
     <label class="checkbox-field">

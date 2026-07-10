@@ -43,6 +43,27 @@ function onTab(e) {
   })
 }
 
+function onEnter(e) {
+  e.preventDefault()
+  const el = e.target
+  const start = el.selectionStart
+  const end = el.selectionEnd
+  const before = code.value.slice(0, start)
+  const after = code.value.slice(end)
+  const lineStart = before.lastIndexOf('\n') + 1
+  const currentLine = before.slice(lineStart)
+  let indent = currentLine.match(/^[ \t]*/)[0]
+  if (/:\s*$/.test(currentLine.trimEnd())) {
+    indent += '  ' // 콜론으로 끝나면 2칸 추가 들여쓰기
+  }
+  const insertion = '\n' + indent
+  code.value = before + insertion + after
+  const newPos = start + insertion.length
+  requestAnimationFrame(() => {
+    el.selectionStart = el.selectionEnd = newPos
+  })
+}
+
 async function runSample(index, sample) {
   sampleRunning.value = index
   try {
@@ -148,6 +169,7 @@ function verdictLabel(v) {
       rows="14"
       placeholder="여기에 파이썬 코드를 작성하세요"
       @keydown.tab="onTab"
+      @keydown.enter="onEnter"
     ></textarea>
 
     <div class="actions">
