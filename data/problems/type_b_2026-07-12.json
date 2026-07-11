@@ -1,0 +1,66 @@
+[
+  {
+    "id": "p_type_b_20260712",
+    "유형": "B",
+    "title": "카도마츠 수열 판별",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "정수 A, B, C가 이 순서대로 한 줄에 공백으로 구분되어 주어진다. 세 수를 이 순서로 나열한 것을 \"카도마츠 수열\"이라고 부르는데, 다음 두 조건을 모두 만족할 때만 카도마츠 수열이다.\n1. A, B, C가 모두 서로 다른 값이다.\n2. 가운데 값 B가 세 수 A, B, C 중 최댓값이거나 최솟값이다(즉 A, C 둘 다보다 크거나, 둘 다보다 작다).\n주어진 A, B, C가 카도마츠 수열이면 \"Yes\"를, 아니면 \"No\"를 출력하시오.",
+    "constraints": "1 ≤ A, B, C ≤ 1000\nA, B, C는 정수이다.",
+    "input_format": "첫째 줄에 A, B, C가 공백으로 구분되어 주어진다.",
+    "output_format": "카도마츠 수열이면 \"Yes\", 아니면 \"No\"를 출력한다.",
+    "samples": [
+      {
+        "input": "2 3 1\n",
+        "output": "Yes\n",
+        "explanation": "A=2, B=3, C=1은 모두 서로 다르고, B=3이 세 수 중 최댓값이므로 카도마츠 수열이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "1 2 3\n",
+        "output": "No\n"
+      },
+      {
+        "input": "3 2 1\n",
+        "output": "No\n"
+      },
+      {
+        "input": "2 3 1\n",
+        "output": "Yes\n"
+      },
+      {
+        "input": "3 1 2\n",
+        "output": "Yes\n"
+      },
+      {
+        "input": "5 5 5\n",
+        "output": "No\n"
+      },
+      {
+        "input": "1 1 2\n",
+        "output": "No\n"
+      },
+      {
+        "input": "10 1000 500\n",
+        "output": "Yes\n"
+      },
+      {
+        "input": "1000 1 500\n",
+        "output": "Yes\n"
+      },
+      {
+        "input": "100 100 1\n",
+        "output": "No\n"
+      },
+      {
+        "input": "7 4 4\n",
+        "output": "No\n"
+      }
+    ],
+    "힌트": "먼저 세 수가 모두 서로 다른지부터 확인하고, 그다음 가운데 값이 최댓값인지 최솟값인지만 비교해보자.",
+    "해설": "카도마츠 수열이 되려면 두 조건이 모두 필요하다. 첫째, A==B, B==C, A==C 중 하나라도 성립하면 세 수가 모두 다르지 않으므로 바로 \"No\"이다. 둘째, 세 수가 모두 다를 때 가운데 값 B가 max(A,B,C)와 같거나 min(A,B,C)와 같으면 B가 양 끝(A, C)보다 모두 크거나 모두 작다는 뜻이므로 \"Yes\"이고, 그렇지 않고 B가 A와 C 사이의 값(중앙값)이면 \"No\"이다.",
+    "정답_코드": "def solve():\n    import sys\n    a, b, c = map(int, sys.stdin.readline().split())\n    # 세 수가 모두 서로 달라야 카도마츠 수열이 될 수 있다.\n    if a == b or b == c or a == c:\n        print(\"No\")\n        return\n    # 가운데 값 b가 세 수 중 최댓값이거나 최솟값이면 카도마츠 수열이다.\n    if b == max(a, b, c) or b == min(a, b, c):\n        print(\"Yes\")\n    else:\n        print(\"No\")\n\nsolve()\n",
+    "시간복잡도": "O(1) — 입력받은 세 수를 비교 연산 몇 번만으로 판별하며 데이터 크기와 무관하게 일정한 횟수의 연산만 수행한다."
+  }
+]
