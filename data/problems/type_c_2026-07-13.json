@@ -1,0 +1,54 @@
+[
+  {
+    "id": "p_type_c_20260713",
+    "유형": "C",
+    "title": "주식 최대 이익",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "어떤 주식의 N일 동안의 종가가 순서대로 주어진다. 이 중 하루를 골라 주식을 매수하고, 그 이후의 어느 하루를 골라 매도하여 얻을 수 있는 이익을 최대화하려고 한다(매수한 날과 같은 날 매도할 수는 없다). 얻을 수 있는 최대 이익을 출력하시오. 어떤 방법으로도 이익을 얻을 수 없다면(즉, 이후 가격이 매수 가격보다 항상 낮거나 같다면) 0을 출력한다.",
+    "constraints": "2 ≤ N ≤ 100000\n1 ≤ 종가 ≤ 1000000000",
+    "input_format": "첫째 줄에 N이 주어진다.\n둘째 줄에 N개의 정수가 공백으로 구분되어 날짜 순서대로 주어진다.",
+    "output_format": "얻을 수 있는 최대 이익을 출력한다. 이익을 얻을 수 없으면 0을 출력한다.",
+    "samples": [
+      {
+        "input": "6\n7 1 5 3 6 4\n",
+        "output": "5\n",
+        "explanation": "1일째(가격 1)에 매수하여 5일째(가격 6)에 매도하면 이익 5를 얻어 최대가 된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "6\n7 1 5 3 6 4\n",
+        "output": "5\n"
+      },
+      {
+        "input": "5\n7 6 4 3 1\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2\n1 2\n",
+        "output": "1\n"
+      },
+      {
+        "input": "2\n5 5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "4\n3 3 3 3\n",
+        "output": "0\n"
+      },
+      {
+        "input": "7\n1 2 90 10 1 100 1\n",
+        "output": "99\n"
+      },
+      {
+        "input": "3\n1000000000 1 1000000000\n",
+        "output": "999999999\n"
+      }
+    ],
+    "힌트": "지금까지 등장한 가격 중 가장 낮은 값을 기록해 두고, 오늘 팔았을 때의 이익과 비교해 보자.",
+    "해설": "왼쪽부터 오른쪽으로 한 번 훑으면서 지금까지 본 최솟값(min_price)을 유지한다. 매일 '오늘 가격 - 지금까지의 최솟값'을 계산하면 오늘 매도했을 때 가능한 최대 이익이 되므로, 이 값들 중 최댓값을 구하면 전체 최대 이익이 된다. 매수는 항상 매도보다 앞선 날짜여야 하므로 최솟값은 현재 날짜 이전(포함)까지의 값만 사용한다.",
+    "정답_코드": "def solve():\n    import sys\n\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    prices = list(map(int, data[1:1 + n]))\n\n    min_price = prices[0]      # 지금까지 본 가장 낮은 가격(매수 후보)\n    max_profit = 0             # 지금까지의 최대 이익\n\n    for price in prices[1:]:\n        # 오늘 매도한다면 얻을 수 있는 이익\n        profit_today = price - min_price\n        if profit_today > max_profit:\n            max_profit = profit_today\n        # 매수 후보 갱신\n        if price < min_price:\n            min_price = price\n\n    print(max_profit)\n\nsolve()\n",
+    "시간복잡도": "O(N) — 가격 목록을 한 번만 순회하며 최솟값과 최대 이익을 동시에 갱신한다."
+  }
+]
