@@ -1,0 +1,346 @@
+[
+  {
+    "id": "p_daily_20260714_a",
+    "유형": "A",
+    "title": "괄호 문자열의 유효성 판단",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "길이 N인 문자열 S가 주어진다. S는 오직 '('와 ')'로만 이루어져 있다. S가 올바른 괄호 문자열인지 판단하시오. 올바른 괄호 문자열이란 여는 괄호의 개수와 닫는 괄호의 개수가 같고, 문자열의 어떤 접두사를 보아도 그 안의 닫는 괄호의 개수가 여는 괄호의 개수보다 많아지지 않는 문자열을 말한다.",
+    "constraints": "1 ≤ N ≤ 1000\nS의 길이는 정확히 N이며, S는 '('와 ')'로만 이루어진다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 문자열 S가 주어진다.",
+    "output_format": "S가 올바른 괄호 문자열이면 YES, 아니면 NO를 출력한다.",
+    "samples": [
+      {
+        "input": "6\n(()())\n",
+        "output": "YES\n",
+        "explanation": "괄호가 정확히 짝을 이루고, 어떤 접두사에서도 닫는 괄호가 더 많아지지 않으므로 올바른 괄호 문자열이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "6\n(()())\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "3\n(()\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "2\n)(\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "2\n()\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "6\n((()))\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "1\n)\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "1\n(\n",
+        "output": "NO\n"
+      }
+    ],
+    "힌트": "괄호를 왼쪽부터 하나씩 보면서 여는 괄호는 +1, 닫는 괄호는 -1로 계산해 누적 값을 관찰해 보자.",
+    "해설": "누적 값(balance)이 중간에 한 번이라도 음수가 되면 그 시점에 닫는 괄호가 더 많다는 뜻이므로 올바르지 않다. 문자열을 끝까지 본 뒤 balance가 정확히 0이면(여는 괄호와 닫는 괄호 개수가 같으면) 올바른 괄호 문자열이다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split(\"\\n\")\n    n = int(data[0])\n    s = data[1]\n\n    balance = 0  # 여는 괄호 - 닫는 괄호의 누적 개수\n    valid = True\n    for ch in s:\n        if ch == \"(\":\n            balance += 1\n        else:\n            balance -= 1\n        if balance < 0:  # 닫는 괄호가 여는 괄호보다 많아진 순간\n            valid = False\n            break\n\n    print(\"YES\" if (valid and balance == 0) else \"NO\")\n\nsolve()\n",
+    "시간복잡도": "O(N) — 문자열을 한 번만 순회하며 누적 값을 갱신한다."
+  },
+  {
+    "id": "p_daily_20260714_b",
+    "유형": "B",
+    "title": "목표값에 가장 가까운 수 찾기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "N개의 정수와 목표값 X가 주어진다. N개의 정수 중 X와의 차이의 절댓값이 가장 작은 값을 출력하시오. 그런 값이 여러 개라면 그 중 더 작은 값을 출력한다.",
+    "constraints": "1 ≤ N ≤ 100000\n-1000000000 ≤ X ≤ 1000000000\n-1000000000 ≤ 각 정수 ≤ 1000000000",
+    "input_format": "첫째 줄에 N과 X, 둘째 줄에 N개의 정수가 공백으로 구분되어 주어진다.",
+    "output_format": "X와의 차이의 절댓값이 가장 작은 값을 출력한다. 값이 여러 개면 그 중 더 작은 값을 출력한다.",
+    "samples": [
+      {
+        "input": "5 10\n1 8 12 15 9\n",
+        "output": "9\n",
+        "explanation": "X=10과의 차이는 1(9), 2(8), 2(12), 5(15), 1(9)... 중 9와의 차이가 1로 가장 작으므로 9를 출력한다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5 10\n1 8 12 15 9\n",
+        "output": "9\n"
+      },
+      {
+        "input": "4 5\n3 7 2 8\n",
+        "output": "3\n"
+      },
+      {
+        "input": "1 100\n50\n",
+        "output": "50\n"
+      },
+      {
+        "input": "3 -5\n-10 -1 -6\n",
+        "output": "-6\n"
+      },
+      {
+        "input": "3 7\n7 2 9\n",
+        "output": "7\n"
+      },
+      {
+        "input": "2 0\n-3 3\n",
+        "output": "-3\n"
+      }
+    ],
+    "힌트": "각 수마다 목표값과의 차이의 절댓값을 계산하며 지금까지의 최선의 답과 비교해 보자.",
+    "해설": "리스트를 한 번 순회하며 각 원소와 X의 차이의 절댓값을 계산한다. 지금까지 찾은 최소 차이보다 더 작은 차이를 가진 수를 만나면 답을 갱신하고, 차이가 같다면 두 값 중 더 작은 쪽을 답으로 선택한다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    n = int(data[0]); x = int(data[1])\n    nums = list(map(int, data[2:2 + n]))\n\n    best = nums[0]\n    best_diff = abs(nums[0] - x)\n    for v in nums[1:]:\n        d = abs(v - x)\n        # 더 가깝거나, 거리가 같으면 더 작은 값을 선택\n        if d < best_diff or (d == best_diff and v < best):\n            best = v\n            best_diff = d\n    print(best)\n\nsolve()\n",
+    "시간복잡도": "O(N) — 리스트를 한 번만 순회한다."
+  },
+  {
+    "id": "p_daily_20260714_c",
+    "유형": "C",
+    "title": "설탕 배달",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "설탕가게에서는 3kg짜리 봉지와 5kg짜리 봉지로만 설탕을 배달한다. 봉지는 각각 원하는 개수만큼 사용할 수 있다. 정확히 N kg의 설탕을 배달하기 위해 필요한 봉지의 최소 개수를 구하시오. 정확히 N kg을 만들 수 없다면 -1을 출력한다.",
+    "constraints": "1 ≤ N ≤ 5000",
+    "input_format": "첫째 줄에 N이 주어진다.",
+    "output_format": "필요한 봉지의 최소 개수를 출력한다. 정확히 N kg을 만들 수 없으면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "18\n",
+        "output": "4\n",
+        "explanation": "5kg 봉지 3개(15kg)와 3kg 봉지 1개(3kg)를 사용하면 총 4개의 봉지로 18kg을 정확히 만들 수 있다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "18\n",
+        "output": "4\n"
+      },
+      {
+        "input": "4\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "3\n",
+        "output": "1\n"
+      },
+      {
+        "input": "5\n",
+        "output": "1\n"
+      },
+      {
+        "input": "1\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "5000\n",
+        "output": "1000\n"
+      },
+      {
+        "input": "8\n",
+        "output": "2\n"
+      }
+    ],
+    "힌트": "5kg 봉지를 하나 덜 쓸 때마다 3kg 봉지가 몇 개 더 필요한지 생각해 보고, 5kg 봉지를 최대한 많이 쓰는 경우부터 확인해 보자.",
+    "해설": "5kg 봉지 개수를 최댓값부터 하나씩 줄여가며, 남은 무게가 3으로 나누어떨어지는 첫 번째 경우를 찾으면 그것이 최소 봉지 개수이다. 5kg 봉지를 하나 줄이면 3kg 봉지가 최소 2개 더 필요해지므로(5 = 3+3-1 관계), 5kg 봉지를 최대한 많이 사용하는 조합이 항상 봉지 개수를 최소로 만든다. 어떤 five 값에서도 나머지가 3으로 나누어떨어지지 않으면 N을 정확히 만들 수 없다.",
+    "정답_코드": "def solve():\n    import sys\n    n = int(sys.stdin.readline())\n\n    best = -1\n    max_five = n // 5\n    # 5kg 봉지를 최대한 많이 쓰는 경우부터 확인한다.\n    for five in range(max_five, -1, -1):\n        rem = n - 5 * five\n        if rem % 3 == 0:\n            total = five + rem // 3\n            if best == -1 or total < best:\n                best = total\n    print(best)\n\nsolve()\n",
+    "시간복잡도": "O(N/5) — 5kg 봉지 개수 후보를 최대부터 하나씩 확인한다."
+  },
+  {
+    "id": "p_daily_20260714_d",
+    "유형": "D",
+    "title": "0/1 배낭 문제",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "N개의 물건이 있고 각 물건은 무게 w_i와 가치 v_i를 가진다. 배낭에 담을 수 있는 무게의 총합이 K를 넘지 않도록 물건들을 골라 담을 때 얻을 수 있는 가치의 최댓값을 구하시오. 각 물건은 통째로 담거나 담지 않아야 하며, 최대 한 번만 담을 수 있다.",
+    "constraints": "1 ≤ N ≤ 100\n0 ≤ K ≤ 1000\n1 ≤ w_i ≤ 1000\n1 ≤ v_i ≤ 1000",
+    "input_format": "첫째 줄에 N과 K가 주어진다. 이후 N개의 줄에 걸쳐 각 물건의 무게 w_i와 가치 v_i가 공백으로 구분되어 주어진다.",
+    "output_format": "얻을 수 있는 가치의 최댓값을 출력한다.",
+    "samples": [
+      {
+        "input": "3 50\n10 60\n20 100\n30 120\n",
+        "output": "220\n",
+        "explanation": "무게 20과 30인 물건을 담으면 무게 50, 가치 220으로 최댓값이 된다(무게 10인 물건을 추가하면 무게 60으로 K=50을 초과한다)."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3 50\n10 60\n20 100\n30 120\n",
+        "output": "220\n"
+      },
+      {
+        "input": "1 10\n20 100\n",
+        "output": "0\n"
+      },
+      {
+        "input": "1 10\n5 50\n",
+        "output": "50\n"
+      },
+      {
+        "input": "2 0\n1 10\n2 20\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2 100\n10 10\n20 20\n",
+        "output": "30\n"
+      },
+      {
+        "input": "4 10\n5 10\n4 40\n6 30\n3 50\n",
+        "output": "90\n"
+      }
+    ],
+    "힌트": "dp[cap]을 무게 cap 이하로 담을 수 있는 최대 가치로 정의하고, 물건을 하나씩 고려하며 갱신해 보자.",
+    "해설": "각 물건을 순서대로 고려하면서 dp 배열을 무게가 큰 칸부터 작은 칸 방향으로 갱신하는 0/1 배낭 DP이다. 무게가 큰 칸부터 갱신해야 같은 물건을 여러 번 담는 것을 방지할 수 있다(0/1이므로 한 번만 담아야 한다). 모든 물건을 고려한 뒤 dp[K]가 배낭 무게 K 이하로 담을 수 있는 최대 가치가 된다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); k = int(data[idx + 1]); idx += 2\n\n    items = []\n    for _ in range(n):\n        w, v = int(data[idx]), int(data[idx + 1])\n        idx += 2\n        items.append((w, v))\n\n    dp = [0] * (k + 1)  # dp[cap] = 무게 cap 이하로 얻을 수 있는 최대 가치\n    for w, v in items:\n        # 무게가 큰 쪽부터 갱신해야 같은 물건을 두 번 담는 것을 방지할 수 있다.\n        for cap in range(k, w - 1, -1):\n            if dp[cap - w] + v > dp[cap]:\n                dp[cap] = dp[cap - w] + v\n\n    print(dp[k])\n\nsolve()\n",
+    "시간복잡도": "O(N·K) — 물건 N개에 대해 각각 무게 K칸을 갱신한다."
+  },
+  {
+    "id": "p_daily_20260714_e",
+    "유형": "E",
+    "title": "섬의 개수",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "R행 C열의 격자 지도가 주어진다. 각 칸은 '1'(육지) 또는 '0'(바다)이다. 상하좌우로 인접한 육지 칸들은 하나의 섬으로 연결된다(대각선으로만 인접한 육지는 서로 다른 섬으로 본다). 지도에 있는 섬의 개수를 출력하시오.",
+    "constraints": "1 ≤ R, C ≤ 50",
+    "input_format": "첫째 줄에 R과 C. 이후 R개의 줄에 걸쳐 각 줄에 C개의 문자('0' 또는 '1')로 이루어진 지도가 주어진다.",
+    "output_format": "섬의 개수를 출력한다.",
+    "samples": [
+      {
+        "input": "4 5\n11000\n11000\n00100\n00011\n",
+        "output": "3\n",
+        "explanation": "왼쪽 위 2x2 블록, 가운데 아래 칸, 오른쪽 아래 2칸이 각각 하나의 섬을 이루어 총 3개의 섬이 있다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 5\n11000\n11000\n00100\n00011\n",
+        "output": "3\n"
+      },
+      {
+        "input": "3 3\n000\n000\n000\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2 2\n11\n11\n",
+        "output": "1\n"
+      },
+      {
+        "input": "1 1\n1\n",
+        "output": "1\n"
+      },
+      {
+        "input": "1 1\n0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2 2\n10\n01\n",
+        "output": "2\n"
+      }
+    ],
+    "힌트": "방문하지 않은 육지 칸을 찾을 때마다 그 칸에서 시작해 상하좌우로 연결된 모든 육지를 한 번에 방문 처리해 보자.",
+    "해설": "격자를 순서대로 훑다가 방문하지 않은 육지('1') 칸을 만나면 섬의 개수를 하나 늘리고, 그 칸에서 BFS(또는 DFS)로 상하좌우로 연결된 모든 육지 칸을 방문 처리한다. 이렇게 하면 이미 방문 처리된 칸은 같은 섬에 속하므로 다시 세어지지 않고, 격자를 한 번 다 훑었을 때 누적된 개수가 전체 섬의 개수가 된다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import deque\n\n    data = sys.stdin.read().split(\"\\n\")\n    r, c = map(int, data[0].split())\n    grid = [data[1 + i] for i in range(r)]\n\n    visited = [[False] * c for _ in range(r)]\n    count = 0\n    for i in range(r):\n        for j in range(c):\n            if grid[i][j] == \"1\" and not visited[i][j]:\n                count += 1  # 새로운 섬 발견\n                q = deque([(i, j)])\n                visited[i][j] = True\n                while q:\n                    y, x = q.popleft()\n                    for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):\n                        ny, nx = y + dy, x + dx\n                        if 0 <= ny < r and 0 <= nx < c and not visited[ny][nx] and grid[ny][nx] == \"1\":\n                            visited[ny][nx] = True\n                            q.append((ny, nx))\n\n    print(count)\n\nsolve()\n",
+    "시간복잡도": "O(R×C) — 모든 칸을 상수 번씩만 방문한다."
+  },
+  {
+    "id": "p_daily_20260714_f",
+    "유형": "F",
+    "title": "최소 신장 트리 비용",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 도시와 이들을 연결할 수 있는 M개의 도로 후보가 주어진다. 각 도로 후보는 서로 다른 두 도시를 양방향으로 연결하며 건설 비용이 든다(같은 두 도시를 잇는 도로 후보가 여러 개 주어질 수 있다). 모든 도시가 직접 또는 다른 도시를 거쳐서 서로 연결되도록 도로를 골라 건설할 때 필요한 최소 총 건설 비용을 구하시오. 모든 도시를 연결할 수 없다면 -1을 출력한다.",
+    "constraints": "1 ≤ N ≤ 1000\n0 ≤ M ≤ 10000\n각 도로의 건설 비용은 1 이상 1000 이하의 정수이다.",
+    "input_format": "첫째 줄에 N과 M. 이후 M개의 줄에 걸쳐 도로 후보 u, v, cost가 공백으로 구분되어 주어진다.",
+    "output_format": "모든 도시를 연결하는 데 필요한 최소 총 비용을 출력한다. 연결할 수 없으면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "4 5\n1 2 1\n1 3 3\n2 3 2\n2 4 4\n3 4 5\n",
+        "output": "7\n",
+        "explanation": "간선 (1-2,1),(2-3,2),(2-4,4)를 선택하면 사이클 없이 모든 도시가 연결되며 비용 합은 1+2+4=7로 최소가 된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 5\n1 2 1\n1 3 3\n2 3 2\n2 4 4\n3 4 5\n",
+        "output": "7\n"
+      },
+      {
+        "input": "4 2\n1 2 1\n3 4 1\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "1 0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3 3\n1 2 5\n1 2 1\n2 3 2\n",
+        "output": "3\n"
+      },
+      {
+        "input": "3 2\n1 2 4\n2 3 6\n",
+        "output": "10\n"
+      },
+      {
+        "input": "6 7\n1 2 3\n1 3 1\n2 3 2\n2 4 6\n3 4 5\n4 5 2\n5 6 4\n",
+        "output": "14\n"
+      }
+    ],
+    "힌트": "도로 후보를 비용이 작은 순서로 정렬한 뒤, 사이클을 만들지 않는 도로만 차례로 선택해 보자.",
+    "해설": "모든 도로 후보를 비용 오름차순으로 정렬한 뒤, 유니온-파인드로 두 도시가 이미 같은 그룹에 속해 있는지 확인하면서 서로 다른 그룹일 때만 연결(사이클 방지)하는 크루스칼(Kruskal) 알고리즘이다. 선택된 도로가 N-1개가 되면 모든 도시가 하나로 연결된 것이고, 그렇지 않다면(모든 도로 후보를 다 확인했는데도 N-1개를 채우지 못했다면) 연결이 불가능한 경우이다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); m = int(data[idx + 1]); idx += 2\n\n    edges = []\n    for _ in range(m):\n        u, v, cost = int(data[idx]), int(data[idx + 1]), int(data[idx + 2])\n        idx += 3\n        edges.append((cost, u, v))\n    edges.sort()  # 비용이 작은 도로부터 고려한다.\n\n    parent = list(range(n + 1))\n\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]  # 경로 압축\n            x = parent[x]\n        return x\n\n    total = 0\n    used = 0\n    for cost, u, v in edges:\n        ru, rv = find(u), find(v)\n        if ru != rv:  # 서로 다른 그룹이면 연결(사이클 방지)\n            parent[ru] = rv\n            total += cost\n            used += 1\n\n    print(total if used == n - 1 else -1)\n\nsolve()\n",
+    "시간복잡도": "O(M log M) — 도로 후보를 정렬하는 데 걸리는 시간이 지배적이며, 유니온-파인드 연산은 거의 상수 시간이다."
+  },
+  {
+    "id": "p_daily_20260714_g",
+    "유형": "G",
+    "title": "소식 전달 시간",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 도시와 M개의 단방향 도로가 주어진다. 각 도로는 도시 u에서 도시 v로 소식을 전달하는 데 걸리는 시간 w가 든다. 도시 K에서 출발한 소식이 도로를 통해 전달될 때, N개의 도시 모두(도시 K 자신 포함)에 소식이 도착하는 데 걸리는 최소 시간을 구하시오. 즉, K에서 각 도시까지의 최단 시간 중 가장 큰 값을 출력한다. 만약 어떤 도시에 소식이 도달할 수 없다면 -1을 출력한다.",
+    "constraints": "1 ≤ N ≤ 1000\n0 ≤ M ≤ 10000\n1 ≤ K ≤ N\n각 도로의 소요 시간 w는 1 이상 1000 이하의 정수이다.",
+    "input_format": "첫째 줄에 N, M, K. 이후 M개의 줄에 걸쳐 도로 u, v, w가 공백으로 구분되어 주어진다.",
+    "output_format": "모든 도시에 소식이 도착하는 데 필요한 최소 시간을 출력한다. 도달할 수 없는 도시가 있으면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "4 4 2\n2 1 1\n2 3 1\n3 4 1\n1 4 5\n",
+        "output": "2\n",
+        "explanation": "도시 2에서 출발하면 1까지 1, 3까지 1, 4까지 2(2→3→4) 걸리므로 모든 도시에 소식이 전달되는 데 필요한 시간은 그중 최댓값인 2이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 4 2\n2 1 1\n2 3 1\n3 4 1\n1 4 5\n",
+        "output": "2\n"
+      },
+      {
+        "input": "3 1 1\n1 2 1\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "1 0 1\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2 2 1\n1 2 5\n1 2 2\n",
+        "output": "2\n"
+      },
+      {
+        "input": "5 4 1\n1 2 1\n2 3 1\n3 4 1\n4 5 1\n",
+        "output": "4\n"
+      },
+      {
+        "input": "4 2 1\n1 2 1\n2 3 1\n",
+        "output": "-1\n"
+      }
+    ],
+    "힌트": "도시 K에서 각 도시까지의 최단 시간을 구한 뒤, 그중 가장 오래 걸리는 도시의 시간이 정답이 된다.",
+    "해설": "가중치가 있는 방향 그래프에서 한 출발점 K로부터 모든 정점까지의 최단 거리를 구하는 다익스트라 알고리즘을 사용한다. 계산이 끝난 뒤 도달하지 못한(거리가 무한대인) 도시가 하나라도 있으면 -1을 출력하고, 모두 도달 가능하다면 그 최단 거리들 중 최댓값이 모든 도시에 소식이 전달되는 데 필요한 시간이 된다.",
+    "정답_코드": "def solve():\n    import sys\n    import heapq\n\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); m = int(data[idx + 1]); k = int(data[idx + 2]); idx += 3\n\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(m):\n        u, v, w = int(data[idx]), int(data[idx + 1]), int(data[idx + 2])\n        idx += 3\n        graph[u].append((v, w))\n\n    INF = float(\"inf\")\n    dist = [INF] * (n + 1)\n    dist[k] = 0\n    pq = [(0, k)]\n    while pq:\n        d, u = heapq.heappop(pq)\n        if d > dist[u]:\n            continue\n        for v, w in graph[u]:\n            nd = d + w\n            if nd < dist[v]:\n                dist[v] = nd\n                heapq.heappush(pq, (nd, v))\n\n    if any(dist[i] == INF for i in range(1, n + 1)):\n        print(-1)\n    else:\n        print(max(dist[1:n + 1]))  # 가장 늦게 소식을 받는 도시까지의 시간\n\nsolve()\n",
+    "시간복잡도": "O((N+M) log N) — 우선순위 큐를 사용한 다익스트라 알고리즘을 사용한다."
+  }
+]
