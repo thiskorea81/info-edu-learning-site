@@ -24,8 +24,8 @@ async function doLogout() {
       <RouterLink to="/materials" active-class="active">학습자료</RouterLink>
       <RouterLink to="/" exact-active-class="active">평가</RouterLink>
       <RouterLink to="/problems" active-class="active">코딩테스트</RouterLink>
-      <RouterLink to="/wrong-notes" active-class="active">오답노트</RouterLink>
-      <RouterLink to="/stats" active-class="active">통계</RouterLink>
+      <RouterLink v-if="!isTeacher()" to="/wrong-notes" active-class="active">오답노트</RouterLink>
+      <RouterLink v-if="!isTeacher()" to="/stats" active-class="active">통계</RouterLink>
       <RouterLink v-if="isTeacher()" to="/add-question" active-class="active">문제 등록</RouterLink>
       <RouterLink v-if="isTeacher()" to="/teacher" active-class="active">교사용 관리</RouterLink>
     </nav>

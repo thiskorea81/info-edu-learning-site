@@ -40,14 +40,15 @@ const router = createRouter({
       props: true,
     },
     { path: '/questions/:id', name: 'question-solve', component: QuestionSolve, props: true },
-    { path: '/wrong-notes', name: 'wrong-notes', component: WrongNotes },
+    { path: '/wrong-notes', name: 'wrong-notes', component: WrongNotes, meta: { studentOnly: true } },
     {
       path: '/practice/:standardId',
       name: 'similar-practice',
       component: SimilarPractice,
       props: true,
+      meta: { studentOnly: true },
     },
-    { path: '/stats', name: 'stats', component: Stats },
+    { path: '/stats', name: 'stats', component: Stats, meta: { studentOnly: true } },
     { path: '/problems', name: 'problems', component: ProblemList },
     { path: '/problems/textbook', name: 'problem-textbook', component: ProblemTextbookCategories },
     {
@@ -88,6 +89,9 @@ router.beforeEach((to) => {
     return { name: 'change-password' }
   }
   if (to.meta.teacherOnly && !isTeacher()) {
+    return { name: 'subjects' }
+  }
+  if (to.meta.studentOnly && isTeacher()) {
     return { name: 'subjects' }
   }
   if (to.name === 'login' && isLoggedIn()) {
