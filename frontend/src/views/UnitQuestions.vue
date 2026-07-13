@@ -55,6 +55,8 @@ watch(() => [props.subject, props.unit], load)
         <span class="num">{{ i + 1 }}</span>
         <span class="stem">{{ q.문제 }}</span>
         <span v-if="q.기출" class="badge exam">기출</span>
+        <span v-if="q.AI생성" class="badge ai">AI</span>
+        <span v-if="q.검증" class="badge verified">검증</span>
         <span v-if="q.코드" class="badge code">코드</span>
         <template v-if="isTeacher()">
           <span v-if="itemStats[q.id]?.accuracy !== null" class="badge stat" :class="`grade-${itemStats[q.id].grade}`">
@@ -134,6 +136,19 @@ watch(() => [props.subject, props.unit], load)
   color: #7c3aed;
   border-color: #7c3aed;
   background: rgba(124, 58, 237, 0.1);
+  font-weight: 600;
+}
+
+.badge.ai {
+  color: #0891b2;
+  border-color: #0891b2;
+  background: rgba(8, 145, 178, 0.1);
+}
+
+.badge.verified {
+  color: #16a34a;
+  border-color: #16a34a;
+  background: rgba(22, 163, 74, 0.1);
   font-weight: 600;
 }
 

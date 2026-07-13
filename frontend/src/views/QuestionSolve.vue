@@ -65,6 +65,20 @@ function retry() {
 function goto(id) {
   if (id) router.push(`/questions/${id}`)
 }
+
+const verifying = ref(false)
+
+async function toggleVerified() {
+  verifying.value = true
+  try {
+    await api.patch(`/api/questions/${props.id}/verify`, null, {
+      params: { verified: !question.value.검증 },
+    })
+    question.value.검증 = !question.value.검증
+  } finally {
+    verifying.value = false
+  }
+}
 </script>
 
 <template>
@@ -74,6 +88,8 @@ function goto(id) {
       <span class="sep">·</span>
       <span>{{ question.standard_id }}</span>
       <span v-if="question.기출" class="badge exam">기출</span>
+      <span v-if="question.AI생성" class="badge ai">AI</span>
+      <span v-if="question.검증" class="badge verified">검증</span>
     </div>
 
     <QuestionBody :question="question" />
@@ -127,6 +143,9 @@ function goto(id) {
         </span>
         <span v-else class="not-attempted">아직 응시한 학생이 없습니다 (수강 {{ question.student_count }}명)</span>
         <span v-if="question.needs_attention" class="attention-badge">중점 지도 필요</span>
+        <button class="verify-btn" :disabled="verifying" @click="toggleVerified">
+          {{ question.검증 ? '검증 해제' : '검증 완료로 표시' }}
+        </button>
       </div>
     </div>
 
@@ -152,14 +171,31 @@ function goto(id) {
   margin: 0 6px;
 }
 
-.badge.exam {
+.badge.exam,
+.badge.ai,
+.badge.verified {
   font-size: 11px;
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 999px;
+}
+
+.badge.exam {
   color: #7c3aed;
   border: 1px solid #7c3aed;
   background: rgba(124, 58, 237, 0.1);
+}
+
+.badge.ai {
+  color: #0891b2;
+  border: 1px solid #0891b2;
+  background: rgba(8, 145, 178, 0.1);
+}
+
+.badge.verified {
+  color: #16a34a;
+  border: 1px solid #16a34a;
+  background: rgba(22, 163, 74, 0.1);
 }
 
 .choices {
@@ -263,6 +299,22 @@ function goto(id) {
   color: var(--wrong);
   border: 1px solid var(--wrong);
   background: var(--wrong-bg);
+}
+
+.verify-btn {
+  margin-left: auto;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.verify-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 .pager {

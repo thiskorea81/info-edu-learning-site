@@ -251,6 +251,19 @@ def get_question_teacher_view(
     }
 
 
+@router.patch("/questions/{question_id}/verify")
+def set_question_verification(
+    question_id: str,
+    verified: bool = Query(...),
+    _teacher: User = Depends(require_teacher),
+):
+    """교사가 문항 내용을 확인했음을 표시한다(AI 생성 문항 교차검증 등)."""
+    found = data_loader.set_question_verified(question_id, verified)
+    if not found:
+        raise HTTPException(status_code=404, detail="Question not found")
+    return {"id": question_id, "검증": verified}
+
+
 @router.get("/questions/{question_id}")
 def get_question(question_id: str):
     question = data_loader.get_question(question_id)

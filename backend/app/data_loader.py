@@ -123,6 +123,22 @@ def add_questions(new_questions: list[dict[str, Any]]) -> None:
     reload_data()
 
 
+def set_question_verified(question_id: str, verified: bool) -> bool:
+    """문항이 들어있는 원본 파일을 찾아 검증 여부를 기록한다. 못 찾으면 False."""
+    for path in sorted(QUESTIONS_DIR.glob("*.json")):
+        with open(path, encoding="utf-8") as f:
+            questions = json.load(f)
+        for q in questions:
+            if q.get("id") == question_id:
+                q["검증"] = verified
+                with open(path, "w", encoding="utf-8") as f:
+                    json.dump(questions, f, ensure_ascii=False, indent=2)
+                    f.write("\n")
+                reload_data()
+                return True
+    return False
+
+
 def reload_data() -> None:
     load_standards.cache_clear()
     standards_by_id.cache_clear()
