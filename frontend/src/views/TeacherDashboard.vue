@@ -190,9 +190,33 @@ const behindStandards = computed(() => {
   return onlyBehind.value ? rows.filter((r) => r.solved_students === 0) : rows
 })
 
+const expandedStandard = ref(null)
+const standardItems = ref(null)
+const standardItemsLoading = ref(false)
+
+async function toggleStandardItems(standardId) {
+  if (expandedStandard.value === standardId) {
+    expandedStandard.value = null
+    return
+  }
+  expandedStandard.value = standardId
+  standardItems.value = null
+  standardItemsLoading.value = true
+  try {
+    const { data } = await api.get(
+      `/api/subject-admin/${statsSubject.value.id}/stats-items/${encodeURIComponent(standardId)}`
+    )
+    standardItems.value = data
+  } finally {
+    standardItemsLoading.value = false
+  }
+}
+
 async function selectStatsSubject(s) {
   statsSubject.value = s
   statDetail.value = null
+  expandedStandard.value = null
+  standardItems.value = null
   await Promise.all([loadClassSummary(), loadClassStats()])
 }
 
@@ -477,22 +501,88 @@ onMounted(() => {
               <th>푼 학생</th>
               <th>이론 평균 정답률</th>
               <th>실습 평균 정답률</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in behindStandards" :key="row.standard_id" :class="{ behind: row.solved_students === 0 }">
-              <td class="std-id">{{ row.standard_id }}</td>
-              <td>{{ row.단원 }}</td>
-              <td>{{ row.solved_students }} / {{ classSummary.student_count }}</td>
-              <td>
-                <span v-if="row.avg_accuracy !== null">{{ row.avg_accuracy }}%</span>
-                <span v-else class="not-attempted">미응시</span>
-              </td>
-              <td>
-                <span v-if="row.avg_practice_accuracy !== null">{{ row.avg_practice_accuracy }}%</span>
-                <span v-else class="not-attempted">미응시</span>
-              </td>
-            </tr>
+            <template v-for="row in behindStandards" :key="row.standard_id">
+              <tr :class="{ behind: row.solved_students === 0 }">
+                <td class="std-id">{{ row.standard_id }}</td>
+                <td>{{ row.단원 }}</td>
+                <td>{{ row.solved_students }} / {{ classSummary.student_count }}</td>
+                <td>
+                  <span v-if="row.avg_accuracy !== null">{{ row.avg_accuracy }}%</span>
+                  <span v-else class="not-attempted">미응시</span>
+                </td>
+                <td>
+                  <span v-if="row.avg_practice_accuracy !== null">{{ row.avg_practice_accuracy }}%</span>
+                  <span v-else class="not-attempted">미응시</span>
+                </td>
+                <td class="actions">
+                  <button class="link-btn" @click="toggleStandardItems(row.standard_id)">
+                    {{ expandedStandard === row.standard_id ? '접기' : '문항별 보기' }}
+                  </button>
+                </td>
+              </tr>
+              <tr v-if="expandedStandard === row.standard_id" class="item-detail-row">
+                <td colspan="6">
+                  <p v-if="standardItemsLoading">불러오는 중…</p>
+                  <template v-else-if="standardItems">
+                    <template v-if="standardItems.이론.length">
+                      <h4>이론 문항</h4>
+                      <table class="item-table">
+                        <thead>
+                          <tr>
+                            <th>문항</th>
+                            <th>시도</th>
+                            <th>정답</th>
+                            <th>정답률</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="item in standardItems.이론" :key="item.id">
+                            <td class="item-text">{{ item.문항 }}</td>
+                            <td>{{ item.attempted }} / {{ classSummary.student_count }}</td>
+                            <td>{{ item.correct }}</td>
+                            <td>
+                              <span v-if="item.accuracy !== null">{{ item.accuracy }}%</span>
+                              <span v-else class="not-attempted">미응시</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </template>
+                    <template v-if="standardItems.실습.length">
+                      <h4>실습 문제</h4>
+                      <table class="item-table">
+                        <thead>
+                          <tr>
+                            <th>문제</th>
+                            <th>시도</th>
+                            <th>정답(AC)</th>
+                            <th>정답률</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="item in standardItems.실습" :key="item.id">
+                            <td class="item-text">{{ item.제목 }}</td>
+                            <td>{{ item.attempted }} / {{ classSummary.student_count }}</td>
+                            <td>{{ item.correct }}</td>
+                            <td>
+                              <span v-if="item.accuracy !== null">{{ item.accuracy }}%</span>
+                              <span v-else class="not-attempted">미응시</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </template>
+                    <p v-if="!standardItems.이론.length && !standardItems.실습.length" class="empty">
+                      이 성취기준에 등록된 문항/문제가 없습니다.
+                    </p>
+                  </template>
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
         <p v-else class="empty">해당하는 성취기준이 없습니다.</p>
@@ -669,6 +759,28 @@ h3 {
 
 tr.behind {
   background: var(--wrong-bg, rgba(220, 38, 38, 0.08));
+}
+
+.item-detail-row td {
+  background: var(--bg-soft);
+  padding: 14px 18px;
+}
+
+.item-detail-row h4 {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.item-detail-row h4:not(:first-child) {
+  margin-top: 16px;
+}
+
+.item-table {
+  font-size: 12px;
+}
+
+.item-text {
+  max-width: 420px;
 }
 
 .panel {
