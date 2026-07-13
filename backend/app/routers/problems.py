@@ -21,16 +21,21 @@ def _letter(difficulty: str | None) -> str:
     return _DIFFICULTY_LETTER.get(difficulty or "", "?")
 
 
-def _category_of(problem: dict[str, Any]) -> str:
+def _category_of(problem: dict[str, Any]) -> str | None:
+    """1차 분류: 기본 예제 / 일일 문제 / 교과서(성취기준)만 판단한다.
+    유형(A~G)은 이 분류와 무관하게 _type_of()로 별도 판단하며, 한 문제가
+    1차 카테고리와 유형 카테고리에 동시에 속할 수 있다(예: 일일 문제이면서 C형)."""
     source = problem.get("source") or ""
     if source == "basic_problems":
         return "basic"
     if source.startswith("daily_"):
         return "daily"
+    return problem.get("standard_id") or None
+
+
+def _type_of(problem: dict[str, Any]) -> str | None:
     유형 = problem.get("유형")
-    if 유형 in TYPE_ORDER:
-        return f"type_{유형}"
-    return problem.get("standard_id") or "기타"
+    return 유형 if 유형 in TYPE_ORDER else None
 
 
 def _public(problem: dict[str, Any]) -> dict[str, Any]:
@@ -49,7 +54,11 @@ def list_problems(
     if standard_id:
         problems = [p for p in problems if p.get("standard_id") == standard_id]
     if category:
-        problems = [p for p in problems if _category_of(p) == category]
+        if category.startswith("type_"):
+            letter = category.removeprefix("type_")
+            problems = [p for p in problems if _type_of(p) == letter]
+        else:
+            problems = [p for p in problems if _category_of(p) == category]
     return [_public(p) for p in problems]
 
 
@@ -57,12 +66,24 @@ def _counts_by_category() -> dict[str, int]:
     counts: dict[str, int] = {}
     for p in data_loader.list_problems():
         key = _category_of(p)
+        if key is None:
+            continue
         counts[key] = counts.get(key, 0) + 1
     return counts
 
 
+def _counts_by_type() -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for p in data_loader.list_problems():
+        letter = _type_of(p)
+        if letter is None:
+            continue
+        counts[letter] = counts.get(letter, 0) + 1
+    return counts
+
+
 def _standard_keys(counts: dict[str, int]) -> list[str]:
-    return sorted(k for k in counts if k not in ("basic", "daily") and not k.startswith("type_"))
+    return sorted(k for k in counts if k not in ("basic", "daily"))
 
 
 def _standard_category(key: str, counts: dict[str, int], standards_index: dict[str, Any]) -> dict[str, Any]:
@@ -78,8 +99,8 @@ def _standard_category(key: str, counts: dict[str, int], standards_index: dict[s
 @router.get("/categories")
 def list_categories():
     counts = _counts_by_category()
+    type_counts = _counts_by_type()
     standard_keys = _standard_keys(counts)
-    type_keys = [f"type_{letter}" for letter in TYPE_ORDER if f"type_{letter}" in counts]
 
     result: list[dict[str, Any]] = []
     if "basic" in counts:
@@ -97,9 +118,11 @@ def list_categories():
                 "folder": True,
             }
         )
-    for key in type_keys:
-        letter = key.removeprefix("type_")
-        result.append({"key": key, "label": f"{letter}형 문제", "count": counts[key]})
+    for letter in TYPE_ORDER:
+        if letter in type_counts:
+            result.append(
+                {"key": f"type_{letter}", "label": f"{letter}형 문제", "count": type_counts[letter]}
+            )
     return result
 
 
