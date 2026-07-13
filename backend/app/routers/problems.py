@@ -4,8 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from .. import data_loader
+from ..auth import get_current_user
 from ..database import get_db
-from ..models import Submission
+from ..models import Submission, User
 from ..runner import execute_python, normalize_output
 from ..schemas import SubmitCodeRequest, SubmitResult, TestCaseResult
 
@@ -142,7 +143,12 @@ def get_problem(problem_id: str):
 
 
 @router.post("/{problem_id}/submit", response_model=SubmitResult)
-def submit(problem_id: str, payload: SubmitCodeRequest, db: Session = Depends(get_db)):
+def submit(
+    problem_id: str,
+    payload: SubmitCodeRequest,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
     problem = data_loader.get_problem(problem_id)
     if problem is None:
         raise HTTPException(status_code=404, detail="Problem not found")
@@ -181,6 +187,7 @@ def submit(problem_id: str, payload: SubmitCodeRequest, db: Session = Depends(ge
     overall = "AC" if passed == len(tests) else next(c.verdict for c in cases if c.verdict != "AC")
 
     submission = Submission(
+        user_id=user.id,
         problem_id=problem_id,
         code=payload.code,
         verdict=overall,
@@ -194,10 +201,14 @@ def submit(problem_id: str, payload: SubmitCodeRequest, db: Session = Depends(ge
 
 
 @router.get("/{problem_id}/submissions")
-def list_submissions(problem_id: str, db: Session = Depends(get_db)):
+def list_submissions(
+    problem_id: str,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
     return (
         db.query(Submission)
-        .filter(Submission.problem_id == problem_id)
+        .filter(Submission.problem_id == problem_id, Submission.user_id == user.id)
         .order_by(Submission.id.desc())
         .all()
     )

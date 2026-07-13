@@ -1,9 +1,17 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { useRouter, RouterLink, RouterView } from 'vue-router'
+import { authState, isLoggedIn, isTeacher, logout } from './auth'
+
+const router = useRouter()
+
+async function doLogout() {
+  await logout()
+  router.push({ name: 'login' })
+}
 </script>
 
 <template>
-  <header class="topbar">
+  <header v-if="isLoggedIn()" class="topbar">
     <RouterLink to="/" class="brand">정보교육학습사이트</RouterLink>
     <nav>
       <RouterLink to="/materials" active-class="active">학습자료</RouterLink>
@@ -12,7 +20,12 @@ import { RouterLink, RouterView } from 'vue-router'
       <RouterLink to="/wrong-notes" active-class="active">오답노트</RouterLink>
       <RouterLink to="/stats" active-class="active">통계</RouterLink>
       <RouterLink to="/add-question" active-class="active">문제 등록</RouterLink>
+      <RouterLink v-if="isTeacher()" to="/teacher" active-class="active">교사용 관리</RouterLink>
     </nav>
+    <div class="user-box">
+      <span class="user-name">{{ authState.user?.name }}{{ isTeacher() ? '(교사)' : '' }}</span>
+      <button class="logout-btn" @click="doLogout">로그아웃</button>
+    </div>
   </header>
   <main>
     <RouterView />
@@ -26,6 +39,7 @@ import { RouterLink, RouterView } from 'vue-router'
   justify-content: space-between;
   padding: 16px 24px;
   border-bottom: 1px solid var(--border);
+  gap: 16px;
 }
 
 .brand {
@@ -33,11 +47,14 @@ import { RouterLink, RouterView } from 'vue-router'
   font-size: 18px;
   text-decoration: none;
   color: var(--text-h);
+  white-space: nowrap;
 }
 
 nav {
   display: flex;
   gap: 20px;
+  flex: 1;
+  flex-wrap: wrap;
 }
 
 nav a {
@@ -51,6 +68,33 @@ nav a {
 nav a.active {
   color: var(--text-h);
   border-bottom-color: var(--accent);
+}
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.user-name {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.logout-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: none;
+  color: var(--text-dim);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  color: var(--text-h);
+  border-color: var(--accent-border);
 }
 
 main {

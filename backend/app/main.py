@@ -2,18 +2,22 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .database import Base, engine
+from .migrations import run_migrations
 from .routers import (
     attempts,
+    auth,
     code_runner,
     exams,
     materials,
     problems,
+    roster,
     stats,
     subjects,
     unit_reports,
 )
 
 Base.metadata.create_all(bind=engine)
+run_migrations(engine)
 
 app = FastAPI(title="정보교육학습사이트")
 
@@ -24,6 +28,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router)
+app.include_router(roster.router)
 app.include_router(exams.router)
 app.include_router(attempts.router)
 app.include_router(stats.router)

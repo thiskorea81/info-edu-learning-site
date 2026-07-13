@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { isLoggedIn, isTeacher } from '../auth'
+import Login from '../views/Login.vue'
+import TeacherDashboard from '../views/TeacherDashboard.vue'
 import SubjectList from '../views/SubjectList.vue'
 import UnitList from '../views/UnitList.vue'
 import UnitQuestions from '../views/UnitQuestions.vue'
@@ -19,6 +22,13 @@ import MaterialDetail from '../views/MaterialDetail.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    { path: '/login', name: 'login', component: Login, meta: { public: true } },
+    {
+      path: '/teacher',
+      name: 'teacher-dashboard',
+      component: TeacherDashboard,
+      meta: { teacherOnly: true },
+    },
     { path: '/', name: 'subjects', component: SubjectList },
     { path: '/subjects/:subject', name: 'subject-units', component: UnitList, props: true },
     {
@@ -66,6 +76,19 @@ const router = createRouter({
       props: true,
     },
   ],
+})
+
+router.beforeEach((to) => {
+  if (!to.meta.public && !isLoggedIn()) {
+    return { name: 'login', query: { redirect: to.fullPath } }
+  }
+  if (to.meta.teacherOnly && !isTeacher()) {
+    return { name: 'subjects' }
+  }
+  if (to.name === 'login' && isLoggedIn()) {
+    return { name: 'subjects' }
+  }
+  return true
 })
 
 export default router

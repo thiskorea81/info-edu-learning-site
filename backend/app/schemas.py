@@ -3,6 +3,36 @@ from typing import Any
 from pydantic import BaseModel, field_validator
 
 
+class LoginRequest(BaseModel):
+    name: str
+    number: str
+
+
+class UserPublic(BaseModel):
+    id: int
+    name: str
+    number: str
+    role: str
+
+
+class LoginResponse(BaseModel):
+    token: str
+    user: UserPublic
+
+
+class RosterCreate(BaseModel):
+    name: str
+    number: str
+    role: str = "student"
+
+    @field_validator("role")
+    @classmethod
+    def _check_role(cls, v: str) -> str:
+        if v not in ("student", "teacher"):
+            raise ValueError("role은 student 또는 teacher여야 합니다")
+        return v
+
+
 class AttemptCreate(BaseModel):
     question_id: str
     selected: int

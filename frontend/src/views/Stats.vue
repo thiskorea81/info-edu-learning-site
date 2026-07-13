@@ -11,7 +11,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h1>학습 통계</h1>
+  <h1>내 학습 통계</h1>
 
   <div v-if="stats" class="kpi-row">
     <div class="kpi">
