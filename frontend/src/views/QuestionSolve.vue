@@ -73,6 +73,7 @@ function goto(id) {
       <span>{{ question.내용영역 }}</span>
       <span class="sep">·</span>
       <span>{{ question.standard_id }}</span>
+      <span v-if="question.기출" class="badge exam">기출</span>
     </div>
 
     <QuestionBody :question="question" />
@@ -142,10 +143,23 @@ function goto(id) {
   font-size: 13px;
   color: var(--text-dim);
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .sep {
   margin: 0 6px;
+}
+
+.badge.exam {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #7c3aed;
+  border: 1px solid #7c3aed;
+  background: rgba(124, 58, 237, 0.1);
 }
 
 .choices {
