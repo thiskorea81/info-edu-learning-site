@@ -110,7 +110,12 @@ def get_stats(db: Session = Depends(get_db), user: User = Depends(get_current_us
 @router.get("/roster")
 def get_roster_stats(db: Session = Depends(get_db), _teacher: User = Depends(require_teacher)):
     """교사용: 학생별 요약 성취도(전체 정답률·종합 등급)를 한 번에 보여준다."""
-    students = db.query(User).filter(User.role == "student").order_by(User.number).all()
+    students = (
+        db.query(User)
+        .filter(User.role == "student", User.is_archived == False)  # noqa: E712
+        .order_by(User.login_id)
+        .all()
+    )
     result = []
     for student in students:
         stats = _compute_stats(db, student.id)
@@ -122,7 +127,7 @@ def get_roster_stats(db: Session = Depends(get_db), _teacher: User = Depends(req
             {
                 "id": student.id,
                 "name": student.name,
-                "number": student.number,
+                "login_id": student.login_id,
                 "solved": stats["solved"],
                 "accuracy": stats["accuracy"],
                 "standards_attempted": len(overall_parts),
@@ -144,4 +149,4 @@ def get_student_stats(
     if student is None:
         raise HTTPException(status_code=404, detail="학생을 찾을 수 없습니다")
     stats = _compute_stats(db, student.id)
-    return {"student": {"id": student.id, "name": student.name, "number": student.number}, **stats}
+    return {"student": {"id": student.id, "name": student.name, "login_id": student.login_id}, **stats}

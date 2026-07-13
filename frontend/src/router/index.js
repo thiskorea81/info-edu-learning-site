@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { isLoggedIn, isTeacher } from '../auth'
+import { isLoggedIn, isTeacher, mustChangePassword } from '../auth'
 import Login from '../views/Login.vue'
+import ChangePassword from '../views/ChangePassword.vue'
 import TeacherDashboard from '../views/TeacherDashboard.vue'
 import SubjectList from '../views/SubjectList.vue'
 import UnitList from '../views/UnitList.vue'
@@ -23,6 +24,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/login', name: 'login', component: Login, meta: { public: true } },
+    { path: '/change-password', name: 'change-password', component: ChangePassword },
     {
       path: '/teacher',
       name: 'teacher-dashboard',
@@ -81,6 +83,9 @@ const router = createRouter({
 router.beforeEach((to) => {
   if (!to.meta.public && !isLoggedIn()) {
     return { name: 'login', query: { redirect: to.fullPath } }
+  }
+  if (isLoggedIn() && mustChangePassword() && to.name !== 'change-password') {
+    return { name: 'change-password' }
   }
   if (to.meta.teacherOnly && !isTeacher()) {
     return { name: 'subjects' }

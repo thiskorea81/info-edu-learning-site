@@ -1,25 +1,29 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { login } from '../auth'
+import { login, mustChangePassword } from '../auth'
 
 const router = useRouter()
 const route = useRoute()
 
-const name = ref('')
-const number = ref('')
+const loginId = ref('')
+const password = ref('')
 const error = ref('')
 const loading = ref(false)
 
 async function submit() {
-  if (!name.value.trim() || !number.value.trim()) {
-    error.value = '이름과 번호를 모두 입력해 주세요.'
+  if (!loginId.value.trim() || !password.value.trim()) {
+    error.value = '아이디와 비밀번호를 모두 입력해 주세요.'
     return
   }
   error.value = ''
   loading.value = true
   try {
-    await login(name.value.trim(), number.value.trim())
+    await login(loginId.value.trim(), password.value.trim())
+    if (mustChangePassword()) {
+      router.replace({ name: 'change-password' })
+      return
+    }
     const redirect = route.query.redirect || '/'
     router.replace(redirect)
   } catch (e) {
@@ -34,15 +38,15 @@ async function submit() {
   <div class="login-wrap">
     <form class="login-card" @submit.prevent="submit">
       <h1>정보교육학습사이트</h1>
-      <p class="hint">이름과 번호를 입력해 로그인하세요.</p>
+      <p class="hint">학번(교사는 교사ID)과 비밀번호를 입력해 로그인하세요.</p>
 
       <label>
-        이름
-        <input v-model="name" type="text" autocomplete="name" placeholder="예: 김민준" />
+        아이디
+        <input v-model="loginId" type="text" autocomplete="username" placeholder="예: 30101" />
       </label>
       <label>
-        번호
-        <input v-model="number" type="text" inputmode="numeric" placeholder="예: 1" />
+        비밀번호
+        <input v-model="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="예: 1234" />
       </label>
 
       <p v-if="error" class="error">{{ error }}</p>

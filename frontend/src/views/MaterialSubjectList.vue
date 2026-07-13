@@ -18,6 +18,7 @@ onMounted(async () => {
   <p class="hint">교과서처럼 개념을 차근차근 설명합니다. 과목을 선택해 단원별로 살펴보세요.</p>
 
   <p v-if="loading">불러오는 중…</p>
+  <p v-else-if="!subjects.length" class="empty">수강 중인 과목이 없습니다. 선생님께 문의해 주세요.</p>
   <div v-else class="grid">
     <RouterLink
       v-for="s in subjects"
@@ -65,5 +66,10 @@ onMounted(async () => {
 .meta {
   font-size: 13px;
   color: var(--text-dim);
+}
+
+.empty {
+  color: var(--text-dim);
+  font-size: 13px;
 }
 </style>

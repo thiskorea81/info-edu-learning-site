@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .database import Base, engine
-from .migrations import run_migrations
+from .migrations import run_migrations, run_pre_create_migrations
 from .routers import (
     attempts,
     auth,
@@ -12,10 +12,12 @@ from .routers import (
     problems,
     roster,
     stats,
+    subject_admin,
     subjects,
     unit_reports,
 )
 
+run_pre_create_migrations(engine)
 Base.metadata.create_all(bind=engine)
 run_migrations(engine)
 
@@ -30,6 +32,7 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(roster.router)
+app.include_router(subject_admin.router)
 app.include_router(exams.router)
 app.include_router(attempts.router)
 app.include_router(stats.router)

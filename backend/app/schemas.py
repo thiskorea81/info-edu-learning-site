@@ -1,18 +1,30 @@
+import re
 from typing import Any
 
 from pydantic import BaseModel, field_validator
 
+_PASSWORD_RE = re.compile(r"^\d{4}$")
+
+
+def _check_password_format(v: str) -> str:
+    if not _PASSWORD_RE.match(v):
+        raise ValueError("비밀번호는 숫자 4자리여야 합니다")
+    return v
+
 
 class LoginRequest(BaseModel):
-    name: str
-    number: str
+    login_id: str
+    password: str
 
 
 class UserPublic(BaseModel):
     id: int
+    login_id: str
     name: str
-    number: str
     role: str
+    is_admin: bool
+    is_archived: bool
+    must_change_password: bool
 
 
 class LoginResponse(BaseModel):
@@ -20,10 +32,20 @@ class LoginResponse(BaseModel):
     user: UserPublic
 
 
+class ChangePasswordRequest(BaseModel):
+    new_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def _check_new_password(cls, v: str) -> str:
+        return _check_password_format(v)
+
+
 class RosterCreate(BaseModel):
+    login_id: str
     name: str
-    number: str
     role: str = "student"
+    is_admin: bool = False
 
     @field_validator("role")
     @classmethod
@@ -31,6 +53,42 @@ class RosterCreate(BaseModel):
         if v not in ("student", "teacher"):
             raise ValueError("role은 student 또는 teacher여야 합니다")
         return v
+
+
+class RosterBulkCreate(BaseModel):
+    text: str  # 스프레드시트에서 복사한 여러 줄. 한 줄에 "학번<TAB 또는 ,>이름"
+
+
+class RosterBulkItemResult(BaseModel):
+    line: str
+    status: str  # "created" | "skipped" | "error"
+    reason: str | None = None
+
+
+class RosterBulkResult(BaseModel):
+    total: int
+    created: int
+    skipped: int
+    results: list[RosterBulkItemResult]
+
+
+class SubjectPublic(BaseModel):
+    id: int
+    name: str
+    teacher_id: int
+    teacher_name: str
+    is_archived: bool
+    student_count: int
+
+
+class EnrollRequest(BaseModel):
+    login_ids: list[str]
+
+
+class EnrollResult(BaseModel):
+    enrolled: list[str]
+    not_found: list[str]
+    already_enrolled: list[str]
 
 
 class AttemptCreate(BaseModel):

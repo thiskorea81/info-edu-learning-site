@@ -18,6 +18,7 @@ onMounted(async () => {
   <p class="hint">기출문제를 풀며 이해도를 평가해보세요. 결과는 오답노트와 통계에 반영됩니다.</p>
 
   <p v-if="loading">불러오는 중…</p>
+  <p v-else-if="!subjects.length" class="empty">수강 중인 과목이 없습니다. 선생님께 문의해 주세요.</p>
   <div v-else class="grid">
     <RouterLink
       v-for="s in subjects"
@@ -65,5 +66,10 @@ onMounted(async () => {
 .meta {
   font-size: 13px;
   color: var(--text-dim);
+}
+
+.empty {
+  color: var(--text-dim);
+  font-size: 13px;
 }
 </style>

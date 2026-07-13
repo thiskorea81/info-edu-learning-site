@@ -19,12 +19,29 @@ export function isTeacher() {
   return authState.user?.role === 'teacher'
 }
 
-export async function login(name, number) {
-  const { data } = await api.post('/api/auth/login', { name, number })
+export function isAdmin() {
+  return !!authState.user?.is_admin
+}
+
+export function mustChangePassword() {
+  return !!authState.user?.must_change_password
+}
+
+function persist(user) {
+  authState.user = user
+  localStorage.setItem('user', JSON.stringify(user))
+}
+
+export async function login(loginId, password) {
+  const { data } = await api.post('/api/auth/login', { login_id: loginId, password })
   authState.token = data.token
-  authState.user = data.user
   localStorage.setItem('token', data.token)
-  localStorage.setItem('user', JSON.stringify(data.user))
+  persist(data.user)
+}
+
+export async function changePassword(newPassword) {
+  const { data } = await api.post('/api/auth/change-password', { new_password: newPassword })
+  persist(data)
 }
 
 export async function logout() {

@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter, RouterLink, RouterView } from 'vue-router'
-import { authState, isLoggedIn, isTeacher, logout } from './auth'
+import { authState, isLoggedIn, isTeacher, isAdmin, logout } from './auth'
 
 const router = useRouter()
 
@@ -23,7 +23,8 @@ async function doLogout() {
       <RouterLink v-if="isTeacher()" to="/teacher" active-class="active">교사용 관리</RouterLink>
     </nav>
     <div class="user-box">
-      <span class="user-name">{{ authState.user?.name }}{{ isTeacher() ? '(교사)' : '' }}</span>
+      <span class="user-name">{{ authState.user?.name }}({{ authState.user?.login_id }}){{ isTeacher() ? (isAdmin() ? ' 관리자' : ' 교사') : '' }}</span>
+      <RouterLink to="/change-password" class="change-pw-btn">비밀번호 변경</RouterLink>
       <button class="logout-btn" @click="doLogout">로그아웃</button>
     </div>
   </header>
@@ -82,6 +83,7 @@ nav a.active {
   color: var(--text-dim);
 }
 
+.change-pw-btn,
 .logout-btn {
   padding: 6px 12px;
   border: 1px solid var(--border);
@@ -90,8 +92,11 @@ nav a.active {
   color: var(--text-dim);
   font-size: 13px;
   cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
+.change-pw-btn:hover,
 .logout-btn:hover {
   color: var(--text-h);
   border-color: var(--accent-border);
