@@ -1,11 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from .. import data_loader
-from ..auth import get_current_user, require_teacher
+from ..auth import get_current_user
 from ..database import get_db
 from ..models import Attempt, Submission, User
+from .subjects import _enrolled_subject_names
 
 router = APIRouter(prefix="/api/stats", tags=["stats"])
 
@@ -19,7 +20,18 @@ def _grade(percent: float) -> str:
     return "E"
 
 
-def _compute_stats(db: Session, user_id: int) -> dict:
+def _compute_stats(db: Session, user_id: int, subjects: set[str] | None = None) -> dict:
+    """subjects가 주어지면 해당 교과(들)의 성취기준으로만 범위를 좁혀 집계한다.
+    한 학생이 여러 과목을 수강할 수 있으므로, 과목을 섞어 하나의 등급으로
+    뭉뚱그리지 않도록 by_subject에 과목별 종합 등급을 별도로 담는다."""
+    standards_index = data_loader.standards_by_id()
+
+    def subject_of(standard_id: str) -> str:
+        return standards_index.get(standard_id, {}).get("교과", "")
+
+    def in_scope(standard_id: str) -> bool:
+        return subjects is None or subject_of(standard_id) in subjects
+
     # 이론(객관식) 문항별 최신 시도 (해당 사용자 것만)
     theory_subq = (
         select(Attempt.question_id, func.max(Attempt.id).label("max_id"))
@@ -27,7 +39,11 @@ def _compute_stats(db: Session, user_id: int) -> dict:
         .group_by(Attempt.question_id)
         .subquery()
     )
-    latest_theory = db.query(Attempt).join(theory_subq, Attempt.id == theory_subq.c.max_id).all()
+    latest_theory = [
+        a
+        for a in db.query(Attempt).join(theory_subq, Attempt.id == theory_subq.c.max_id).all()
+        if in_scope(a.standard_id)
+    ]
 
     # 실습(코딩테스트) 문제별 최신 제출 (해당 사용자 것만)
     practice_subq = (
@@ -41,9 +57,10 @@ def _compute_stats(db: Session, user_id: int) -> dict:
     )
 
     problems_by_id = data_loader.load_problems()
-    standards_index = data_loader.standards_by_id()
 
-    total_questions = len(data_loader.all_questions())
+    total_questions = sum(
+        1 for q in data_loader.all_questions() if in_scope(q.get("standard_id", ""))
+    )
     solved = len(latest_theory)
     correct = sum(1 for a in latest_theory if a.is_correct)
 
@@ -54,6 +71,7 @@ def _compute_stats(db: Session, user_id: int) -> dict:
             standard_id,
             {
                 "standard_id": standard_id,
+                "교과": subject_of(standard_id),
                 "성취기준명": standards_index.get(standard_id, {}).get("성취기준명", ""),
                 "단원": standards_index.get(standard_id, {}).get("단원", ""),
                 "solved": 0,
@@ -71,8 +89,8 @@ def _compute_stats(db: Session, user_id: int) -> dict:
     for s in latest_practice:
         problem = problems_by_id.get(s.problem_id)
         standard_id = problem.get("standard_id") if problem else None
-        if not standard_id:
-            continue  # 기본예제/일일문제 등 성취기준이 없는 문제는 성취도 집계에서 제외
+        if not standard_id or not in_scope(standard_id):
+            continue  # 기본예제/일일문제 등 성취기준이 없거나 범위 밖인 문제는 제외
         entry = entry_for(standard_id)
         entry["practice_attempted"] += 1
         entry["practice_correct"] += 1 if s.verdict == "AC" else 0
@@ -93,60 +111,68 @@ def _compute_stats(db: Session, user_id: int) -> dict:
         entry["achievement"] = round(combined, 1) if combined is not None else None
         entry["grade"] = _grade(combined) if combined is not None else None
 
+    # 과목별 종합 등급: 여러 과목을 수강하는 학생도 과목마다 따로 판정한다.
+    by_subject: dict[str, dict] = {}
+    if subjects is not None:
+        for name in subjects:
+            by_subject[name] = {
+                "교과": name,
+                "solved": 0,
+                "correct": 0,
+                "practice_attempted": 0,
+                "practice_correct": 0,
+                "standards_attempted": 0,
+                "achievement": None,
+                "grade": None,
+            }
+    achievement_parts: dict[str, list[float]] = {}
+    for entry in by_standard.values():
+        subj = entry["교과"]
+        agg = by_subject.setdefault(
+            subj,
+            {
+                "교과": subj,
+                "solved": 0,
+                "correct": 0,
+                "practice_attempted": 0,
+                "practice_correct": 0,
+                "standards_attempted": 0,
+                "achievement": None,
+                "grade": None,
+            },
+        )
+        agg["solved"] += entry["solved"]
+        agg["correct"] += entry["correct"]
+        agg["practice_attempted"] += entry["practice_attempted"]
+        agg["practice_correct"] += entry["practice_correct"]
+        if entry["solved"] or entry["practice_attempted"]:
+            agg["standards_attempted"] += 1
+        if entry["achievement"] is not None:
+            achievement_parts.setdefault(subj, []).append(entry["achievement"])
+
+    for subj, agg in by_subject.items():
+        agg["accuracy"] = round(agg["correct"] / agg["solved"] * 100, 1) if agg["solved"] else 0.0
+        agg["practice_accuracy"] = (
+            round(agg["practice_correct"] / agg["practice_attempted"] * 100, 1)
+            if agg["practice_attempted"]
+            else 0.0
+        )
+        parts = achievement_parts.get(subj, [])
+        overall = round(sum(parts) / len(parts), 1) if parts else None
+        agg["achievement"] = overall
+        agg["grade"] = _grade(overall) if overall is not None else None
+
     return {
         "total_questions": total_questions,
         "solved": solved,
         "correct": correct,
         "accuracy": round(correct / solved * 100, 1) if solved else 0.0,
         "by_standard": sorted(by_standard.values(), key=lambda e: e["standard_id"]),
+        "by_subject": sorted(by_subject.values(), key=lambda e: e["교과"]),
     }
 
 
 @router.get("")
 def get_stats(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    return _compute_stats(db, user.id)
-
-
-@router.get("/roster")
-def get_roster_stats(db: Session = Depends(get_db), _teacher: User = Depends(require_teacher)):
-    """교사용: 학생별 요약 성취도(전체 정답률·종합 등급)를 한 번에 보여준다."""
-    students = (
-        db.query(User)
-        .filter(User.role == "student", User.is_archived == False)  # noqa: E712
-        .order_by(User.login_id)
-        .all()
-    )
-    result = []
-    for student in students:
-        stats = _compute_stats(db, student.id)
-        overall_parts = [
-            e["achievement"] for e in stats["by_standard"] if e["achievement"] is not None
-        ]
-        overall = round(sum(overall_parts) / len(overall_parts), 1) if overall_parts else None
-        result.append(
-            {
-                "id": student.id,
-                "name": student.name,
-                "login_id": student.login_id,
-                "solved": stats["solved"],
-                "accuracy": stats["accuracy"],
-                "standards_attempted": len(overall_parts),
-                "achievement": overall,
-                "grade": _grade(overall) if overall is not None else None,
-            }
-        )
-    return result
-
-
-@router.get("/roster/{user_id}")
-def get_student_stats(
-    user_id: int,
-    db: Session = Depends(get_db),
-    _teacher: User = Depends(require_teacher),
-):
-    """교사용: 특정 학생의 성취기준별 상세 성취도(개인 /api/stats와 같은 형식)."""
-    student = db.get(User, user_id)
-    if student is None:
-        raise HTTPException(status_code=404, detail="학생을 찾을 수 없습니다")
-    stats = _compute_stats(db, student.id)
-    return {"student": {"id": student.id, "name": student.name, "login_id": student.login_id}, **stats}
+    subjects = _enrolled_subject_names(db, user) if user.role == "student" else None
+    return _compute_stats(db, user.id, subjects=subjects)

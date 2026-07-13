@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import api from '../api'
 
 const stats = ref(null)
@@ -7,6 +7,14 @@ const stats = ref(null)
 onMounted(async () => {
   const { data } = await api.get('/api/stats')
   stats.value = data
+})
+
+const groupsBySubject = computed(() => {
+  if (!stats.value) return []
+  return stats.value.by_subject.map((subj) => ({
+    ...subj,
+    rows: stats.value.by_standard.filter((row) => row.교과 === subj.교과),
+  }))
 })
 </script>
 
@@ -32,49 +40,56 @@ onMounted(async () => {
     </div>
   </div>
 
-  <h2 v-if="stats">성취기준별 성취도</h2>
-  <table v-if="stats && stats.by_standard.length">
-    <thead>
-      <tr>
-        <th>성취기준</th>
-        <th>단원</th>
-        <th>이론</th>
-        <th>실습</th>
-        <th>종합 등급</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="row in stats.by_standard" :key="row.standard_id">
-        <td class="std-id">{{ row.standard_id }}</td>
-        <td>{{ row.단원 }}</td>
-        <td class="acc-cell">
-          <template v-if="row.solved">
-            <div class="bar-track">
-              <div class="bar-fill" :style="{ width: row.accuracy + '%' }"></div>
-            </div>
-            <span class="acc-text">{{ row.correct }}/{{ row.solved }} ({{ row.accuracy }}%)</span>
-          </template>
-          <span v-else class="not-attempted">미응시</span>
-        </td>
-        <td class="acc-cell">
-          <template v-if="row.practice_attempted">
-            <div class="bar-track">
-              <div class="bar-fill" :style="{ width: row.practice_accuracy + '%' }"></div>
-            </div>
-            <span class="acc-text">
-              {{ row.practice_correct }}/{{ row.practice_attempted }} ({{ row.practice_accuracy }}%)
-            </span>
-          </template>
-          <span v-else class="not-attempted">미응시</span>
-        </td>
-        <td class="grade-cell">
-          <span v-if="row.grade" class="grade-badge" :class="`grade-${row.grade}`">{{ row.grade }}</span>
-          <span v-else class="not-attempted">-</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <p v-else-if="stats" class="empty">아직 푼 문제가 없습니다.</p>
+  <template v-if="stats">
+    <p v-if="!groupsBySubject.length" class="empty">아직 푼 문제가 없습니다.</p>
+    <section v-for="group in groupsBySubject" :key="group.교과" class="subject-group">
+      <div class="subject-head">
+        <h2>{{ group.교과 }}</h2>
+        <span v-if="group.grade" class="grade-badge" :class="`grade-${group.grade}`">{{ group.grade }}</span>
+      </div>
+      <table v-if="group.rows.length">
+        <thead>
+          <tr>
+            <th>성취기준</th>
+            <th>단원</th>
+            <th>이론</th>
+            <th>실습</th>
+            <th>종합 등급</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in group.rows" :key="row.standard_id">
+            <td class="std-id">{{ row.standard_id }}</td>
+            <td>{{ row.단원 }}</td>
+            <td class="acc-cell">
+              <template v-if="row.solved">
+                <div class="bar-track">
+                  <div class="bar-fill" :style="{ width: row.accuracy + '%' }"></div>
+                </div>
+                <span class="acc-text">{{ row.correct }}/{{ row.solved }} ({{ row.accuracy }}%)</span>
+              </template>
+              <span v-else class="not-attempted">미응시</span>
+            </td>
+            <td class="acc-cell">
+              <template v-if="row.practice_attempted">
+                <div class="bar-track">
+                  <div class="bar-fill" :style="{ width: row.practice_accuracy + '%' }"></div>
+                </div>
+                <span class="acc-text">
+                  {{ row.practice_correct }}/{{ row.practice_attempted }} ({{ row.practice_accuracy }}%)
+                </span>
+              </template>
+              <span v-else class="not-attempted">미응시</span>
+            </td>
+            <td class="grade-cell">
+              <span v-if="row.grade" class="grade-badge" :class="`grade-${row.grade}`">{{ row.grade }}</span>
+              <span v-else class="not-attempted">-</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </template>
 </template>
 
 <style scoped>
@@ -206,5 +221,20 @@ onMounted(async () => {
 
 .empty {
   color: var(--text-dim);
+}
+
+.subject-group {
+  margin-bottom: 28px;
+}
+
+.subject-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.subject-head h2 {
+  margin: 0;
 }
 </style>

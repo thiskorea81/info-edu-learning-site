@@ -5,6 +5,7 @@ from ..auth import require_admin, require_teacher
 from ..database import get_db
 from ..models import Enrollment, Subject, User
 from ..schemas import EnrollRequest, EnrollResult, SubjectPublic, UserPublic
+from .stats import _compute_stats
 
 router = APIRouter(prefix="/api/subject-admin", tags=["subject-admin"])
 
@@ -151,3 +152,62 @@ def unenroll_student(
     if not deleted:
         raise HTTPException(status_code=404, detail="수강 정보를 찾을 수 없습니다")
     return {"status": "removed"}
+
+
+@router.get("/{subject_id}/stats")
+def subject_class_stats(
+    subject_id: int,
+    db: DBSession = Depends(get_db),
+    teacher: User = Depends(require_teacher),
+):
+    """이 과목 수강생들의 성취도를, 다른 과목 성적과 섞이지 않도록 이 과목 성취기준만으로 집계한다."""
+    subject = _get_subject(db, subject_id, teacher)
+    students = (
+        db.query(User)
+        .join(Enrollment, Enrollment.user_id == User.id)
+        .filter(Enrollment.subject_id == subject_id, User.is_archived == False)  # noqa: E712
+        .order_by(User.login_id)
+        .all()
+    )
+    result = []
+    for student in students:
+        stats = _compute_stats(db, student.id, subjects={subject.name})
+        subj_stats = next((s for s in stats["by_subject"] if s["교과"] == subject.name), None)
+        result.append(
+            {
+                "id": student.id,
+                "login_id": student.login_id,
+                "name": student.name,
+                "solved": subj_stats["solved"] if subj_stats else 0,
+                "accuracy": subj_stats["accuracy"] if subj_stats else 0.0,
+                "standards_attempted": subj_stats["standards_attempted"] if subj_stats else 0,
+                "achievement": subj_stats["achievement"] if subj_stats else None,
+                "grade": subj_stats["grade"] if subj_stats else None,
+            }
+        )
+    return result
+
+
+@router.get("/{subject_id}/stats/{user_id}")
+def subject_student_stats(
+    subject_id: int,
+    user_id: int,
+    db: DBSession = Depends(get_db),
+    teacher: User = Depends(require_teacher),
+):
+    """이 과목에 한정한 학생 한 명의 성취기준별 상세 성취도."""
+    subject = _get_subject(db, subject_id, teacher)
+    enrolled = (
+        db.query(Enrollment)
+        .filter(Enrollment.subject_id == subject_id, Enrollment.user_id == user_id)
+        .first()
+    )
+    if enrolled is None:
+        raise HTTPException(status_code=404, detail="이 과목의 수강생이 아닙니다")
+    student = db.get(User, user_id)
+    stats = _compute_stats(db, user_id, subjects={subject.name})
+    return {
+        "student": {"id": student.id, "name": student.name, "login_id": student.login_id},
+        "subject": subject.name,
+        **stats,
+    }

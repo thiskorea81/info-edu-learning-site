@@ -174,16 +174,24 @@ async function unenrollStudent(u) {
   await loadSubjects()
 }
 
-// --- 성취도 ---
+// --- 성취도 (과목별로 집계 — 한 학생이 여러 과목을 수강할 수 있으므로 섞지 않는다) ---
+const statsSubject = ref(null)
 const classStats = ref([])
-const classStatsLoading = ref(true)
+const classStatsLoading = ref(false)
 const statDetail = ref(null)
 const statDetailLoading = ref(false)
 
+async function selectStatsSubject(s) {
+  statsSubject.value = s
+  statDetail.value = null
+  await loadClassStats()
+}
+
 async function loadClassStats() {
+  if (!statsSubject.value) return
   classStatsLoading.value = true
   try {
-    const { data } = await api.get('/api/stats/roster')
+    const { data } = await api.get(`/api/subject-admin/${statsSubject.value.id}/stats`)
     classStats.value = data
   } finally {
     classStatsLoading.value = false
@@ -191,9 +199,10 @@ async function loadClassStats() {
 }
 
 async function showStatDetail(id) {
+  if (!statsSubject.value) return
   statDetailLoading.value = true
   try {
-    const { data } = await api.get(`/api/stats/roster/${id}`)
+    const { data } = await api.get(`/api/subject-admin/${statsSubject.value.id}/stats/${id}`)
     statDetail.value = data
   } finally {
     statDetailLoading.value = false
@@ -203,7 +212,6 @@ async function showStatDetail(id) {
 onMounted(() => {
   loadRoster()
   loadSubjects()
-  loadClassStats()
 })
 </script>
 
@@ -389,7 +397,23 @@ onMounted(() => {
 
   <template v-else>
     <section class="panel">
-      <h2>학생별 종합 성취도</h2>
+      <h2>과목 선택</h2>
+      <p class="hint">한 학생이 여러 과목을 수강할 수 있어, 성취도는 과목별로 따로 집계합니다.</p>
+      <div class="subject-picker">
+        <button
+          v-for="s in subjects"
+          :key="s.id"
+          class="subject-chip"
+          :class="{ active: statsSubject?.id === s.id }"
+          @click="selectStatsSubject(s)"
+        >
+          {{ s.name }}
+        </button>
+      </div>
+    </section>
+
+    <section v-if="statsSubject" class="panel">
+      <h2>{{ statsSubject.name }} — 학생별 종합 성취도</h2>
       <p v-if="classStatsLoading">불러오는 중…</p>
       <table v-else-if="classStats.length">
         <thead>
@@ -418,11 +442,11 @@ onMounted(() => {
           </tr>
         </tbody>
       </table>
-      <p v-else class="empty">등록된 학생이 없습니다.</p>
+      <p v-else class="empty">이 과목의 수강생이 없습니다.</p>
     </section>
 
     <section v-if="statDetail" class="panel">
-      <h2>{{ statDetail.student.name }}({{ statDetail.student.login_id }}) 상세 성취도</h2>
+      <h2>{{ statDetail.student.name }}({{ statDetail.student.login_id }}) — {{ statDetail.subject }} 상세 성취도</h2>
       <p v-if="statDetailLoading">불러오는 중…</p>
       <table v-else-if="statDetail.by_standard.length">
         <thead>
@@ -478,6 +502,28 @@ onMounted(() => {
 }
 
 .tabs button.active {
+  color: var(--text-h);
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+.subject-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.subject-chip {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: none;
+  color: var(--text-dim);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.subject-chip.active {
   color: var(--text-h);
   border-color: var(--accent-border);
   background: var(--accent-bg);
