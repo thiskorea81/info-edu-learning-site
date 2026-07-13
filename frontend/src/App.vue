@@ -12,21 +12,23 @@ async function doLogout() {
 
 <template>
   <header v-if="isLoggedIn()" class="topbar">
-    <RouterLink to="/" class="brand">정보교육학습사이트</RouterLink>
+    <div class="topbar-row">
+      <RouterLink to="/" class="brand">정보교육학습사이트</RouterLink>
+      <div class="user-box">
+        <span class="user-name">{{ authState.user?.name }}({{ authState.user?.login_id }}){{ isTeacher() ? (isAdmin() ? ' 관리자' : ' 교사') : '' }}</span>
+        <RouterLink to="/change-password" class="change-pw-btn">비밀번호 변경</RouterLink>
+        <button class="logout-btn" @click="doLogout">로그아웃</button>
+      </div>
+    </div>
     <nav>
       <RouterLink to="/materials" active-class="active">학습자료</RouterLink>
       <RouterLink to="/" exact-active-class="active">평가</RouterLink>
       <RouterLink to="/problems" active-class="active">코딩테스트</RouterLink>
       <RouterLink to="/wrong-notes" active-class="active">오답노트</RouterLink>
       <RouterLink to="/stats" active-class="active">통계</RouterLink>
-      <RouterLink to="/add-question" active-class="active">문제 등록</RouterLink>
+      <RouterLink v-if="isTeacher()" to="/add-question" active-class="active">문제 등록</RouterLink>
       <RouterLink v-if="isTeacher()" to="/teacher" active-class="active">교사용 관리</RouterLink>
     </nav>
-    <div class="user-box">
-      <span class="user-name">{{ authState.user?.name }}({{ authState.user?.login_id }}){{ isTeacher() ? (isAdmin() ? ' 관리자' : ' 교사') : '' }}</span>
-      <RouterLink to="/change-password" class="change-pw-btn">비밀번호 변경</RouterLink>
-      <button class="logout-btn" @click="doLogout">로그아웃</button>
-    </div>
   </header>
   <main>
     <RouterView />
@@ -36,10 +38,16 @@ async function doLogout() {
 <style scoped>
 .topbar {
   display: flex;
+  flex-direction: column;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+
+.topbar-row {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border);
   gap: 16px;
 }
 
@@ -54,7 +62,6 @@ async function doLogout() {
 nav {
   display: flex;
   gap: 20px;
-  flex: 1;
   flex-wrap: wrap;
 }
 
