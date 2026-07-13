@@ -1,13 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import func
 from sqlalchemy.orm import Session as DBSession
 
 from .. import data_loader
 from ..auth import require_admin, require_teacher
 from ..database import get_db
-from ..models import Attempt, Enrollment, Submission, Subject, User
+from ..models import Enrollment, Subject, User
 from ..schemas import EnrollRequest, EnrollResult, SubjectPublic, UserPublic
-from .stats import _compute_stats
+from .stats import _compute_stats, _practice_item_stats, _theory_item_stats
 
 router = APIRouter(prefix="/api/subject-admin", tags=["subject-admin"])
 
@@ -304,66 +303,21 @@ def subject_standard_items(
         q for q in data_loader.all_questions() if q.get("standard_id") == standard_id
     ]
     question_ids = [q["id"] for q in questions]
-    theory_attempts: list[Attempt] = []
-    if question_ids:
-        latest_ids = (
-            db.query(func.max(Attempt.id))
-            .filter(Attempt.user_id.in_(student_ids), Attempt.question_id.in_(question_ids))
-            .group_by(Attempt.user_id, Attempt.question_id)
-            .all()
-        )
-        latest_id_list = [row[0] for row in latest_ids]
-        if latest_id_list:
-            theory_attempts = db.query(Attempt).filter(Attempt.id.in_(latest_id_list)).all()
-
-    theory_items = []
-    for q in questions:
-        rows = [a for a in theory_attempts if a.question_id == q["id"]]
-        attempted = len(rows)
-        correct = sum(1 for a in rows if a.is_correct)
-        theory_items.append(
-            {
-                "id": q["id"],
-                "문항": q.get("문제") or "",
-                "attempted": attempted,
-                "correct": correct,
-                "accuracy": round(correct / attempted * 100, 1) if attempted else None,
-            }
-        )
+    theory_stats = _theory_item_stats(db, student_ids, question_ids)
+    theory_items = [
+        {"id": q["id"], "문항": q.get("문제") or "", **theory_stats[q["id"]]} for q in questions
+    ]
 
     problems_by_id = data_loader.load_problems()
     problems = [
         p for p in problems_by_id.values() if p.get("standard_id") == standard_id
     ]
     problem_ids = [p["id"] for p in problems]
-    practice_submissions: list[Submission] = []
-    if problem_ids:
-        latest_ids = (
-            db.query(func.max(Submission.id))
-            .filter(Submission.user_id.in_(student_ids), Submission.problem_id.in_(problem_ids))
-            .group_by(Submission.user_id, Submission.problem_id)
-            .all()
-        )
-        latest_id_list = [row[0] for row in latest_ids]
-        if latest_id_list:
-            practice_submissions = (
-                db.query(Submission).filter(Submission.id.in_(latest_id_list)).all()
-            )
-
-    practice_items = []
-    for p in problems:
-        rows = [s for s in practice_submissions if s.problem_id == p["id"]]
-        attempted = len(rows)
-        correct = sum(1 for s in rows if s.verdict == "AC")
-        practice_items.append(
-            {
-                "id": p["id"],
-                "제목": p.get("title") or p["id"],
-                "attempted": attempted,
-                "correct": correct,
-                "accuracy": round(correct / attempted * 100, 1) if attempted else None,
-            }
-        )
+    practice_stats = _practice_item_stats(db, student_ids, problem_ids)
+    practice_items = [
+        {"id": p["id"], "제목": p.get("title") or p["id"], **practice_stats[p["id"]]}
+        for p in problems
+    ]
 
     return {
         "성취기준명": standard.get("성취기준명", ""),

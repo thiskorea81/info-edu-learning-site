@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
+import { isTeacher } from '../auth'
 
 const props = defineProps({
   subject: { type: String, required: true },
@@ -10,16 +11,28 @@ const props = defineProps({
 
 const questions = ref([])
 const wrongIds = ref(new Set())
+const itemStats = ref({})
+const studentCount = ref(0)
 const loading = ref(true)
 
 async function load() {
   loading.value = true
-  const [{ data: qs }, { data: wrong }] = await Promise.all([
-    api.get('/api/questions', { params: { 교과: props.subject, 단원: props.unit } }),
-    api.get('/api/attempts/wrong'),
-  ])
-  questions.value = qs
-  wrongIds.value = new Set(wrong.map((w) => w.question.id))
+  if (isTeacher()) {
+    const [{ data: qs }, { data: statsData }] = await Promise.all([
+      api.get('/api/questions', { params: { 교과: props.subject, 단원: props.unit } }),
+      api.get('/api/questions/stats', { params: { 교과: props.subject, 단원: props.unit } }),
+    ])
+    questions.value = qs
+    itemStats.value = statsData.items
+    studentCount.value = statsData.student_count
+  } else {
+    const [{ data: qs }, { data: wrong }] = await Promise.all([
+      api.get('/api/questions', { params: { 교과: props.subject, 단원: props.unit } }),
+      api.get('/api/attempts/wrong'),
+    ])
+    questions.value = qs
+    wrongIds.value = new Set(wrong.map((w) => w.question.id))
+  }
   loading.value = false
 }
 
@@ -42,7 +55,14 @@ watch(() => [props.subject, props.unit], load)
         <span class="num">{{ i + 1 }}</span>
         <span class="stem">{{ q.문제 }}</span>
         <span v-if="q.코드" class="badge code">코드</span>
-        <span v-if="wrongIds.has(q.id)" class="badge wrong">오답</span>
+        <template v-if="isTeacher()">
+          <span v-if="itemStats[q.id]?.accuracy !== null" class="badge stat" :class="`grade-${itemStats[q.id].grade}`">
+            {{ itemStats[q.id].correct }}/{{ itemStats[q.id].attempted }} ({{ itemStats[q.id].accuracy }}%)
+          </span>
+          <span v-else class="badge stat not-attempted">미응시</span>
+          <span v-if="itemStats[q.id]?.needs_attention" class="badge attention">중점 지도 필요</span>
+        </template>
+        <span v-else-if="wrongIds.has(q.id)" class="badge wrong">오답</span>
       </RouterLink>
     </li>
   </ul>
@@ -113,5 +133,38 @@ watch(() => [props.subject, props.unit], load)
   color: var(--wrong);
   border-color: var(--wrong);
   background: var(--wrong-bg);
+}
+
+.badge.stat {
+  font-family: var(--mono);
+  white-space: nowrap;
+}
+
+.badge.stat.not-attempted {
+  color: var(--text-dim);
+}
+
+.badge.stat.grade-A,
+.badge.stat.grade-B {
+  color: #16a34a;
+  border-color: #16a34a;
+}
+
+.badge.stat.grade-C {
+  color: #ca8a04;
+  border-color: #ca8a04;
+}
+
+.badge.stat.grade-D,
+.badge.stat.grade-E {
+  color: var(--wrong);
+  border-color: var(--wrong);
+}
+
+.badge.attention {
+  color: var(--wrong);
+  border-color: var(--wrong);
+  background: var(--wrong-bg);
+  font-weight: 600;
 }
 </style>

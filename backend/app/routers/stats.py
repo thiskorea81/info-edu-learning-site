@@ -20,6 +20,66 @@ def _grade(percent: float) -> str:
     return "E"
 
 
+def _theory_item_stats(
+    db: Session, student_ids: list[int], question_ids: list[str]
+) -> dict[str, dict]:
+    """문항별로 (지정된 학생들 중) 최신 시도 기준 시도/정답 인원을 센다."""
+    result = {qid: {"attempted": 0, "correct": 0, "accuracy": None} for qid in question_ids}
+    if not student_ids or not question_ids:
+        return result
+
+    latest_ids = (
+        db.query(func.max(Attempt.id))
+        .filter(Attempt.user_id.in_(student_ids), Attempt.question_id.in_(question_ids))
+        .group_by(Attempt.user_id, Attempt.question_id)
+        .all()
+    )
+    latest_id_list = [row[0] for row in latest_ids]
+    if not latest_id_list:
+        return result
+
+    for a in db.query(Attempt).filter(Attempt.id.in_(latest_id_list)).all():
+        agg = result[a.question_id]
+        agg["attempted"] += 1
+        agg["correct"] += 1 if a.is_correct else 0
+
+    for agg in result.values():
+        agg["accuracy"] = (
+            round(agg["correct"] / agg["attempted"] * 100, 1) if agg["attempted"] else None
+        )
+    return result
+
+
+def _practice_item_stats(
+    db: Session, student_ids: list[int], problem_ids: list[str]
+) -> dict[str, dict]:
+    """문제별로 (지정된 학생들 중) 최신 제출 기준 시도/정답(AC) 인원을 센다."""
+    result = {pid: {"attempted": 0, "correct": 0, "accuracy": None} for pid in problem_ids}
+    if not student_ids or not problem_ids:
+        return result
+
+    latest_ids = (
+        db.query(func.max(Submission.id))
+        .filter(Submission.user_id.in_(student_ids), Submission.problem_id.in_(problem_ids))
+        .group_by(Submission.user_id, Submission.problem_id)
+        .all()
+    )
+    latest_id_list = [row[0] for row in latest_ids]
+    if not latest_id_list:
+        return result
+
+    for s in db.query(Submission).filter(Submission.id.in_(latest_id_list)).all():
+        agg = result[s.problem_id]
+        agg["attempted"] += 1
+        agg["correct"] += 1 if s.verdict == "AC" else 0
+
+    for agg in result.values():
+        agg["accuracy"] = (
+            round(agg["correct"] / agg["attempted"] * 100, 1) if agg["attempted"] else None
+        )
+    return result
+
+
 def _compute_stats(db: Session, user_id: int, subjects: set[str] | None = None) -> dict:
     """subjects가 주어지면 해당 교과(들)의 성취기준으로만 범위를 좁혀 집계한다.
     한 학생이 여러 과목을 수강할 수 있으므로, 과목을 섞어 하나의 등급으로

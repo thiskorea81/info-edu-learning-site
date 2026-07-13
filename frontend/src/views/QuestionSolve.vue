@@ -2,11 +2,13 @@
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../api'
+import { isTeacher } from '../auth'
 import QuestionBody from '../components/QuestionBody.vue'
 import CodeEditor from '../components/CodeEditor.vue'
 
 const props = defineProps({ id: { type: String, required: true } })
 const router = useRouter()
+const teacherMode = isTeacher()
 
 const question = ref(null)
 const siblingIds = ref([])
@@ -29,7 +31,10 @@ async function load() {
   question.value = null
   result.value = null
   selected.value = null
-  const { data } = await api.get(`/api/questions/${props.id}`)
+  const endpoint = teacherMode
+    ? `/api/questions/${props.id}/teacher-view`
+    : `/api/questions/${props.id}`
+  const { data } = await api.get(endpoint)
   question.value = data
   editableCode.value = data.코드 ?? ''
 
@@ -79,12 +84,13 @@ function goto(id) {
         <label
           class="choice"
           :class="{
-            selected: String(selected) === num && !result,
-            correct: result && Number(num) === result.correct_answer,
-            wrong: result && String(selected) === num && !result.is_correct,
+            selected: !teacherMode && String(selected) === num && !result,
+            correct: teacherMode ? Number(num) === question.정답 : result && Number(num) === result.correct_answer,
+            wrong: !teacherMode && result && String(selected) === num && !result.is_correct,
           }"
         >
           <input
+            v-if="!teacherMode"
             type="radio"
             :name="question.id"
             :value="Number(num)"
@@ -97,17 +103,30 @@ function goto(id) {
       </li>
     </ul>
 
-    <div class="actions">
+    <div v-if="!teacherMode" class="actions">
       <button v-if="!result" class="submit" :disabled="selected === null || submitting" @click="submit">
         제출
       </button>
       <button v-else class="retry" @click="retry">다시 풀기</button>
     </div>
 
-    <div v-if="result" class="result-banner" :class="result.is_correct ? 'ok' : 'bad'">
+    <div v-if="!teacherMode && result" class="result-banner" :class="result.is_correct ? 'ok' : 'bad'">
       <strong>{{ result.is_correct ? '정답입니다!' : '오답입니다.' }}</strong>
       <span v-if="!result.is_correct">정답: {{ result.correct_answer }}번</span>
       <p v-if="result.해설" class="explain">{{ result.해설 }}</p>
+    </div>
+
+    <div v-if="teacherMode" class="result-banner ok">
+      <strong>정답: {{ question.정답 }}번</strong>
+      <p v-if="question.해설" class="explain">{{ question.해설 }}</p>
+      <div class="teacher-stats">
+        <span v-if="question.accuracy !== null">
+          정답 {{ question.correct }}명 · 오답 {{ question.attempted - question.correct }}명 ·
+          정답률 {{ question.accuracy }}% (응시 {{ question.attempted }}/{{ question.student_count }}명)
+        </span>
+        <span v-else class="not-attempted">아직 응시한 학생이 없습니다 (수강 {{ question.student_count }}명)</span>
+        <span v-if="question.needs_attention" class="attention-badge">중점 지도 필요</span>
+      </div>
     </div>
 
     <nav class="pager">
@@ -211,6 +230,25 @@ function goto(id) {
 .explain {
   color: var(--text);
   font-size: 14px;
+}
+
+.teacher-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.attention-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: var(--wrong);
+  border: 1px solid var(--wrong);
+  background: var(--wrong-bg);
 }
 
 .pager {

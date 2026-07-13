@@ -2,12 +2,17 @@ import json
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
+from sqlalchemy.orm import Session
 
 from .. import data_loader
+from ..auth import require_teacher
+from ..database import get_db
+from ..models import Enrollment, Subject, User
 from ..schemas import BulkQuestionItemResult, BulkQuestionResult, QuestionCreate
+from .stats import _grade, _theory_item_stats
 
 router = APIRouter(prefix="/api", tags=["questions"])
 
@@ -172,6 +177,78 @@ async def bulk_create_questions(file: UploadFile = File(...)):
         failed=len(items) - len(valid_questions),
         results=results,
     )
+
+
+def _enrolled_student_ids(db: Session, subject_name: str) -> list[int]:
+    subject = db.query(Subject).filter(Subject.name == subject_name).first()
+    if subject is None:
+        return []
+    return [
+        uid
+        for (uid,) in db.query(User.id)
+        .join(Enrollment, Enrollment.user_id == User.id)
+        .filter(Enrollment.subject_id == subject.id, User.is_archived == False)  # noqa: E712
+        .all()
+    ]
+
+
+@router.get("/questions/stats")
+def get_questions_stats(
+    교과: str = Query(...),
+    단원: str | None = Query(default=None),
+    db: Session = Depends(get_db),
+    _teacher: User = Depends(require_teacher),
+):
+    """교사가 '평가'에서 문항 목록을 볼 때 문항별 시도/정답 인원을 한 번에 보여주기 위한 집계.
+    정답률이 낮거나 아무도 안 푼 문항을 표시해 중점 지도가 필요한 곳을 짚어준다."""
+    standards_index = data_loader.standards_by_id()
+
+    def matches(q: dict) -> bool:
+        std = standards_index.get(q["standard_id"])
+        if std is None or std["교과"] != 교과:
+            return False
+        if 단원 and std["단원"] != 단원:
+            return False
+        return True
+
+    questions = [q for q in data_loader.all_questions() if not q.get("유사문제") and matches(q)]
+    question_ids = [q["id"] for q in questions]
+    student_ids = _enrolled_student_ids(db, 교과)
+    item_stats = _theory_item_stats(db, student_ids, question_ids)
+
+    items = {}
+    for qid, s in item_stats.items():
+        items[qid] = {
+            **s,
+            "grade": _grade(s["accuracy"]) if s["accuracy"] is not None else None,
+            "needs_attention": s["accuracy"] is not None and s["accuracy"] < 60,
+        }
+
+    return {"student_count": len(student_ids), "items": items}
+
+
+@router.get("/questions/{question_id}/teacher-view")
+def get_question_teacher_view(
+    question_id: str,
+    db: Session = Depends(get_db),
+    _teacher: User = Depends(require_teacher),
+):
+    """정답·해설을 감추지 않고, 이 문항의 학급 정답/오답 인원까지 함께 돌려주는 교사 전용 조회."""
+    question = data_loader.get_question(question_id)
+    if question is None:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    student_ids = _enrolled_student_ids(db, question.get("교과", ""))
+    stats = _theory_item_stats(db, student_ids, [question_id])[question_id]
+    return {
+        **question,
+        "student_count": len(student_ids),
+        "attempted": stats["attempted"],
+        "correct": stats["correct"],
+        "accuracy": stats["accuracy"],
+        "grade": _grade(stats["accuracy"]) if stats["accuracy"] is not None else None,
+        "needs_attention": stats["accuracy"] is not None and stats["accuracy"] < 60,
+    }
 
 
 @router.get("/questions/{question_id}")
