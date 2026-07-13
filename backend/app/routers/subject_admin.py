@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session as DBSession
 
+from .. import data_loader
 from ..auth import require_admin, require_teacher
 from ..database import get_db
 from ..models import Enrollment, Subject, User
@@ -186,6 +187,92 @@ def subject_class_stats(
             }
         )
     return result
+
+
+@router.get("/{subject_id}/stats-summary")
+def subject_class_summary(
+    subject_id: int,
+    db: DBSession = Depends(get_db),
+    teacher: User = Depends(require_teacher),
+):
+    """학급 전체가 잘 따라오고 있는지 확인하기 위한 요약: 학생별이 아니라 성취기준별로
+    몇 명이 풀었는지·평균 정답률이 얼마인지를 보여준다. 아직 아무도 안 푼 성취기준은
+    수업 진도가 거기까지 못 갔거나 학생들이 놓치고 있다는 신호가 된다."""
+    subject = _get_subject(db, subject_id, teacher)
+    students = (
+        db.query(User)
+        .join(Enrollment, Enrollment.user_id == User.id)
+        .filter(Enrollment.subject_id == subject_id, User.is_archived == False)  # noqa: E712
+        .order_by(User.login_id)
+        .all()
+    )
+
+    standards = [s for s in data_loader.load_standards() if s["교과"] == subject.name]
+    by_standard = {
+        s["standard_id"]: {
+            "standard_id": s["standard_id"],
+            "단원": s["단원"],
+            "성취기준명": s["성취기준명"],
+            "solved_students": 0,
+            "_accuracy_sum": 0.0,
+            "practice_students": 0,
+            "_practice_accuracy_sum": 0.0,
+        }
+        for s in standards
+    }
+
+    grade_distribution = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "미응시": 0}
+    started_count = 0
+    achievement_sum = 0.0
+    achievement_count = 0
+
+    for student in students:
+        stats = _compute_stats(db, student.id, subjects={subject.name})
+        if any(row["solved"] or row["practice_attempted"] for row in stats["by_standard"]):
+            started_count += 1
+
+        subj_stats = next((s for s in stats["by_subject"] if s["교과"] == subject.name), None)
+        if subj_stats and subj_stats["grade"]:
+            grade_distribution[subj_stats["grade"]] += 1
+            achievement_sum += subj_stats["achievement"]
+            achievement_count += 1
+        else:
+            grade_distribution["미응시"] += 1
+
+        for row in stats["by_standard"]:
+            agg = by_standard.get(row["standard_id"])
+            if agg is None:
+                continue
+            if row["solved"]:
+                agg["solved_students"] += 1
+                agg["_accuracy_sum"] += row["accuracy"]
+            if row["practice_attempted"]:
+                agg["practice_students"] += 1
+                agg["_practice_accuracy_sum"] += row["practice_accuracy"]
+
+    for agg in by_standard.values():
+        accuracy_sum = agg.pop("_accuracy_sum")
+        practice_accuracy_sum = agg.pop("_practice_accuracy_sum")
+        agg["avg_accuracy"] = (
+            round(accuracy_sum / agg["solved_students"], 1) if agg["solved_students"] else None
+        )
+        agg["avg_practice_accuracy"] = (
+            round(practice_accuracy_sum / agg["practice_students"], 1)
+            if agg["practice_students"]
+            else None
+        )
+
+    return {
+        "subject": subject.name,
+        "student_count": len(students),
+        "started_count": started_count,
+        "not_started_count": len(students) - started_count,
+        "average_achievement": (
+            round(achievement_sum / achievement_count, 1) if achievement_count else None
+        ),
+        "grade_distribution": grade_distribution,
+        "by_standard": sorted(by_standard.values(), key=lambda e: e["standard_id"]),
+    }
 
 
 @router.get("/{subject_id}/stats/{user_id}")

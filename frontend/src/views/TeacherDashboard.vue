@@ -176,15 +176,35 @@ async function unenrollStudent(u) {
 
 // --- 성취도 (과목별로 집계 — 한 학생이 여러 과목을 수강할 수 있으므로 섞지 않는다) ---
 const statsSubject = ref(null)
+const classSummary = ref(null)
+const classSummaryLoading = ref(false)
 const classStats = ref([])
 const classStatsLoading = ref(false)
 const statDetail = ref(null)
 const statDetailLoading = ref(false)
+const onlyBehind = ref(false)
+
+const behindStandards = computed(() => {
+  if (!classSummary.value) return []
+  const rows = classSummary.value.by_standard
+  return onlyBehind.value ? rows.filter((r) => r.solved_students === 0) : rows
+})
 
 async function selectStatsSubject(s) {
   statsSubject.value = s
   statDetail.value = null
-  await loadClassStats()
+  await Promise.all([loadClassSummary(), loadClassStats()])
+}
+
+async function loadClassSummary() {
+  if (!statsSubject.value) return
+  classSummaryLoading.value = true
+  try {
+    const { data } = await api.get(`/api/subject-admin/${statsSubject.value.id}/stats-summary`)
+    classSummary.value = data
+  } finally {
+    classSummaryLoading.value = false
+  }
 }
 
 async function loadClassStats() {
@@ -413,6 +433,73 @@ onMounted(() => {
     </section>
 
     <section v-if="statsSubject" class="panel">
+      <h2>{{ statsSubject.name }} — 학급 진행 현황</h2>
+      <p v-if="classSummaryLoading">불러오는 중…</p>
+      <template v-else-if="classSummary">
+        <div class="kpi-row">
+          <div class="kpi">
+            <span class="value">{{ classSummary.student_count }}</span>
+            <span class="label">수강 인원</span>
+          </div>
+          <div class="kpi">
+            <span class="value">{{ classSummary.started_count }}</span>
+            <span class="label">시작한 학생</span>
+          </div>
+          <div class="kpi" :class="{ warn: classSummary.not_started_count > 0 }">
+            <span class="value">{{ classSummary.not_started_count }}</span>
+            <span class="label">아직 시작 안 함</span>
+          </div>
+          <div class="kpi">
+            <span class="value">{{ classSummary.average_achievement ?? '-' }}{{ classSummary.average_achievement !== null ? '%' : '' }}</span>
+            <span class="label">평균 성취도</span>
+          </div>
+        </div>
+
+        <div class="grade-dist">
+          <span v-for="g in ['A', 'B', 'C', 'D', 'E']" :key="g" class="grade-dist-item">
+            <span class="grade-badge" :class="`grade-${g}`">{{ g }}</span>
+            {{ classSummary.grade_distribution[g] }}명
+          </span>
+          <span class="grade-dist-item not-attempted">미응시 {{ classSummary.grade_distribution['미응시'] }}명</span>
+        </div>
+
+        <div class="panel-head">
+          <h3>성취기준별 진행 현황</h3>
+          <label class="archive-toggle">
+            <input v-model="onlyBehind" type="checkbox" /> 아무도 안 푼 성취기준만 보기
+          </label>
+        </div>
+        <table v-if="behindStandards.length">
+          <thead>
+            <tr>
+              <th>성취기준</th>
+              <th>단원</th>
+              <th>푼 학생</th>
+              <th>이론 평균 정답률</th>
+              <th>실습 평균 정답률</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in behindStandards" :key="row.standard_id" :class="{ behind: row.solved_students === 0 }">
+              <td class="std-id">{{ row.standard_id }}</td>
+              <td>{{ row.단원 }}</td>
+              <td>{{ row.solved_students }} / {{ classSummary.student_count }}</td>
+              <td>
+                <span v-if="row.avg_accuracy !== null">{{ row.avg_accuracy }}%</span>
+                <span v-else class="not-attempted">미응시</span>
+              </td>
+              <td>
+                <span v-if="row.avg_practice_accuracy !== null">{{ row.avg_practice_accuracy }}%</span>
+                <span v-else class="not-attempted">미응시</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p v-else class="empty">해당하는 성취기준이 없습니다.</p>
+      </template>
+    </section>
+
+    <section v-if="statsSubject" class="panel">
       <h2>{{ statsSubject.name }} — 학생별 종합 성취도</h2>
       <p v-if="classStatsLoading">불러오는 중…</p>
       <table v-else-if="classStats.length">
@@ -527,6 +614,61 @@ onMounted(() => {
   color: var(--text-h);
   border-color: var(--accent-border);
   background: var(--accent-bg);
+}
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.kpi {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kpi.warn .value {
+  color: var(--wrong);
+}
+
+.kpi .value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.kpi .label {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.grade-dist {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.grade-dist-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+h3 {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+tr.behind {
+  background: var(--wrong-bg, rgba(220, 38, 38, 0.08));
 }
 
 .panel {
