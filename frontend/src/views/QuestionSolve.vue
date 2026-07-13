@@ -39,7 +39,9 @@ async function load() {
   editableCode.value = data.코드 ?? ''
 
   if (siblingIds.value.length === 0) {
-    const { data: list } = await api.get('/api/questions', { params: { exam_id: data.exam_id } })
+    const { data: list } = await api.get('/api/questions', {
+      params: { exam_id: data.exam_id, include_similar: true },
+    })
     siblingIds.value = list.map((q) => q.id)
   }
 }
@@ -89,6 +91,7 @@ async function toggleVerified() {
       <span>{{ question.standard_id }}</span>
       <span v-if="question.기출" class="badge exam">기출</span>
       <span v-if="question.AI생성" class="badge ai">AI</span>
+      <span v-if="question.유사문제" class="badge similar">유사</span>
       <span v-if="question.검증" class="badge verified">검증</span>
     </div>
 
@@ -173,7 +176,8 @@ async function toggleVerified() {
 
 .badge.exam,
 .badge.ai,
-.badge.verified {
+.badge.verified,
+.badge.similar {
   font-size: 11px;
   font-weight: 600;
   padding: 2px 8px;
@@ -196,6 +200,13 @@ async function toggleVerified() {
   color: #16a34a;
   border: 1px solid #16a34a;
   background: rgba(22, 163, 74, 0.1);
+}
+
+.badge.similar {
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  font-weight: 400;
 }
 
 .choices {

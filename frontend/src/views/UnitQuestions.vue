@@ -19,7 +19,9 @@ async function load() {
   loading.value = true
   if (isTeacher()) {
     const [{ data: qs }, { data: statsData }] = await Promise.all([
-      api.get('/api/questions', { params: { 교과: props.subject, 단원: props.unit } }),
+      api.get('/api/questions', {
+        params: { 교과: props.subject, 단원: props.unit, include_similar: true },
+      }),
       api.get('/api/questions/stats', { params: { 교과: props.subject, 단원: props.unit } }),
     ])
     questions.value = qs
@@ -56,6 +58,7 @@ watch(() => [props.subject, props.unit], load)
         <span class="stem">{{ q.문제 }}</span>
         <span v-if="q.기출" class="badge exam">기출</span>
         <span v-if="q.AI생성" class="badge ai">AI</span>
+        <span v-if="q.유사문제" class="badge similar">유사</span>
         <span v-if="q.검증" class="badge verified">검증</span>
         <span v-if="q.코드" class="badge code">코드</span>
         <template v-if="isTeacher()">
@@ -150,6 +153,12 @@ watch(() => [props.subject, props.unit], load)
   border-color: #16a34a;
   background: rgba(22, 163, 74, 0.1);
   font-weight: 600;
+}
+
+.badge.similar {
+  color: var(--text-dim);
+  border-color: var(--border);
+  background: var(--bg-soft);
 }
 
 .badge.wrong {

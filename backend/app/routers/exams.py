@@ -200,7 +200,8 @@ def get_questions_stats(
     _teacher: User = Depends(require_teacher),
 ):
     """교사가 '평가'에서 문항 목록을 볼 때 문항별 시도/정답 인원을 한 번에 보여주기 위한 집계.
-    정답률이 낮거나 아무도 안 푼 문항을 표시해 중점 지도가 필요한 곳을 짚어준다."""
+    정답률이 낮거나 아무도 안 푼 문항을 표시해 중점 지도가 필요한 곳을 짚어준다.
+    교사 화면은 유사문제(AI 생성 추가 연습 문항)도 검증 대상이라 함께 포함한다."""
     standards_index = data_loader.standards_by_id()
 
     def matches(q: dict) -> bool:
@@ -211,7 +212,7 @@ def get_questions_stats(
             return False
         return True
 
-    questions = [q for q in data_loader.all_questions() if not q.get("유사문제") and matches(q)]
+    questions = [q for q in data_loader.all_questions() if matches(q)]
     question_ids = [q["id"] for q in questions]
     student_ids = _enrolled_student_ids(db, 교과)
     item_stats = _theory_item_stats(db, student_ids, question_ids)
