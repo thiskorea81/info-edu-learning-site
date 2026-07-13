@@ -21,7 +21,7 @@ run_pre_create_migrations(engine)
 Base.metadata.create_all(bind=engine)
 run_migrations(engine)
 
-app = FastAPI(title="정보교육학습사이트")
+app = FastAPI(title="정보ON")
 
 app.add_middleware(
     CORSMiddleware,

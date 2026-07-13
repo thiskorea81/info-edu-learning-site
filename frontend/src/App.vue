@@ -13,7 +13,7 @@ async function doLogout() {
 <template>
   <header v-if="isLoggedIn()" class="topbar">
     <div class="topbar-row">
-      <RouterLink to="/" class="brand">정보교육학습사이트</RouterLink>
+      <RouterLink to="/" class="brand">정보ON</RouterLink>
       <div class="user-box">
         <span class="user-name">{{ authState.user?.name }}({{ authState.user?.login_id }}){{ isTeacher() ? (isAdmin() ? ' 관리자' : ' 교사') : '' }}</span>
         <RouterLink to="/change-password" class="change-pw-btn">비밀번호 변경</RouterLink>

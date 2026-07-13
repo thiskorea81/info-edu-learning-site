@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Vue3 + FastAPI + SQLite 기반 학습 사이트. `backend/`(FastAPI API 서버), `frontend/`(Vue3 SPA), `data/`(문제·성취기준 JSON) 구조.
 
 # 프로젝트 개요
- - 이름 : 정보교육학습사이트
+ - 이름 : 정보ON
  - 목표 : 기출문제를 학습하고, 학생들이 코딩 테스트를 할 수 있게 제공
  - 언어: vue.js, fastapi, sqlite
 

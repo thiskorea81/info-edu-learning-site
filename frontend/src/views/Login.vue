@@ -37,7 +37,7 @@ async function submit() {
 <template>
   <div class="login-wrap">
     <form class="login-card" @submit.prevent="submit">
-      <h1>정보교육학습사이트</h1>
+      <h1>정보ON</h1>
       <p class="hint">학번(교사는 교사ID)과 비밀번호를 입력해 로그인하세요.</p>
 
       <label>
