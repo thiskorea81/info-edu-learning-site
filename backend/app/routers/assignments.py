@@ -9,13 +9,7 @@ from ..auth import get_current_user
 from ..config import UPLOADS_DIR
 from ..database import get_db
 from ..models import Assignment, AssignmentSubmission, Subject, Upload, User
-from ..schemas import (
-    AssignmentPublic,
-    SubmissionBlock,
-    SubmissionPublic,
-    SubmissionSave,
-    UploadResult,
-)
+from ..schemas import _EMPTY_DOC, AssignmentPublic, SubmissionPublic, SubmissionSave, UploadResult
 from .subjects import _enrolled_subject_names
 
 router = APIRouter(prefix="/api", tags=["assignments"])
@@ -65,13 +59,13 @@ def _assignment_public(a: Assignment, db: Session, user: User) -> AssignmentPubl
 
 
 def _submission_public(s: AssignmentSubmission) -> SubmissionPublic:
-    blocks = [SubmissionBlock(**b) for b in json.loads(s.content or "[]")]
+    content = json.loads(s.content) if s.content else dict(_EMPTY_DOC)
     status = "graded" if s.score is not None else ("submitted" if s.submitted_at else "draft")
     return SubmissionPublic(
         id=s.id,
         assignment_id=s.assignment_id,
         user_id=s.user_id,
-        blocks=blocks,
+        content=content,
         status=status,
         submitted_at=s.submitted_at,
         updated_at=s.updated_at,
@@ -138,7 +132,6 @@ def get_my_submission(
             id=0,
             assignment_id=assignment_id,
             user_id=user.id,
-            blocks=[],
             status="not_submitted",
             updated_at=None,
         )
@@ -168,7 +161,7 @@ def save_submission(
     if s is not None and s.score is not None:
         raise HTTPException(status_code=400, detail="이미 채점된 과제는 수정할 수 없습니다")
 
-    content = json.dumps([b.model_dump() for b in payload.blocks], ensure_ascii=False)
+    content = json.dumps(payload.content, ensure_ascii=False)
     if s is None:
         s = AssignmentSubmission(assignment_id=assignment_id, user_id=user.id, content=content)
         db.add(s)

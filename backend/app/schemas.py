@@ -2,7 +2,7 @@ import datetime
 import re
 from typing import Any
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 _PASSWORD_RE = re.compile(r"^\d{4}$")
 
@@ -180,7 +180,7 @@ class BulkQuestionResult(BaseModel):
     results: list[BulkQuestionItemResult]
 
 
-_BLOCK_TYPES = {"text", "table", "code", "image"}
+_EMPTY_DOC: dict[str, Any] = {"type": "doc", "content": [{"type": "paragraph"}]}
 
 
 class AssignmentCreate(BaseModel):
@@ -213,21 +213,8 @@ class AssignmentPublic(BaseModel):
     my_score: int | None = None
 
 
-class SubmissionBlock(BaseModel):
-    type: str
-    value: str
-    language: str | None = None
-
-    @field_validator("type")
-    @classmethod
-    def _check_type(cls, v: str) -> str:
-        if v not in _BLOCK_TYPES:
-            raise ValueError(f"블록 타입은 {_BLOCK_TYPES} 중 하나여야 합니다")
-        return v
-
-
 class SubmissionSave(BaseModel):
-    blocks: list[SubmissionBlock]
+    content: dict[str, Any] = Field(default_factory=lambda: dict(_EMPTY_DOC))
 
 
 class SubmissionPublic(BaseModel):
@@ -236,7 +223,7 @@ class SubmissionPublic(BaseModel):
     user_id: int
     login_id: str | None = None
     name: str | None = None
-    blocks: list[SubmissionBlock]
+    content: dict[str, Any] = Field(default_factory=lambda: dict(_EMPTY_DOC))
     status: str
     submitted_at: datetime.datetime | None = None
     updated_at: datetime.datetime | None = None

@@ -9,6 +9,7 @@ from ..auth import require_admin, require_teacher
 from ..database import get_db
 from ..models import Assignment, AssignmentSubmission, Enrollment, Subject, User
 from ..schemas import (
+    _EMPTY_DOC,
     AssignmentCreate,
     AssignmentPublic,
     AssignmentUpdate,
@@ -16,7 +17,6 @@ from ..schemas import (
     EnrollResult,
     GradeRequest,
     SubjectPublic,
-    SubmissionBlock,
     SubmissionPublic,
     UserPublic,
 )
@@ -409,7 +409,7 @@ def _get_assignment(db: DBSession, subject_id: int, assignment_id: int, teacher:
 
 def _submission_public(s: AssignmentSubmission, db: DBSession) -> SubmissionPublic:
     student = db.get(User, s.user_id)
-    blocks = [SubmissionBlock(**b) for b in json.loads(s.content or "[]")]
+    content = json.loads(s.content) if s.content else dict(_EMPTY_DOC)
     status = "graded" if s.score is not None else ("submitted" if s.submitted_at else "draft")
     return SubmissionPublic(
         id=s.id,
@@ -417,7 +417,7 @@ def _submission_public(s: AssignmentSubmission, db: DBSession) -> SubmissionPubl
         user_id=s.user_id,
         login_id=student.login_id if student else None,
         name=student.name if student else None,
-        blocks=blocks,
+        content=content,
         status=status,
         submitted_at=s.submitted_at,
         updated_at=s.updated_at,
@@ -536,7 +536,6 @@ def list_submissions(
                     user_id=student.id,
                     login_id=student.login_id,
                     name=student.name,
-                    blocks=[],
                     status="not_submitted",
                     updated_at=None,
                 )

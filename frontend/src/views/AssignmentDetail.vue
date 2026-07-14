@@ -2,13 +2,13 @@
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
-import BlockEditor from '../components/BlockEditor.vue'
+import RichEditor from '../components/RichEditor.vue'
 
 const props = defineProps({ id: { type: String, required: true } })
 
 const assignment = ref(null)
 const submission = ref(null)
-const blocks = ref([])
+const content = ref({ type: 'doc', content: [{ type: 'paragraph' }] })
 const loading = ref(true)
 const saving = ref(false)
 const submitting = ref(false)
@@ -26,7 +26,7 @@ async function load() {
   ])
   assignment.value = a
   submission.value = s
-  blocks.value = s.blocks
+  content.value = s.content
   loading.value = false
 }
 
@@ -36,7 +36,7 @@ async function saveDraft() {
   saving.value = true
   message.value = ''
   try {
-    const { data } = await api.put(`/api/assignments/${props.id}/submission`, { blocks: blocks.value })
+    const { data } = await api.put(`/api/assignments/${props.id}/submission`, { content: content.value })
     submission.value = data
     message.value = '임시저장되었습니다.'
   } finally {
@@ -51,7 +51,7 @@ async function submitFinal() {
   try {
     const { data } = await api.put(
       `/api/assignments/${props.id}/submission`,
-      { blocks: blocks.value },
+      { content: content.value },
       { params: { submit: true } }
     )
     submission.value = data
@@ -85,7 +85,7 @@ async function submitFinal() {
     </p>
 
     <h2>내 제출물</h2>
-    <BlockEditor v-model="blocks" :readonly="locked" />
+    <RichEditor v-model="content" :readonly="locked" />
 
     <div v-if="!locked" class="actions">
       <button class="save-btn" :disabled="saving" @click="saveDraft">

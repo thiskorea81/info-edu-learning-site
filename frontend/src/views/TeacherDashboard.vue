@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../api'
 import { isAdmin } from '../auth'
-import BlockEditor from '../components/BlockEditor.vue'
+import RichEditor from '../components/RichEditor.vue'
 
 const route = useRoute()
 const tab = ref('roster')
@@ -271,7 +271,7 @@ const selectedAssignment = ref(null)
 const assignmentSubmissions = ref([])
 const submissionsLoading = ref(false)
 const selectedSubmission = ref(null)
-const selectedSubmissionBlocks = ref([])
+const selectedSubmissionContent = ref({ type: 'doc', content: [{ type: 'paragraph' }] })
 const gradeScore = ref(null)
 const gradeFeedback = ref('')
 const grading = ref(false)
@@ -352,7 +352,7 @@ async function loadAssignmentSubmissions() {
 
 function openSubmission(s) {
   selectedSubmission.value = s
-  selectedSubmissionBlocks.value = s.blocks
+  selectedSubmissionContent.value = s.content
   gradeScore.value = s.score
   gradeFeedback.value = s.feedback || ''
 }
@@ -903,7 +903,7 @@ onMounted(async () => {
 
     <section v-if="selectedSubmission" class="panel">
       <h2>{{ selectedSubmission.name }}({{ selectedSubmission.login_id }}) 제출물</h2>
-      <BlockEditor v-model="selectedSubmissionBlocks" readonly />
+      <RichEditor v-model="selectedSubmissionContent" readonly />
       <div class="grade-form">
         <label>
           점수

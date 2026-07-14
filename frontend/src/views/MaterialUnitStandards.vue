@@ -3,7 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
 import { isTeacher } from '../auth'
-import BlockEditor from '../components/BlockEditor.vue'
+import RichEditor from '../components/RichEditor.vue'
 
 const props = defineProps({
   subject: { type: String, required: true },
@@ -17,7 +17,7 @@ const loading = ref(true)
 
 const matchedAssignment = ref(null)
 const submission = ref(null)
-const blocks = ref([])
+const content = ref({ type: 'doc', content: [{ type: 'paragraph' }] })
 const submissionLoading = ref(false)
 const saving = ref(false)
 const submitting = ref(false)
@@ -57,7 +57,7 @@ async function load() {
   loading.value = true
   matchedAssignment.value = null
   submission.value = null
-  blocks.value = []
+  content.value = { type: 'doc', content: [{ type: 'paragraph' }] }
 
   const [{ data: subjects }, { data: mats }, { data: reports }] = await Promise.all([
     api.get('/api/subjects'),
@@ -79,7 +79,7 @@ async function load() {
       submissionLoading.value = true
       const { data: sub } = await api.get(`/api/assignments/${match.id}/submission`)
       submission.value = sub
-      blocks.value = sub.blocks
+      content.value = sub.content
       submissionLoading.value = false
     }
   }
@@ -94,7 +94,7 @@ async function saveDraft() {
   try {
     const { data } = await api.put(
       `/api/assignments/${matchedAssignment.value.id}/submission`,
-      { blocks: blocks.value }
+      { content: content.value }
     )
     submission.value = data
     message.value = '임시저장되었습니다.'
@@ -110,7 +110,7 @@ async function submitFinal() {
   try {
     const { data } = await api.put(
       `/api/assignments/${matchedAssignment.value.id}/submission`,
-      { blocks: blocks.value },
+      { content: content.value },
       { params: { submit: true } }
     )
     submission.value = data
@@ -184,7 +184,7 @@ async function submitFinal() {
         제출 완료 · {{ new Date(submission.submitted_at).toLocaleString('ko-KR') }} (채점 대기 중)
       </p>
 
-      <BlockEditor v-model="blocks" :readonly="locked" />
+      <RichEditor v-model="content" :readonly="locked" />
 
       <div v-if="!locked" class="actions">
         <button class="save-btn" :disabled="saving" @click="saveDraft">
