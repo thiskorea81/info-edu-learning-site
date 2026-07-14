@@ -7,6 +7,8 @@ from .config import (
     PROBLEMS_DIR,
     QUESTIONS_DIR,
     STANDARDS_FILE,
+    TEXTBOOK_DIR,
+    TEXTBOOKS_FILE,
     UNIT_REPORTS_FILE,
     USER_QUESTIONS_FILE,
 )
@@ -112,6 +114,22 @@ def get_unit_report(교과: str, 단원: str) -> dict[str, Any] | None:
     return None
 
 
+@lru_cache
+def load_textbooks() -> list[dict[str, Any]]:
+    """교과서 PDF 목록(교과/단원/파일명). 실제 파일은 textbook/ 아래에 있고 git에는 안 올라간다."""
+    if not TEXTBOOKS_FILE.exists():
+        return []
+    with open(TEXTBOOKS_FILE, encoding="utf-8") as f:
+        entries = json.load(f)
+    result = []
+    for entry in entries:
+        path = TEXTBOOK_DIR / entry["파일명"]
+        if not path.is_file():
+            continue
+        result.append({**entry, "size_mb": round(path.stat().st_size / 1024 / 1024, 1)})
+    return result
+
+
 def add_questions(new_questions: list[dict[str, Any]]) -> None:
     existing: list[dict[str, Any]] = []
     if USER_QUESTIONS_FILE.exists():
@@ -146,3 +164,4 @@ def reload_data() -> None:
     load_problems.cache_clear()
     load_materials.cache_clear()
     load_unit_reports.cache_clear()
+    load_textbooks.cache_clear()

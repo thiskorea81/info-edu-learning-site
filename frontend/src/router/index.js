@@ -22,6 +22,8 @@ import MaterialUnitStandards from '../views/MaterialUnitStandards.vue'
 import MaterialDetail from '../views/MaterialDetail.vue'
 import AssignmentList from '../views/AssignmentList.vue'
 import AssignmentDetail from '../views/AssignmentDetail.vue'
+import TextbookSubjectList from '../views/TextbookSubjectList.vue'
+import TextbookList from '../views/TextbookList.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -99,6 +101,13 @@ const router = createRouter({
       component: AssignmentDetail,
       props: true,
       meta: { studentOnly: true },
+    },
+    { path: '/textbooks', name: 'textbooks', component: TextbookSubjectList },
+    {
+      path: '/textbooks/:subject',
+      name: 'textbook-list',
+      component: TextbookList,
+      props: true,
     },
   ],
 })

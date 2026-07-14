@@ -22,6 +22,7 @@ async function doLogout() {
     </div>
     <nav>
       <RouterLink to="/materials" active-class="active">학습자료</RouterLink>
+      <RouterLink to="/textbooks" active-class="active">교과서</RouterLink>
       <RouterLink to="/" exact-active-class="active">평가</RouterLink>
       <RouterLink v-if="!isTeacher()" to="/assignments" active-class="active">과제</RouterLink>
       <RouterLink v-else :to="{ name: 'teacher-assignments' }" active-class="active">과제</RouterLink>
