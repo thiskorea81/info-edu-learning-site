@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
+from .config import UPLOADS_DIR
 from .database import Base, engine
 from .migrations import run_migrations, run_pre_create_migrations
 from .routers import (
+    assignments,
     attempts,
     auth,
     code_runner,
@@ -41,6 +44,10 @@ app.include_router(subjects.router)
 app.include_router(problems.router)
 app.include_router(materials.router)
 app.include_router(unit_reports.router)
+app.include_router(assignments.router)
+
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 
 @app.get("/api/health")

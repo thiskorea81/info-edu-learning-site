@@ -10,5 +10,6 @@ PROBLEMS_DIR = DATA_DIR / "problems"
 USER_QUESTIONS_FILE = QUESTIONS_DIR / "user_added.json"
 MATERIALS_DIR = DATA_DIR / "materials"
 UNIT_REPORTS_FILE = DATA_DIR / "unit_reports.json"
+UPLOADS_DIR = DATA_DIR / "uploads"
 
 DATABASE_URL = f"sqlite:///{DATA_DIR / 'study.db'}"

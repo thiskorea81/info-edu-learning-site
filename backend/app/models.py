@@ -113,3 +113,61 @@ class Submission(Base):
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, default=datetime.datetime.utcnow
     )
+
+
+class Assignment(Base):
+    """교사가 과목 단위로 내는 과제(예: 심화탐구보고서). 구글 클래스룸의 '과제'에 해당."""
+
+    __tablename__ = "assignments"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    subject_id: Mapped[int] = mapped_column(Integer, ForeignKey("subjects.id"), index=True)
+    title: Mapped[str] = mapped_column(String)
+    description: Mapped[str] = mapped_column(Text)
+    단원: Mapped[str | None] = mapped_column(String, nullable=True)
+    due_at: Mapped[datetime.datetime | None] = mapped_column(DateTime, nullable=True)
+    created_by: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.utcnow
+    )
+
+
+class AssignmentSubmission(Base):
+    """학생이 과제에 제출한 답안. content는 텍스트/표/코드/이미지 블록의 JSON 배열 문자열."""
+
+    __tablename__ = "assignment_submissions"
+    __table_args__ = (
+        UniqueConstraint("assignment_id", "user_id", name="uq_assignment_submission_user"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    assignment_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("assignments.id"), index=True
+    )
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
+    content: Mapped[str] = mapped_column(Text, default="[]")
+    submitted_at: Mapped[datetime.datetime | None] = mapped_column(DateTime, nullable=True)
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow
+    )
+    score: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    feedback: Mapped[str | None] = mapped_column(Text, nullable=True)
+    graded_by: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("users.id"), nullable=True
+    )
+    graded_at: Mapped[datetime.datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class Upload(Base):
+    """과제 제출물에 첨부하는 업로드 이미지 파일 메타데이터."""
+
+    __tablename__ = "uploads"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    filename: Mapped[str] = mapped_column(String)
+    original_name: Mapped[str] = mapped_column(String)
+    content_type: Mapped[str] = mapped_column(String)
+    uploaded_by: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.utcnow
+    )

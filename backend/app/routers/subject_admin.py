@@ -1,11 +1,25 @@
+import datetime
+import json
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session as DBSession
 
 from .. import data_loader
 from ..auth import require_admin, require_teacher
 from ..database import get_db
-from ..models import Enrollment, Subject, User
-from ..schemas import EnrollRequest, EnrollResult, SubjectPublic, UserPublic
+from ..models import Assignment, AssignmentSubmission, Enrollment, Subject, User
+from ..schemas import (
+    AssignmentCreate,
+    AssignmentPublic,
+    AssignmentUpdate,
+    EnrollRequest,
+    EnrollResult,
+    GradeRequest,
+    SubjectPublic,
+    SubmissionBlock,
+    SubmissionPublic,
+    UserPublic,
+)
 from .stats import _compute_stats, _practice_item_stats, _theory_item_stats
 
 router = APIRouter(prefix="/api/subject-admin", tags=["subject-admin"])
@@ -349,3 +363,241 @@ def subject_student_stats(
         "subject": subject.name,
         **stats,
     }
+
+
+def _assignment_public(a: Assignment, db: DBSession) -> AssignmentPublic:
+    subject = db.get(Subject, a.subject_id)
+    student_count = db.query(Enrollment).filter(Enrollment.subject_id == a.subject_id).count()
+    submitted_count = (
+        db.query(AssignmentSubmission)
+        .filter(
+            AssignmentSubmission.assignment_id == a.id,
+            AssignmentSubmission.submitted_at.isnot(None),
+        )
+        .count()
+    )
+    graded_count = (
+        db.query(AssignmentSubmission)
+        .filter(
+            AssignmentSubmission.assignment_id == a.id,
+            AssignmentSubmission.score.isnot(None),
+        )
+        .count()
+    )
+    return AssignmentPublic(
+        id=a.id,
+        subject_id=a.subject_id,
+        subject_name=subject.name if subject else "",
+        title=a.title,
+        description=a.description,
+        단원=a.단원,
+        due_at=a.due_at,
+        created_at=a.created_at,
+        student_count=student_count,
+        submitted_count=submitted_count,
+        graded_count=graded_count,
+    )
+
+
+def _get_assignment(db: DBSession, subject_id: int, assignment_id: int, teacher: User) -> Assignment:
+    _get_subject(db, subject_id, teacher)
+    a = db.get(Assignment, assignment_id)
+    if a is None or a.subject_id != subject_id:
+        raise HTTPException(status_code=404, detail="과제를 찾을 수 없습니다")
+    return a
+
+
+def _submission_public(s: AssignmentSubmission, db: DBSession) -> SubmissionPublic:
+    student = db.get(User, s.user_id)
+    blocks = [SubmissionBlock(**b) for b in json.loads(s.content or "[]")]
+    status = "graded" if s.score is not None else ("submitted" if s.submitted_at else "draft")
+    return SubmissionPublic(
+        id=s.id,
+        assignment_id=s.assignment_id,
+        user_id=s.user_id,
+        login_id=student.login_id if student else None,
+        name=student.name if student else None,
+        blocks=blocks,
+        status=status,
+        submitted_at=s.submitted_at,
+        updated_at=s.updated_at,
+        score=s.score,
+        feedback=s.feedback,
+        graded_at=s.graded_at,
+    )
+
+
+@router.get("/{subject_id}/assignments", response_model=list[AssignmentPublic])
+def list_assignments(
+    subject_id: int,
+    db: DBSession = Depends(get_db),
+    teacher: User = Depends(require_teacher),
+):
+    _get_subject(db, subject_id, teacher)
+    items = (
+        db.query(Assignment)
+        .filter(Assignment.subject_id == subject_id)
+        .order_by(Assignment.created_at.desc())
+        .all()
+    )
+    return [_assignment_public(a, db) for a in items]
+
+
+@router.post("/{subject_id}/assignments", response_model=AssignmentPublic)
+def create_assignment(
+    subject_id: int,
+    payload: AssignmentCreate,
+    db: DBSession = Depends(get_db),
+    teacher: User = Depends(require_teacher),
+):
+    _get_subject(db, subject_id, teacher)
+    a = Assignment(
+        subject_id=subject_id,
+        title=payload.title,
+        description=payload.description,
+        단원=payload.단원,
+        due_at=payload.due_at,
+        created_by=teacher.id,
+    )
+    db.add(a)
+    db.commit()
+    db.refresh(a)
+    return _assignment_public(a, db)
+
+
+@router.patch("/{subject_id}/assignments/{assignment_id}", response_model=AssignmentPublic)
+def update_assignment(
+    subject_id: int,
+    assignment_id: int,
+    payload: AssignmentUpdate,
+    db: DBSession = Depends(get_db),
+    teacher: User = Depends(require_teacher),
+):
+    a = _get_assignment(db, subject_id, assignment_id, teacher)
+    if payload.title is not None:
+        a.title = payload.title
+    if payload.description is not None:
+        a.description = payload.description
+    if payload.단원 is not None:
+        a.단원 = payload.단원
+    if payload.due_at is not None:
+        a.due_at = payload.due_at
+    db.commit()
+    db.refresh(a)
+    return _assignment_public(a, db)
+
+
+@router.delete("/{subject_id}/assignments/{assignment_id}")
+def delete_assignment(
+    subject_id: int,
+    assignment_id: int,
+    db: DBSession = Depends(get_db),
+    teacher: User = Depends(require_teacher),
+):
+    a = _get_assignment(db, subject_id, assignment_id, teacher)
+    db.query(AssignmentSubmission).filter(AssignmentSubmission.assignment_id == a.id).delete()
+    db.delete(a)
+    db.commit()
+    return {"status": "deleted"}
+
+
+@router.get(
+    "/{subject_id}/assignments/{assignment_id}/submissions",
+    response_model=list[SubmissionPublic],
+)
+def list_submissions(
+    subject_id: int,
+    assignment_id: int,
+    db: DBSession = Depends(get_db),
+    teacher: User = Depends(require_teacher),
+):
+    _get_assignment(db, subject_id, assignment_id, teacher)
+    students = (
+        db.query(User)
+        .join(Enrollment, Enrollment.user_id == User.id)
+        .filter(Enrollment.subject_id == subject_id, User.is_archived == False)  # noqa: E712
+        .order_by(User.login_id)
+        .all()
+    )
+    existing = {
+        s.user_id: s
+        for s in db.query(AssignmentSubmission)
+        .filter(AssignmentSubmission.assignment_id == assignment_id)
+        .all()
+    }
+    result = []
+    for student in students:
+        s = existing.get(student.id)
+        if s is None:
+            result.append(
+                SubmissionPublic(
+                    id=0,
+                    assignment_id=assignment_id,
+                    user_id=student.id,
+                    login_id=student.login_id,
+                    name=student.name,
+                    blocks=[],
+                    status="not_submitted",
+                    updated_at=None,
+                )
+            )
+        else:
+            result.append(_submission_public(s, db))
+    return result
+
+
+@router.get(
+    "/{subject_id}/assignments/{assignment_id}/submissions/{user_id}",
+    response_model=SubmissionPublic,
+)
+def get_submission(
+    subject_id: int,
+    assignment_id: int,
+    user_id: int,
+    db: DBSession = Depends(get_db),
+    teacher: User = Depends(require_teacher),
+):
+    _get_assignment(db, subject_id, assignment_id, teacher)
+    s = (
+        db.query(AssignmentSubmission)
+        .filter(
+            AssignmentSubmission.assignment_id == assignment_id,
+            AssignmentSubmission.user_id == user_id,
+        )
+        .first()
+    )
+    if s is None:
+        raise HTTPException(status_code=404, detail="제출물이 없습니다")
+    return _submission_public(s, db)
+
+
+@router.patch(
+    "/{subject_id}/assignments/{assignment_id}/submissions/{user_id}/grade",
+    response_model=SubmissionPublic,
+)
+def grade_submission(
+    subject_id: int,
+    assignment_id: int,
+    user_id: int,
+    payload: GradeRequest,
+    db: DBSession = Depends(get_db),
+    teacher: User = Depends(require_teacher),
+):
+    _get_assignment(db, subject_id, assignment_id, teacher)
+    s = (
+        db.query(AssignmentSubmission)
+        .filter(
+            AssignmentSubmission.assignment_id == assignment_id,
+            AssignmentSubmission.user_id == user_id,
+        )
+        .first()
+    )
+    if s is None:
+        raise HTTPException(status_code=404, detail="제출물이 없습니다")
+    s.score = payload.score
+    s.feedback = payload.feedback
+    s.graded_by = teacher.id
+    s.graded_at = datetime.datetime.utcnow()
+    db.commit()
+    db.refresh(s)
+    return _submission_public(s, db)

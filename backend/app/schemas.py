@@ -1,3 +1,4 @@
+import datetime
 import re
 from typing import Any
 
@@ -177,3 +178,78 @@ class BulkQuestionResult(BaseModel):
     succeeded: int
     failed: int
     results: list[BulkQuestionItemResult]
+
+
+_BLOCK_TYPES = {"text", "table", "code", "image"}
+
+
+class AssignmentCreate(BaseModel):
+    title: str
+    description: str
+    단원: str | None = None
+    due_at: datetime.datetime | None = None
+
+
+class AssignmentUpdate(BaseModel):
+    title: str | None = None
+    description: str | None = None
+    단원: str | None = None
+    due_at: datetime.datetime | None = None
+
+
+class AssignmentPublic(BaseModel):
+    id: int
+    subject_id: int
+    subject_name: str
+    title: str
+    description: str
+    단원: str | None = None
+    due_at: datetime.datetime | None = None
+    created_at: datetime.datetime
+    student_count: int | None = None
+    submitted_count: int | None = None
+    graded_count: int | None = None
+    my_status: str | None = None
+    my_score: int | None = None
+
+
+class SubmissionBlock(BaseModel):
+    type: str
+    value: str
+    language: str | None = None
+
+    @field_validator("type")
+    @classmethod
+    def _check_type(cls, v: str) -> str:
+        if v not in _BLOCK_TYPES:
+            raise ValueError(f"블록 타입은 {_BLOCK_TYPES} 중 하나여야 합니다")
+        return v
+
+
+class SubmissionSave(BaseModel):
+    blocks: list[SubmissionBlock]
+
+
+class SubmissionPublic(BaseModel):
+    id: int
+    assignment_id: int
+    user_id: int
+    login_id: str | None = None
+    name: str | None = None
+    blocks: list[SubmissionBlock]
+    status: str
+    submitted_at: datetime.datetime | None = None
+    updated_at: datetime.datetime | None = None
+    score: int | None = None
+    feedback: str | None = None
+    graded_at: datetime.datetime | None = None
+
+
+class GradeRequest(BaseModel):
+    score: int | None = None
+    feedback: str | None = None
+
+
+class UploadResult(BaseModel):
+    id: int
+    url: str

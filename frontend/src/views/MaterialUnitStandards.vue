@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
+import { isTeacher } from '../auth'
 
 const props = defineProps({
   subject: { type: String, required: true },
@@ -17,6 +18,26 @@ const materialsById = computed(() => new Map(materials.value.map((m) => [m.stand
 const currentUnit = computed(() => {
   const subject = allSubjects.value.find((s) => s.교과 === props.subject)
   return subject?.units.find((u) => u.단원 === props.unit)
+})
+
+const reportAssignmentQuery = computed(() => {
+  if (!unitReport.value) return null
+  const questions = (unitReport.value.탐구질문 || [])
+    .map((q, i) => `${i + 1}. ${q}`)
+    .join('\n')
+  const description = [
+    unitReport.value.안내,
+    questions ? `[탐구 질문]\n${questions}` : '',
+    unitReport.value.제출형식 ? `[제출 형식]\n${unitReport.value.제출형식}` : '',
+  ]
+    .filter(Boolean)
+    .join('\n\n')
+  return {
+    subject: props.subject,
+    title: unitReport.value.제목,
+    description,
+    단원: props.unit,
+  }
 })
 
 async function load() {
@@ -63,7 +84,16 @@ watch(() => [props.subject, props.unit], load)
   </div>
 
   <section v-if="unitReport" class="report-box">
-    <h2>📋 심화 탐구 보고서 — {{ unitReport.제목 }}</h2>
+    <div class="report-head">
+      <h2>📋 심화 탐구 보고서 — {{ unitReport.제목 }}</h2>
+      <RouterLink
+        v-if="isTeacher()"
+        :to="{ name: 'teacher-dashboard', query: reportAssignmentQuery }"
+        class="assign-btn"
+      >
+        이 보고서를 과제로 내기
+      </RouterLink>
+    </div>
     <p class="report-content">{{ unitReport.안내 }}</p>
     <p class="report-label">탐구 질문</p>
     <ol class="report-questions">
@@ -135,9 +165,36 @@ watch(() => [props.subject, props.unit], load)
   background: var(--accent-bg);
 }
 
+.report-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
 .report-box h2 {
   font-size: 16px;
-  margin-bottom: 10px;
+  margin-bottom: 0;
+}
+
+.assign-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--accent-border);
+  background: var(--bg);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.assign-btn:hover {
+  background: var(--accent);
+  color: #ffffff;
 }
 
 .report-content {
