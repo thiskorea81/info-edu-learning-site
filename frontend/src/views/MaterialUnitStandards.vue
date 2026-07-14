@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router'
 import api from '../api'
 import { isTeacher } from '../auth'
 import RichEditor from '../components/RichEditor.vue'
+import { useAutosave } from '../composables/useAutosave'
 
 const props = defineProps({
   subject: { type: String, required: true },
@@ -25,6 +26,18 @@ const message = ref('')
 
 const locked = computed(
   () => submission.value?.status === 'submitted' || submission.value?.status === 'graded'
+)
+
+const autosave = useAutosave(
+  () => content.value,
+  async () => {
+    const { data } = await api.put(
+      `/api/assignments/${matchedAssignment.value.id}/submission`,
+      { content: content.value }
+    )
+    submission.value = data
+    message.value = `자동 저장됨 · ${new Date().toLocaleTimeString('ko-KR')}`
+  }
 )
 
 const materialsById = computed(() => new Map(materials.value.map((m) => [m.standard_id, m])))
@@ -54,6 +67,7 @@ const reportAssignmentQuery = computed(() => {
 })
 
 async function load() {
+  autosave.stop()
   loading.value = true
   matchedAssignment.value = null
   submission.value = null
@@ -81,7 +95,10 @@ async function load() {
       submission.value = sub
       content.value = sub.content
       submissionLoading.value = false
+      if (!locked.value) autosave.start()
     }
+  } else {
+    autosave.stop()
   }
 }
 
@@ -97,6 +114,7 @@ async function saveDraft() {
       { content: content.value }
     )
     submission.value = data
+    autosave.markSaved()
     message.value = '임시저장되었습니다.'
   } finally {
     saving.value = false
@@ -114,6 +132,7 @@ async function submitFinal() {
       { params: { submit: true } }
     )
     submission.value = data
+    autosave.stop()
   } finally {
     submitting.value = false
   }

@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
 import RichEditor from '../components/RichEditor.vue'
+import { useAutosave } from '../composables/useAutosave'
 
 const props = defineProps({ id: { type: String, required: true } })
 
@@ -18,6 +19,15 @@ const locked = computed(
   () => submission.value?.status === 'submitted' || submission.value?.status === 'graded'
 )
 
+const autosave = useAutosave(
+  () => content.value,
+  async () => {
+    const { data } = await api.put(`/api/assignments/${props.id}/submission`, { content: content.value })
+    submission.value = data
+    message.value = `자동 저장됨 · ${new Date().toLocaleTimeString('ko-KR')}`
+  }
+)
+
 async function load() {
   loading.value = true
   const [{ data: a }, { data: s }] = await Promise.all([
@@ -28,6 +38,7 @@ async function load() {
   submission.value = s
   content.value = s.content
   loading.value = false
+  if (!locked.value) autosave.start()
 }
 
 onMounted(load)
@@ -38,6 +49,7 @@ async function saveDraft() {
   try {
     const { data } = await api.put(`/api/assignments/${props.id}/submission`, { content: content.value })
     submission.value = data
+    autosave.markSaved()
     message.value = '임시저장되었습니다.'
   } finally {
     saving.value = false
@@ -55,6 +67,7 @@ async function submitFinal() {
       { params: { submit: true } }
     )
     submission.value = data
+    autosave.stop()
   } finally {
     submitting.value = false
   }

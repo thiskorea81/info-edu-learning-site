@@ -393,6 +393,8 @@ onMounted(async () => {
   loadSubjects()
   if (route.query.subject) {
     await applyReportQuickCreate()
+  } else if (route.query.tab === 'assignments') {
+    tab.value = 'assignments'
   }
 })
 </script>
