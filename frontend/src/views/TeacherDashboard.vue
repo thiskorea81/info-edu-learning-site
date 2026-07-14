@@ -373,23 +373,25 @@ async function submitGrade() {
 
 async function applyReportQuickCreate() {
   const { subject: subjectName, title, description, 단원: unit } = route.query
-  if (!subjectName || !title) return
+  if (!subjectName) return
   await loadSubjects()
   const match = subjects.value.find((s) => s.name === subjectName)
   if (!match) return
   tab.value = 'assignments'
   assignmentsSubject.value = match
   await loadAssignments()
-  newAssignmentTitle.value = String(title)
-  newAssignmentDescription.value = String(description || '')
-  newAssignmentUnit.value = String(unit || '')
-  showNewAssignmentForm.value = true
+  if (title) {
+    newAssignmentTitle.value = String(title)
+    newAssignmentDescription.value = String(description || '')
+    newAssignmentUnit.value = String(unit || '')
+    showNewAssignmentForm.value = true
+  }
 }
 
 onMounted(async () => {
   loadRoster()
   loadSubjects()
-  if (route.query.subject && route.query.title) {
+  if (route.query.subject) {
     await applyReportQuickCreate()
   }
 })

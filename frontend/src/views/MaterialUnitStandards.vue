@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
 import { isTeacher } from '../auth'
+import BlockEditor from '../components/BlockEditor.vue'
 
 const props = defineProps({
   subject: { type: String, required: true },
@@ -13,6 +14,18 @@ const allSubjects = ref([])
 const materials = ref([])
 const unitReport = ref(null)
 const loading = ref(true)
+
+const matchedAssignment = ref(null)
+const submission = ref(null)
+const blocks = ref([])
+const submissionLoading = ref(false)
+const saving = ref(false)
+const submitting = ref(false)
+const message = ref('')
+
+const locked = computed(
+  () => submission.value?.status === 'submitted' || submission.value?.status === 'graded'
+)
 
 const materialsById = computed(() => new Map(materials.value.map((m) => [m.standard_id, m])))
 const currentUnit = computed(() => {
@@ -42,6 +55,10 @@ const reportAssignmentQuery = computed(() => {
 
 async function load() {
   loading.value = true
+  matchedAssignment.value = null
+  submission.value = null
+  blocks.value = []
+
   const [{ data: subjects }, { data: mats }, { data: reports }] = await Promise.all([
     api.get('/api/subjects'),
     api.get('/api/materials'),
@@ -51,10 +68,56 @@ async function load() {
   materials.value = mats
   unitReport.value = reports[0] ?? null
   loading.value = false
+
+  const { data: myAssignments } = await api.get('/api/assignments')
+  const match = myAssignments.find(
+    (a) => a.subject_name === props.subject && a.단원 === props.unit
+  )
+  if (match) {
+    matchedAssignment.value = match
+    if (!isTeacher()) {
+      submissionLoading.value = true
+      const { data: sub } = await api.get(`/api/assignments/${match.id}/submission`)
+      submission.value = sub
+      blocks.value = sub.blocks
+      submissionLoading.value = false
+    }
+  }
 }
 
 onMounted(load)
 watch(() => [props.subject, props.unit], load)
+
+async function saveDraft() {
+  saving.value = true
+  message.value = ''
+  try {
+    const { data } = await api.put(
+      `/api/assignments/${matchedAssignment.value.id}/submission`,
+      { blocks: blocks.value }
+    )
+    submission.value = data
+    message.value = '임시저장되었습니다.'
+  } finally {
+    saving.value = false
+  }
+}
+
+async function submitFinal() {
+  if (!confirm('제출하면 더 이상 수정할 수 없습니다. 제출할까요?')) return
+  submitting.value = true
+  message.value = ''
+  try {
+    const { data } = await api.put(
+      `/api/assignments/${matchedAssignment.value.id}/submission`,
+      { blocks: blocks.value },
+      { params: { submit: true } }
+    )
+    submission.value = data
+  } finally {
+    submitting.value = false
+  }
+}
 </script>
 
 <template>
@@ -87,11 +150,18 @@ watch(() => [props.subject, props.unit], load)
     <div class="report-head">
       <h2>📋 심화 탐구 보고서 — {{ unitReport.제목 }}</h2>
       <RouterLink
-        v-if="isTeacher()"
+        v-if="isTeacher() && !matchedAssignment"
         :to="{ name: 'teacher-dashboard', query: reportAssignmentQuery }"
         class="assign-btn"
       >
         이 보고서를 과제로 내기
+      </RouterLink>
+      <RouterLink
+        v-else-if="isTeacher() && matchedAssignment"
+        :to="{ name: 'teacher-dashboard', query: { subject, tab: 'assignments' } }"
+        class="assign-btn done"
+      >
+        과제로 등록됨 · 제출 현황 보기
       </RouterLink>
     </div>
     <p class="report-content">{{ unitReport.안내 }}</p>
@@ -100,6 +170,32 @@ watch(() => [props.subject, props.unit], load)
       <li v-for="(q, i) in unitReport.탐구질문" :key="i">{{ q }}</li>
     </ol>
     <p class="report-format"><strong>제출 형식</strong> {{ unitReport.제출형식 }}</p>
+  </section>
+
+  <section v-if="!isTeacher() && matchedAssignment" class="submit-box">
+    <h2>내 보고서 작성</h2>
+    <p v-if="submissionLoading">불러오는 중…</p>
+    <template v-else-if="submission">
+      <div v-if="submission.status === 'graded'" class="grade-box">
+        <strong>{{ submission.score }}점</strong>
+        <p v-if="submission.feedback">{{ submission.feedback }}</p>
+      </div>
+      <p v-else-if="submission.status === 'submitted'" class="submitted-note">
+        제출 완료 · {{ new Date(submission.submitted_at).toLocaleString('ko-KR') }} (채점 대기 중)
+      </p>
+
+      <BlockEditor v-model="blocks" :readonly="locked" />
+
+      <div v-if="!locked" class="actions">
+        <button class="save-btn" :disabled="saving" @click="saveDraft">
+          {{ saving ? '저장 중…' : '임시저장' }}
+        </button>
+        <button class="submit-btn" :disabled="submitting" @click="submitFinal">
+          {{ submitting ? '제출 중…' : '제출하기' }}
+        </button>
+      </div>
+      <p v-if="message" class="message">{{ message }}</p>
+    </template>
   </section>
 </template>
 
@@ -197,6 +293,16 @@ watch(() => [props.subject, props.unit], load)
   color: #ffffff;
 }
 
+.assign-btn.done {
+  color: #16a34a;
+  border-color: #16a34a;
+}
+
+.assign-btn.done:hover {
+  background: #16a34a;
+  color: #ffffff;
+}
+
 .report-content {
   white-space: pre-wrap;
   line-height: 1.7;
@@ -220,5 +326,75 @@ watch(() => [props.subject, props.unit], load)
   font-size: 13px;
   color: var(--text-dim);
   line-height: 1.6;
+}
+
+.submit-box {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.submit-box h2 {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.grade-box {
+  border: 1px solid #16a34a;
+  background: rgba(22, 163, 74, 0.08);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.grade-box strong {
+  font-size: 18px;
+  color: #16a34a;
+}
+
+.submitted-note {
+  color: var(--accent);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.save-btn,
+.submit-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.save-btn {
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--text);
+}
+
+.submit-btn {
+  border: none;
+  background: var(--accent);
+  color: white;
+}
+
+.save-btn:disabled,
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.message {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--text-dim);
 }
 </style>
