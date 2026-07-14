@@ -12,6 +12,7 @@ MATERIALS_DIR = DATA_DIR / "materials"
 UNIT_REPORTS_FILE = DATA_DIR / "unit_reports.json"
 UPLOADS_DIR = DATA_DIR / "uploads"
 TEXTBOOK_DIR = REPO_ROOT / "textbook"
+TEXTBOOK_TEACHER_DIR = REPO_ROOT / "textbook_teacher"
 TEXTBOOKS_FILE = DATA_DIR / "textbooks.json"
 
 DATABASE_URL = f"sqlite:///{DATA_DIR / 'study.db'}"

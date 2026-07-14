@@ -9,6 +9,8 @@ const props = defineProps({
 
 const all = ref([])
 const loading = ref(true)
+const openingKey = ref(null)
+const error = ref('')
 
 const items = computed(() => all.value.filter((t) => t.교과 === props.subject))
 
@@ -22,12 +24,39 @@ async function load() {
 onMounted(load)
 watch(() => props.subject, load)
 
-function fileUrl(파일명) {
-  const encoded = 파일명
+function encodedPath(파일명) {
+  return 파일명
     .split('/')
     .map((seg) => encodeURIComponent(seg))
     .join('/')
-  return `/textbook-files/${encoded}`
+}
+
+function openPublic(t) {
+  window.open(`/textbook-files/${encodedPath(t.파일명)}`, '_blank', 'noopener')
+}
+
+async function openTeacherOnly(t) {
+  error.value = ''
+  openingKey.value = t.파일명
+  try {
+    const { data } = await api.get(`/api/textbooks/teacher-file/${encodedPath(t.파일명)}`, {
+      responseType: 'blob',
+    })
+    const blobUrl = URL.createObjectURL(data)
+    window.open(blobUrl, '_blank', 'noopener')
+  } catch (e) {
+    error.value = e.response?.data?.detail || 'PDF를 여는 데 실패했습니다.'
+  } finally {
+    openingKey.value = null
+  }
+}
+
+function open(t) {
+  if (t.teacher_only) {
+    openTeacherOnly(t)
+  } else {
+    openPublic(t)
+  }
 }
 </script>
 
@@ -37,11 +66,17 @@ function fileUrl(파일명) {
 
   <p v-if="loading">불러오는 중…</p>
   <p v-else-if="!items.length" class="empty">이 과목에는 등록된 교과서가 없습니다.</p>
-  <ul v-else class="list">
+  <p v-if="error" class="error">{{ error }}</p>
+  <ul v-else-if="items.length" class="list">
     <li v-for="t in items" :key="t.파일명">
-      <span class="unit-name">{{ t.단원 }}</span>
+      <span class="unit-name">
+        {{ t.단원 }}
+        <span v-if="t.teacher_only" class="teacher-badge">교사용</span>
+      </span>
       <span class="size">{{ t.size_mb }}MB</span>
-      <a :href="fileUrl(t.파일명)" target="_blank" rel="noopener" class="view-btn">보기</a>
+      <button class="view-btn" :disabled="openingKey === t.파일명" @click="open(t)">
+        {{ openingKey === t.파일명 ? '여는 중…' : '보기' }}
+      </button>
     </li>
   </ul>
 </template>
@@ -57,6 +92,11 @@ function fileUrl(파일명) {
 
 .empty {
   color: var(--text-dim);
+}
+
+.error {
+  color: var(--wrong);
+  font-size: 13px;
 }
 
 .list {
@@ -78,6 +118,17 @@ function fileUrl(파일명) {
   flex: 1;
 }
 
+.teacher-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid #dc2626;
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 600;
+}
+
 .size {
   font-size: 12px;
   color: var(--text-dim);
@@ -86,16 +137,22 @@ function fileUrl(파일명) {
 
 .view-btn {
   padding: 6px 16px;
+  border: none;
   border-radius: 8px;
   background: var(--accent);
   color: #ffffff;
   font-weight: 600;
   font-size: 13px;
-  text-decoration: none;
+  cursor: pointer;
   white-space: nowrap;
 }
 
 .view-btn:hover {
   opacity: 0.9;
+}
+
+.view-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 </style>

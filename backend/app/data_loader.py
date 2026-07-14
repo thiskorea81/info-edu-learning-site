@@ -8,6 +8,7 @@ from .config import (
     QUESTIONS_DIR,
     STANDARDS_FILE,
     TEXTBOOK_DIR,
+    TEXTBOOK_TEACHER_DIR,
     TEXTBOOKS_FILE,
     UNIT_REPORTS_FILE,
     USER_QUESTIONS_FILE,
@@ -116,14 +117,16 @@ def get_unit_report(교과: str, 단원: str) -> dict[str, Any] | None:
 
 @lru_cache
 def load_textbooks() -> list[dict[str, Any]]:
-    """교과서 PDF 목록(교과/단원/파일명). 실제 파일은 textbook/ 아래에 있고 git에는 안 올라간다."""
+    """교과서 PDF 목록(교과/단원/파일명). 실제 파일은 textbook/(공개) 또는
+    textbook_teacher/(teacher_only 항목, 정답·해설 포함) 아래에 있고 둘 다 git에는 안 올라간다."""
     if not TEXTBOOKS_FILE.exists():
         return []
     with open(TEXTBOOKS_FILE, encoding="utf-8") as f:
         entries = json.load(f)
     result = []
     for entry in entries:
-        path = TEXTBOOK_DIR / entry["파일명"]
+        base_dir = TEXTBOOK_TEACHER_DIR if entry.get("teacher_only") else TEXTBOOK_DIR
+        path = base_dir / entry["파일명"]
         if not path.is_file():
             continue
         result.append({**entry, "size_mb": round(path.stat().st_size / 1024 / 1024, 1)})
