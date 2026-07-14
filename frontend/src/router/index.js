@@ -3,6 +3,7 @@ import { isLoggedIn, isTeacher, mustChangePassword } from '../auth'
 import Login from '../views/Login.vue'
 import ChangePassword from '../views/ChangePassword.vue'
 import TeacherDashboard from '../views/TeacherDashboard.vue'
+import TeacherAssignments from '../views/TeacherAssignments.vue'
 import SubjectList from '../views/SubjectList.vue'
 import UnitList from '../views/UnitList.vue'
 import UnitQuestions from '../views/UnitQuestions.vue'
@@ -31,6 +32,12 @@ const router = createRouter({
       path: '/teacher',
       name: 'teacher-dashboard',
       component: TeacherDashboard,
+      meta: { teacherOnly: true },
+    },
+    {
+      path: '/teacher/assignments',
+      name: 'teacher-assignments',
+      component: TeacherAssignments,
       meta: { teacherOnly: true },
     },
     { path: '/', name: 'subjects', component: SubjectList },

@@ -170,14 +170,14 @@ async function submitFinal() {
       <h2>📋 심화 탐구 보고서 — {{ unitReport.제목 }}</h2>
       <RouterLink
         v-if="isTeacher() && !matchedAssignment"
-        :to="{ name: 'teacher-dashboard', query: reportAssignmentQuery }"
+        :to="{ name: 'teacher-assignments', query: reportAssignmentQuery }"
         class="assign-btn"
       >
         이 보고서를 과제로 내기
       </RouterLink>
       <RouterLink
         v-else-if="isTeacher() && matchedAssignment"
-        :to="{ name: 'teacher-dashboard', query: { subject, tab: 'assignments' } }"
+        :to="{ name: 'teacher-assignments', query: { subject } }"
         class="assign-btn done"
       >
         과제로 등록됨 · 제출 현황 보기

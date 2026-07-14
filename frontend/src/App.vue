@@ -24,13 +24,7 @@ async function doLogout() {
       <RouterLink to="/materials" active-class="active">학습자료</RouterLink>
       <RouterLink to="/" exact-active-class="active">평가</RouterLink>
       <RouterLink v-if="!isTeacher()" to="/assignments" active-class="active">과제</RouterLink>
-      <RouterLink
-        v-else
-        :to="{ name: 'teacher-dashboard', query: { tab: 'assignments' } }"
-        active-class="active"
-      >
-        과제
-      </RouterLink>
+      <RouterLink v-else :to="{ name: 'teacher-assignments' }" active-class="active">과제</RouterLink>
       <RouterLink to="/problems" active-class="active">코딩테스트</RouterLink>
       <RouterLink v-if="!isTeacher()" to="/wrong-notes" active-class="active">오답노트</RouterLink>
       <RouterLink v-if="!isTeacher()" to="/stats" active-class="active">통계</RouterLink>
