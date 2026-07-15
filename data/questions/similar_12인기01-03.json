@@ -64,7 +64,7 @@
     "언어": null,
     "실행결과": null,
     "표": null,
-    "이미지": null,
+    "이미지": "<svg xmlns='http://www.w3.org/2000/svg' width='560' height='458' viewBox='0 0 560 458'><rect x='0' y='0' width='560' height='458' rx='12' fill='#ffffff' stroke='#e4e4e7' stroke-width='1.5'/><text x='280.0' y='26' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='bold' fill='#1f2328'>탐색 트리 예시 (루트 A)</text><line x1='280.0' y1='84.0' x2='115.0' y2='184.0' stroke='#a8a8ae' stroke-width='2'/><line x1='280.0' y1='84.0' x2='280.0' y2='184.0' stroke='#a8a8ae' stroke-width='2'/><line x1='280.0' y1='84.0' x2='445.0' y2='184.0' stroke='#a8a8ae' stroke-width='2'/><line x1='115.0' y1='184.0' x2='115.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='280.0' y1='184.0' x2='280.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='445.0' y1='184.0' x2='390.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='445.0' y1='184.0' x2='500.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='115.0' y1='284.0' x2='60.0' y2='384.0' stroke='#a8a8ae' stroke-width='2'/><line x1='115.0' y1='284.0' x2='170.0' y2='384.0' stroke='#a8a8ae' stroke-width='2'/><line x1='500.0' y1='284.0' x2='500.0' y2='384.0' stroke='#a8a8ae' stroke-width='2'/><circle cx='445.0' cy='184.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='445.0' y='190.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>D</text><circle cx='500.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='500.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>H</text><circle cx='280.0' cy='84.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='280.0' y='90.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>A</text><circle cx='115.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='115.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>E</text><circle cx='500.0' cy='384.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='500.0' y='390.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>K</text><circle cx='60.0' cy='384.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='60.0' y='390.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>I</text><circle cx='170.0' cy='384.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='170.0' y='390.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>J</text><circle cx='390.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='390.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>G</text><circle cx='280.0' cy='184.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='280.0' y='190.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>C</text><circle cx='280.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='280.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>F</text><circle cx='115.0' cy='184.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='115.0' y='190.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>B</text></svg>",
     "선택지": {
       "1": "A → B → E → I → J → C → F → D → G → H → K",
       "2": "A → B → C → D → E → F → G → H → I → J → K",
@@ -258,5 +258,83 @@
     "해설": "탐색 과정에서 상태 공간에 관한 정보를 사용하지 않으면 맹목적 탐색, 정보(휴리스틱)를 활용하면 정보 이용 탐색으로 구분한다.",
     "유사문제": true,
     "AI생성": true
+  },
+  {
+    "standard_id": "12인기01-03",
+    "교과": "인공지능 기초",
+    "단원": "",
+    "내용영역": "Ⅰ-2. 탐색과 추론",
+    "성취기준명": "맹목적 탐색과 정보 이용 탐색의 차이를 중심으로 지능적 탐색의 원리를 파악한다.",
+    "유형": "5지선다형",
+    "코드": null,
+    "언어": null,
+    "실행결과": null,
+    "표": null,
+    "유사문제": true,
+    "AI생성": true,
+    "id": "q_sim_ai0103_11",
+    "문제": "다음 트리에서 루트 노드 M부터 깊이 우선 탐색(DFS)을 수행할 때의 탐색 순서로 옳은 것은? (M의 자식: N, O / N의 자식: P, Q / O의 자식: R, S / Q의 자식: T, U, 왼쪽 자식부터 탐색)",
+    "이미지": "<svg xmlns='http://www.w3.org/2000/svg' width='560' height='458' viewBox='0 0 560 458'><rect x='0' y='0' width='560' height='458' rx='12' fill='#ffffff' stroke='#e4e4e7' stroke-width='1.5'/><text x='280.0' y='26' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='bold' fill='#1f2328'>탐색 트리 (루트 M)</text><line x1='293.8' y1='84.0' x2='142.5' y2='184.0' stroke='#a8a8ae' stroke-width='2'/><line x1='293.8' y1='84.0' x2='445.0' y2='184.0' stroke='#a8a8ae' stroke-width='2'/><line x1='142.5' y1='184.0' x2='60.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='142.5' y1='184.0' x2='225.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='445.0' y1='184.0' x2='390.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='445.0' y1='184.0' x2='500.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='225.0' y1='284.0' x2='170.0' y2='384.0' stroke='#a8a8ae' stroke-width='2'/><line x1='225.0' y1='284.0' x2='280.0' y2='384.0' stroke='#a8a8ae' stroke-width='2'/><circle cx='280.0' cy='384.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='280.0' y='390.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>U</text><circle cx='142.5' cy='184.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='142.5' y='190.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>N</text><circle cx='500.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='500.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>S</text><circle cx='60.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='60.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>P</text><circle cx='445.0' cy='184.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='445.0' y='190.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>O</text><circle cx='293.8' cy='84.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='293.8' y='90.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>M</text><circle cx='170.0' cy='384.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='170.0' y='390.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>T</text><circle cx='390.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='390.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>R</text><circle cx='225.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='225.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>Q</text></svg>",
+    "선택지": {
+      "1": "M → N → P → Q → T → U → O → R → S",
+      "2": "M → N → O → P → Q → R → S → T → U",
+      "3": "M → N → P → Q → O → R → S → T → U",
+      "4": "M → O → R → S → N → P → Q → T → U",
+      "5": "M → N → O → Q → P → T → U → R → S"
+    },
+    "정답": 1,
+    "해설": "깊이 우선 탐색은 한 경로로 끝까지 내려간 뒤 되돌아온다. M에서 왼쪽 자식 N으로 들어가 N의 왼쪽 자식 P(자식이 없으므로 종료)까지 내려간 뒤 되돌아와 N의 다음 자식 Q로 가고, Q의 자식 T, U를 모두 탐색한 뒤에야 M의 다음 자식 O로 넘어가 O의 자식 R, S를 탐색한다. 따라서 순서는 M→N→P→Q→T→U→O→R→S이다."
+  },
+  {
+    "standard_id": "12인기01-03",
+    "교과": "인공지능 기초",
+    "단원": "",
+    "내용영역": "Ⅰ-2. 탐색과 추론",
+    "성취기준명": "맹목적 탐색과 정보 이용 탐색의 차이를 중심으로 지능적 탐색의 원리를 파악한다.",
+    "유형": "5지선다형",
+    "코드": null,
+    "언어": null,
+    "실행결과": null,
+    "표": null,
+    "유사문제": true,
+    "AI생성": true,
+    "id": "q_sim_ai0103_12",
+    "문제": "다음 트리(q11과 동일한 트리)에서 루트 노드 M부터 너비 우선 탐색(BFS)을 수행할 때의 탐색 순서로 옳은 것은?",
+    "이미지": "<svg xmlns='http://www.w3.org/2000/svg' width='560' height='458' viewBox='0 0 560 458'><rect x='0' y='0' width='560' height='458' rx='12' fill='#ffffff' stroke='#e4e4e7' stroke-width='1.5'/><text x='280.0' y='26' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='bold' fill='#1f2328'>탐색 트리 (루트 M)</text><line x1='293.8' y1='84.0' x2='142.5' y2='184.0' stroke='#a8a8ae' stroke-width='2'/><line x1='293.8' y1='84.0' x2='445.0' y2='184.0' stroke='#a8a8ae' stroke-width='2'/><line x1='142.5' y1='184.0' x2='60.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='142.5' y1='184.0' x2='225.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='445.0' y1='184.0' x2='390.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='445.0' y1='184.0' x2='500.0' y2='284.0' stroke='#a8a8ae' stroke-width='2'/><line x1='225.0' y1='284.0' x2='170.0' y2='384.0' stroke='#a8a8ae' stroke-width='2'/><line x1='225.0' y1='284.0' x2='280.0' y2='384.0' stroke='#a8a8ae' stroke-width='2'/><circle cx='280.0' cy='384.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='280.0' y='390.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>U</text><circle cx='142.5' cy='184.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='142.5' y='190.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>N</text><circle cx='500.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='500.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>S</text><circle cx='60.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='60.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>P</text><circle cx='445.0' cy='184.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='445.0' y='190.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>O</text><circle cx='293.8' cy='84.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='293.8' y='90.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>M</text><circle cx='170.0' cy='384.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='170.0' y='390.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>T</text><circle cx='390.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='390.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>R</text><circle cx='225.0' cy='284.0' r='24' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='2.5'/><text x='225.0' y='290.0' text-anchor='middle' font-family='ui-monospace,Consolas,monospace' font-size='18' font-weight='bold' fill='#1f2328'>Q</text></svg>",
+    "선택지": {
+      "1": "M → N → O → P → Q → R → S → T → U",
+      "2": "M → N → P → Q → T → U → O → R → S",
+      "3": "M → N → O → Q → P → S → R → U → T",
+      "4": "M → P → Q → T → U → N → R → S → O",
+      "5": "M → N → O → P → Q → S → R → T → U"
+    },
+    "정답": 1,
+    "해설": "너비 우선 탐색은 같은 깊이의 노드를 모두 탐색한 후 다음 깊이로 넘어간다. 깊이 1(M의 자식) N, O를 먼저 탐색하고, 깊이 2(N,O의 자식) P, Q, R, S를 탐색한 후, 마지막으로 깊이 3(Q의 자식) T, U를 탐색하므로 M→N→O→P→Q→R→S→T→U 순서가 된다."
+  },
+  {
+    "standard_id": "12인기01-03",
+    "교과": "인공지능 기초",
+    "단원": "",
+    "내용영역": "Ⅰ-2. 탐색과 추론",
+    "성취기준명": "맹목적 탐색과 정보 이용 탐색의 차이를 중심으로 지능적 탐색의 원리를 파악한다.",
+    "유형": "5지선다형",
+    "코드": null,
+    "언어": null,
+    "실행결과": null,
+    "표": null,
+    "유사문제": true,
+    "AI생성": true,
+    "id": "q_sim_ai0103_13",
+    "문제": "'강 건너기' 문제(농부·양·늑대·양배추)를 탐색 트리로 표현하여 풀었을 때, 깊이 우선 탐색은 초기 상태 이후 11번(1,2,3,5,6,8,9,12,13,16,17)만에 목표 상태에 도달했고, 너비 우선 탐색은 초기 상태 이후 17번(1~17 모두)만에 목표 상태에 도달했다. 이 결과에 대한 설명으로 가장 적절한 것은?",
+    "이미지": null,
+    "선택지": {
+      "1": "이 문제에서는 깊이 우선 탐색이 너비 우선 탐색보다 더 적은 수의 상태를 거쳐 목표 상태에 도달했다.",
+      "2": "깊이 우선 탐색은 이 문제에서 목표 상태를 찾지 못했다.",
+      "3": "너비 우선 탐색은 이 문제에서 상태 공간을 전혀 사용하지 않았다.",
+      "4": "깊이 우선 탐색과 너비 우선 탐색은 이 문제에서 정확히 같은 횟수만에 목표 상태에 도달했다.",
+      "5": "이 결과는 깊이 우선 탐색이 모든 문제에서 항상 너비 우선 탐색보다 빠르다는 것을 보장한다."
+    },
+    "정답": 1,
+    "해설": "이 문제에서는 깊이 우선 탐색이 11번, 너비 우선 탐색이 17번 만에 목표 상태에 도달하여 깊이 우선 탐색이 더 적은 상태를 거쳤다. 다만 이는 이 문제에 국한된 결과이며, 그래프 탐색에서 경로가 여러 가지일 경우 깊이 우선 탐색이 오히려 더 복잡한 경로를 제시할 수도 있으므로 '항상' 더 빠르다고 일반화할 수는 없다."
   }
 ]

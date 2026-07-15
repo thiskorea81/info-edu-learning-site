@@ -258,5 +258,83 @@
     "해설": "상태 정보는 상태가 변경될 때 적용되는 정보나 비용을 의미하며, 목표 상태로 가는 과정에서 새로운 정보가 나타나거나 비용이 변화하면 상태 정보가 변경될 수 있다.",
     "유사문제": true,
     "AI생성": true
+  },
+  {
+    "standard_id": "12인기01-02",
+    "교과": "인공지능 기초",
+    "단원": "",
+    "내용영역": "Ⅰ-2. 탐색과 추론",
+    "성취기준명": "인공지능에서 탐색의 중요성을 이해하고 문제 해결을 위한 탐색 과정을 설계한다.",
+    "유형": "5지선다형",
+    "코드": null,
+    "언어": null,
+    "실행결과": null,
+    "표": null,
+    "유사문제": true,
+    "AI생성": true,
+    "id": "q_sim_ai0102_11",
+    "문제": "다음 그림은 4-queen 문제의 초기 상태와 목표 상태(해답의 한 예)를 나타낸 것이다. 이 목표 상태에 대한 설명으로 옳은 것은?",
+    "이미지": "<svg xmlns='http://www.w3.org/2000/svg' width='638' height='320' viewBox='0 0 638 320'><rect x='0' y='0' width='638' height='320' rx='12' fill='#ffffff' stroke='#e4e4e7' stroke-width='1.5'/><text x='152.0' y='28' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='bold' fill='#1f2328'>초기 상태(퀸 없음)</text><text x='486.0' y='28' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='bold' fill='#1f2328'>목표 상태(해답의 한 예)</text><rect x='40' y='56' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='96' y='56' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='152' y='56' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='208' y='56' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='40' y='112' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='96' y='112' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='152' y='112' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='208' y='112' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='40' y='168' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='96' y='168' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='152' y='168' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='208' y='168' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='40' y='224' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='96' y='224' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='152' y='224' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='208' y='224' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><text x='68.0' y='296' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>1</text><text x='124.0' y='296' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>2</text><text x='180.0' y='296' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>3</text><text x='236.0' y='296' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>4</text><text x='28' y='88.0' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>1</text><text x='28' y='144.0' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>2</text><text x='28' y='200.0' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>3</text><text x='28' y='256.0' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>4</text><rect x='374' y='56' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='430' y='56' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><circle cx='458.0' cy='84.0' r='17.92' fill='#7c3aed' stroke='#5b21b6' stroke-width='2'/><text x='458.0' y='91.0' text-anchor='middle' font-family='sans-serif' font-size='22' fill='#ffffff'>♛</text><rect x='486' y='56' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='542' y='56' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='374' y='112' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='430' y='112' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='486' y='112' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='542' y='112' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><circle cx='570.0' cy='140.0' r='17.92' fill='#7c3aed' stroke='#5b21b6' stroke-width='2'/><text x='570.0' y='147.0' text-anchor='middle' font-family='sans-serif' font-size='22' fill='#ffffff'>♛</text><rect x='374' y='168' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><circle cx='402.0' cy='196.0' r='17.92' fill='#7c3aed' stroke='#5b21b6' stroke-width='2'/><text x='402.0' y='203.0' text-anchor='middle' font-family='sans-serif' font-size='22' fill='#ffffff'>♛</text><rect x='430' y='168' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='486' y='168' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='542' y='168' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='374' y='224' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><rect x='430' y='224' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><rect x='486' y='224' width='56' height='56' fill='#e4e2d8' stroke='#d8d8d4' stroke-width='1'/><circle cx='514.0' cy='252.0' r='17.92' fill='#7c3aed' stroke='#5b21b6' stroke-width='2'/><text x='514.0' y='259.0' text-anchor='middle' font-family='sans-serif' font-size='22' fill='#ffffff'>♛</text><rect x='542' y='224' width='56' height='56' fill='#f4f3ec' stroke='#d8d8d4' stroke-width='1'/><text x='402.0' y='296' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>1</text><text x='458.0' y='296' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>2</text><text x='514.0' y='296' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>3</text><text x='570.0' y='296' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>4</text><text x='362' y='88.0' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>1</text><text x='362' y='144.0' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>2</text><text x='362' y='200.0' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>3</text><text x='362' y='256.0' text-anchor='middle' font-family='ui-monospace,monospace' font-size='11' fill='#6b6b70'>4</text><line x1='278' y1='168.0' x2='360' y2='168.0' stroke='#8b8b93' stroke-width='2'/><polygon points='360,168.0 350,162.0 350,174.0' fill='#8b8b93'/><text x='319.0' y='158.0' text-anchor='middle' font-family='sans-serif' font-size='11' fill='#6b6b70'>탐색</text></svg>",
+    "선택지": {
+      "1": "네 개의 퀸이 같은 행, 같은 열, 같은 대각선에 놓이지 않도록 배치되어 서로 공격하지 않는다.",
+      "2": "두 개의 퀸이 같은 열에 놓여 있어 서로 공격할 수 있다.",
+      "3": "네 개의 퀸이 모두 같은 행에 놓여 있다.",
+      "4": "이 배치는 4-queen 문제의 해답이 될 수 없다.",
+      "5": "퀸의 개수가 3개뿐이므로 문제 조건을 만족하지 않는다."
+    },
+    "정답": 1,
+    "해설": "4-queen 문제는 4×4 체스판에 퀸 4개를 서로 공격하지 않도록(같은 행·열·대각선에 놓이지 않도록) 배치하는 문제다. 그림의 목표 상태는 네 퀸이 서로 다른 행·열에 있고 대각선으로도 겹치지 않아 조건을 만족하는 해답이다."
+  },
+  {
+    "standard_id": "12인기01-02",
+    "교과": "인공지능 기초",
+    "단원": "",
+    "내용영역": "Ⅰ-2. 탐색과 추론",
+    "성취기준명": "인공지능에서 탐색의 중요성을 이해하고 문제 해결을 위한 탐색 과정을 설계한다.",
+    "유형": "5지선다형",
+    "코드": null,
+    "언어": null,
+    "실행결과": null,
+    "표": null,
+    "유사문제": true,
+    "AI생성": true,
+    "id": "q_sim_ai0102_12",
+    "문제": "4×4 크기의 체스판에서 4-queen 게임의 해결책(서로 공격하지 않게 배치하는 방법)은 모두 몇 가지인가?",
+    "이미지": null,
+    "선택지": {
+      "1": "1가지",
+      "2": "2가지",
+      "3": "4가지",
+      "4": "8가지",
+      "5": "16가지"
+    },
+    "정답": 2,
+    "해설": "4×4 크기의 체스판에서 4-queen 게임의 해결책은 두 가지가 나올 수 있으며, 이 자료에서는 그중 한 가지를 목표 상태로 지정하여 살펴본다."
+  },
+  {
+    "standard_id": "12인기01-02",
+    "교과": "인공지능 기초",
+    "단원": "",
+    "내용영역": "Ⅰ-2. 탐색과 추론",
+    "성취기준명": "인공지능에서 탐색의 중요성을 이해하고 문제 해결을 위한 탐색 과정을 설계한다.",
+    "유형": "5지선다형",
+    "코드": null,
+    "언어": null,
+    "실행결과": null,
+    "표": null,
+    "유사문제": true,
+    "AI생성": true,
+    "id": "q_sim_ai0102_13",
+    "문제": "4-queen 문제의 탐색 트리를 만들 때, 체스판의 행이나 열에는 퀸이 한 개만 놓일 수 있으므로 우선 1행에 퀸을 하나씩 배치한다. 이때 1행에서 나올 수 있는 배치의 경우의 수(=탐색 트리의 첫 분기 개수)로 옳은 것은?",
+    "이미지": null,
+    "선택지": {
+      "1": "1가지",
+      "2": "2가지",
+      "3": "4가지",
+      "4": "8가지",
+      "5": "16가지"
+    },
+    "정답": 3,
+    "해설": "4×4 체스판의 1행에는 4개의 칸(열)이 있고, 아직 다른 퀸이 배치되지 않은 상태이므로 1행에 퀸을 놓을 수 있는 위치는 4가지이다. 이후 2행부터는 이전에 배치한 퀸을 공격하지 않는 위치만 선택할 수 있어 경우의 수가 줄어든다."
   }
 ]
