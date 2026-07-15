@@ -32,6 +32,18 @@ async function loadSubmissions() {
 
 watch(() => props.id, load, { immediate: true })
 
+const OPEN_TO_CLOSE = { '(': ')', '{': '}', '[': ']' }
+const CLOSE_CHARS = new Set([')', '}', ']'])
+
+function onKeydown(e) {
+  if (e.ctrlKey || e.metaKey || e.altKey) return // 복사/붙여넣기/실행 취소 등 단축키는 그대로 둔다
+  if (e.key === 'Tab') return onTab(e)
+  if (e.key === 'Enter') return onEnter(e)
+  if (e.key === 'Backspace') return onBackspace(e)
+  if (OPEN_TO_CLOSE[e.key]) return onBracketOpen(e)
+  if (CLOSE_CHARS.has(e.key)) return onBracketClose(e)
+}
+
 function onTab(e) {
   e.preventDefault()
   const el = e.target
@@ -62,6 +74,57 @@ function onEnter(e) {
   requestAnimationFrame(() => {
     el.selectionStart = el.selectionEnd = newPos
   })
+}
+
+function onBackspace(e) {
+  const el = e.target
+  const start = el.selectionStart
+  const end = el.selectionEnd
+  if (start !== end) return // 선택 영역이 있으면 기본 삭제 동작에 맡긴다
+  const before = code.value.slice(0, start)
+  const lineStart = before.lastIndexOf('\n') + 1
+  const linePrefix = before.slice(lineStart)
+  if (linePrefix.length === 0 || !/^ +$/.test(linePrefix)) return // 들여쓰기 공백만 있을 때만 개입
+  e.preventDefault()
+  const deleteCount = linePrefix.length % 2 === 0 ? 2 : 1
+  const newStart = start - deleteCount
+  code.value = code.value.slice(0, newStart) + code.value.slice(start)
+  requestAnimationFrame(() => {
+    el.selectionStart = el.selectionEnd = newStart
+  })
+}
+
+function onBracketOpen(e) {
+  e.preventDefault()
+  const el = e.target
+  const start = el.selectionStart
+  const end = el.selectionEnd
+  const open = e.key
+  const close = OPEN_TO_CLOSE[open]
+  if (start !== end) {
+    const selected = code.value.slice(start, end)
+    code.value = code.value.slice(0, start) + open + selected + close + code.value.slice(end)
+    requestAnimationFrame(() => {
+      el.selectionStart = start + 1
+      el.selectionEnd = end + 1
+    })
+  } else {
+    code.value = code.value.slice(0, start) + open + close + code.value.slice(start)
+    requestAnimationFrame(() => {
+      el.selectionStart = el.selectionEnd = start + 1
+    })
+  }
+}
+
+function onBracketClose(e) {
+  const el = e.target
+  const start = el.selectionStart
+  const end = el.selectionEnd
+  if (start === end && code.value[start] === e.key) {
+    // 바로 다음 글자가 이미 같은 닫는 괄호면 새로 넣지 않고 커서만 넘어간다
+    e.preventDefault()
+    el.selectionStart = el.selectionEnd = start + 1
+  }
 }
 
 async function runSample(index, sample) {
@@ -168,8 +231,7 @@ function verdictLabel(v) {
       spellcheck="false"
       rows="14"
       placeholder="여기에 파이썬 코드를 작성하세요"
-      @keydown.tab="onTab"
-      @keydown.enter="onEnter"
+      @keydown="onKeydown"
     ></textarea>
 
     <div class="actions">
