@@ -1,0 +1,338 @@
+[
+  {
+    "id": "p_daily_20260717_a",
+    "유형": "A",
+    "title": "각 자리 숫자의 합",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "자연수 N이 주어졌을 때, N을 이루는 각 자리 숫자를 모두 더한 값을 출력하시오.",
+    "constraints": "1 ≤ N ≤ 1,000,000,000\nN은 앞자리에 불필요한 0이 없는 자연수이다.",
+    "input_format": "첫째 줄에 자연수 N이 주어진다.",
+    "output_format": "N의 각 자리 숫자의 합을 출력한다.",
+    "samples": [
+      {
+        "input": "12345\n",
+        "output": "15\n",
+        "explanation": "1+2+3+4+5 = 15이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "12345\n",
+        "output": "15\n"
+      },
+      {
+        "input": "9\n",
+        "output": "9\n"
+      },
+      {
+        "input": "1000000000\n",
+        "output": "1\n"
+      },
+      {
+        "input": "999999999\n",
+        "output": "81\n"
+      },
+      {
+        "input": "10\n",
+        "output": "1\n"
+      },
+      {
+        "input": "111111111\n",
+        "output": "9\n"
+      }
+    ],
+    "힌트": "숫자를 문자열로 입력받으면 각 문자를 순회하며 바로 정수로 바꿀 수 있다.",
+    "해설": "N을 문자열 그대로 입력받아 각 문자를 정수로 변환한 뒤 모두 더하면 자리마다의 숫자 합이 된다.",
+    "정답_코드": "def solve():\n    n = input().strip()\n    print(sum(int(ch) for ch in n))  # 각 자리 문자를 정수로 바꿔 합산\n\nsolve()\n",
+    "시간복잡도": "O(D) — D는 N의 자릿수로, 각 자리를 한 번씩만 확인한다."
+  },
+  {
+    "id": "p_daily_20260717_b",
+    "유형": "B",
+    "title": "두 리스트의 공통 원소 개수",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "정수 N개로 이루어진 리스트 A와 정수 M개로 이루어진 리스트 B가 주어진다. A와 B에 모두 포함된 서로 다른 값의 개수(교집합의 크기)를 출력하시오. 같은 값이 한 리스트 안에 여러 번 나오더라도 한 번만 센다.",
+    "constraints": "1 ≤ N, M ≤ 1000\nA, B의 각 원소는 -1000 이상 1000 이하의 정수이다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 A의 원소 N개가 공백으로 구분되어 주어진다. 셋째 줄에 M, 넷째 줄에 B의 원소 M개가 공백으로 구분되어 주어진다.",
+    "output_format": "A와 B에 공통으로 포함된 서로 다른 값의 개수를 출력한다.",
+    "samples": [
+      {
+        "input": "5\n1 2 3 4 5\n3\n3 4 10\n",
+        "output": "2\n",
+        "explanation": "A와 B에 공통으로 들어있는 값은 3과 4로 총 2개이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n1 2 3 4 5\n3\n3 4 10\n",
+        "output": "2\n"
+      },
+      {
+        "input": "1\n5\n1\n5\n",
+        "output": "1\n"
+      },
+      {
+        "input": "1\n5\n1\n6\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\n-1 -2 -3\n3\n-3 -2 -1\n",
+        "output": "3\n"
+      },
+      {
+        "input": "4\n1 1 2 2\n2\n1 2\n",
+        "output": "2\n"
+      },
+      {
+        "input": "6\n1 2 3 4 5 6\n6\n7 8 9 10 11 12\n",
+        "output": "0\n"
+      }
+    ],
+    "힌트": "두 리스트를 각각 집합(set)으로 바꾸면 중복을 신경 쓰지 않고 교집합을 구할 수 있다.",
+    "해설": "리스트 A와 B를 각각 set으로 변환한 뒤 교집합 연산(&)을 수행하면 공통 원소 집합을 얻을 수 있고, 그 크기가 정답이다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    a = data[idx:idx + n]; idx += n\n    m = int(data[idx]); idx += 1\n    b = data[idx:idx + m]; idx += m\n    # 두 리스트를 집합으로 바꿔 교집합 크기를 구한다\n    print(len(set(a) & set(b)))\n\nsolve()\n",
+    "시간복잡도": "O(N + M) — 두 리스트를 각각 한 번씩 집합으로 만들고 교집합을 구한다."
+  },
+  {
+    "id": "p_daily_20260717_c",
+    "유형": "C",
+    "title": "카드 묶음 합치기 최소 비용",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "숫자 카드가 나뉘어 담긴 N개의 묶음이 있다. 두 묶음을 하나로 합칠 때 드는 비용은 (합치는 두 묶음의 카드 수의 합)과 같다. N개의 묶음을 모두 하나의 묶음으로 합치는 데 필요한 총 비용의 최솟값을 구하시오. 두 묶음을 합치는 순서는 자유롭게 정할 수 있다.",
+    "constraints": "2 ≤ N ≤ 1000\n각 묶음의 카드 수는 1 이상 10000 이하의 자연수이다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 N개 묶음의 카드 수가 공백으로 구분되어 주어진다.",
+    "output_format": "모든 묶음을 하나로 합치는 데 필요한 총 비용의 최솟값을 출력한다.",
+    "samples": [
+      {
+        "input": "3\n10 20 40\n",
+        "output": "100\n",
+        "explanation": "10과 20을 먼저 합치면 비용 30이 들고 30장 묶음이 생긴다. 이 묶음과 40을 합치면 비용 70이 든다. 총 비용은 30+70=100이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3\n10 20 40\n",
+        "output": "100\n"
+      },
+      {
+        "input": "2\n1 1\n",
+        "output": "2\n"
+      },
+      {
+        "input": "4\n1 2 3 4\n",
+        "output": "19\n"
+      },
+      {
+        "input": "5\n5 5 5 5 5\n",
+        "output": "60\n"
+      },
+      {
+        "input": "2\n10000 10000\n",
+        "output": "20000\n"
+      },
+      {
+        "input": "6\n1 1 1 1 1 1\n",
+        "output": "16\n"
+      }
+    ],
+    "힌트": "항상 그 순간 가장 작은 두 묶음을 합치는 것이 전체 비용을 최소로 만든다. 우선순위 큐(최소 힙)를 활용하자.",
+    "해설": "매번 가장 작은 두 묶음을 골라 합치는 그리디 전략이 최적이다. 최소 힙에 모든 묶음을 넣고, 가장 작은 두 값을 꺼내 합친 뒤 다시 힙에 넣는 과정을 묶음이 하나만 남을 때까지 반복하면서 비용을 누적하면 된다.",
+    "정답_코드": "def solve():\n    import sys\n    import heapq\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    piles = list(map(int, data[1:1 + n]))\n\n    heapq.heapify(piles)  # 최소 힙 구성\n    total = 0\n    while len(piles) > 1:\n        a = heapq.heappop(piles)\n        b = heapq.heappop(piles)\n        cost = a + b\n        total += cost\n        heapq.heappush(piles, cost)  # 합쳐진 묶음을 다시 힙에 삽입\n\n    print(total)\n\nsolve()\n",
+    "시간복잡도": "O(N log N) — 묶음이 하나 남을 때까지 힙에서 두 번 꺼내고 한 번 넣는 연산을 N-1번 반복한다."
+  },
+  {
+    "id": "p_daily_20260717_d",
+    "유형": "D",
+    "title": "연속 부분 수열의 최대 합",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "N개의 정수로 이루어진 수열이 주어진다. 이 수열에서 연속된 부분 수열을 하나 선택했을 때(반드시 원소를 1개 이상 포함해야 한다) 만들 수 있는 원소들의 합 중 최댓값을 구하시오.",
+    "constraints": "1 ≤ N ≤ 100,000\n수열의 각 원소는 -1000 이상 1000 이하의 정수이다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 수열의 원소 N개가 공백으로 구분되어 주어진다.",
+    "output_format": "연속된 부분 수열의 합 중 최댓값을 출력한다.",
+    "samples": [
+      {
+        "input": "5\n1 -2 3 4 -1\n",
+        "output": "7\n",
+        "explanation": "부분 수열 [3, 4]의 합인 7이 가능한 합 중 가장 크다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n1 -2 3 4 -1\n",
+        "output": "7\n"
+      },
+      {
+        "input": "1\n-5\n",
+        "output": "-5\n"
+      },
+      {
+        "input": "4\n-1 -2 -3 -4\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "6\n5 4 -1 7 8 2\n",
+        "output": "25\n"
+      },
+      {
+        "input": "3\n1000 1000 1000\n",
+        "output": "3000\n"
+      },
+      {
+        "input": "2\n-1000 1000\n",
+        "output": "1000\n"
+      }
+    ],
+    "힌트": "각 위치까지의 '해당 위치에서 끝나는 최대 합'을 이전 위치의 값을 이용해 갱신해 나가는 방법을 생각해 보자.",
+    "해설": "카데인(Kadane) 알고리즘을 사용한다. 현재 위치에서 끝나는 최대 합 cur는 '현재 값만 선택' 또는 '이전 cur에 현재 값을 더한 것' 중 큰 값이 된다. 이 cur 값들 중 전체 최댓값이 답이다. 모든 원소가 음수여도 그중 가장 큰 값을 반드시 선택해야 하므로 빈 부분 수열은 고려하지 않는다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n\n    best = arr[0]\n    cur = arr[0]\n    for x in arr[1:]:\n        # 현재 값만 새로 시작하거나, 이전까지의 합에 이어 붙인다\n        cur = max(x, cur + x)\n        best = max(best, cur)\n\n    print(best)\n\nsolve()\n",
+    "시간복잡도": "O(N) — 수열을 한 번만 순회하며 누적 최대 합을 갱신한다."
+  },
+  {
+    "id": "p_daily_20260717_e",
+    "유형": "E",
+    "title": "토마토 상자 익는 시간",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "R행 C열의 상자에 토마토가 칸마다 놓여 있다. 각 칸의 값은 1(익은 토마토), 0(익지 않은 토마토), -1(토마토가 없는 칸) 중 하나이다. 하루가 지날 때마다 익은 토마토와 상하좌우로 인접한 익지 않은 토마토는 모두 익는다. 상자 안의 모든 토마토가 익는 데 걸리는 최소 날짜 수를 구하시오. 만약 시간이 아무리 지나도 익지 않는 토마토가 존재하면 -1을 출력하고, 처음부터 익지 않은 토마토가 하나도 없다면 0을 출력한다.",
+    "constraints": "1 ≤ R, C ≤ 50\n같은 두 칸을 잇는 간선(인접 관계)은 상하좌우 4방향만 인정한다.",
+    "input_format": "첫째 줄에 R과 C, 이후 R개의 줄에 걸쳐 각 줄에 C개의 정수(1, 0, -1 중 하나)가 공백으로 구분되어 주어진다.",
+    "output_format": "모든 토마토가 익는 데 걸리는 최소 날짜 수를 출력한다. 영원히 익지 않는 토마토가 있으면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "3 3\n1 0 0\n0 0 0\n0 0 0\n",
+        "output": "4\n",
+        "explanation": "왼쪽 위 모서리에서 시작해 대각선 반대편 모서리까지 퍼지는 데 4일이 걸린다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3 3\n1 0 0\n0 0 0\n0 0 0\n",
+        "output": "4\n"
+      },
+      {
+        "input": "2 2\n1 -1\n-1 1\n",
+        "output": "0\n"
+      },
+      {
+        "input": "1 3\n1 -1 0\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "2 2\n-1 -1\n-1 -1\n",
+        "output": "0\n"
+      },
+      {
+        "input": "1 1\n1\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2 3\n1 0 0\n0 0 0\n",
+        "output": "3\n"
+      }
+    ],
+    "힌트": "이미 익은 토마토가 여러 개 있을 수 있으므로, 모든 익은 토마토를 동시에 시작점으로 하는 너비 우선 탐색을 생각해 보자.",
+    "해설": "처음에 익어 있는 모든 칸을 동시에 큐에 넣고 다중 시작점 BFS를 수행한다. 각 칸을 방문할 때 며칠째인지 함께 저장하면, 마지막으로 익는 칸의 날짜가 전체가 익는 데 걸리는 시간이 된다. BFS가 끝난 뒤에도 값이 0인 칸(끝내 익지 못한 토마토)이 남아 있다면 -1을 출력한다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import deque\n\n    data = sys.stdin.read().split()\n    idx = 0\n    r = int(data[idx]); idx += 1\n    c = int(data[idx]); idx += 1\n    grid = []\n    for _ in range(r):\n        row = list(map(int, data[idx:idx + c]))\n        idx += c\n        grid.append(row)\n\n    q = deque()\n    zero_count = 0\n    for i in range(r):\n        for j in range(c):\n            if grid[i][j] == 1:\n                q.append((i, j, 0))  # 처음부터 익은 토마토를 시작점으로 등록\n            elif grid[i][j] == 0:\n                zero_count += 1\n\n    max_day = 0\n    ripened_zero = 0\n    while q:\n        y, x, d = q.popleft()\n        max_day = max(max_day, d)\n        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):\n            ny, nx = y + dy, x + dx\n            if 0 <= ny < r and 0 <= nx < c and grid[ny][nx] == 0:\n                grid[ny][nx] = 1\n                ripened_zero += 1\n                q.append((ny, nx, d + 1))\n\n    if ripened_zero < zero_count:\n        print(-1)\n    else:\n        print(max_day)\n\nsolve()\n",
+    "시간복잡도": "O(R×C) — 다중 시작점 BFS로 각 칸을 최대 한 번씩 방문한다."
+  },
+  {
+    "id": "p_daily_20260717_f",
+    "유형": "F",
+    "title": "여행 계획 실행 가능 여부",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 도시와 두 도시를 잇는 M개의 양방향 도로 정보가 주어진다. 도로로 직접 또는 다른 도시를 거쳐 간접적으로 연결된 두 도시는 여행으로 이동할 수 있다. 여행 계획에 포함된 서로 다른 K개의 도시가 주어졌을 때, 이 도시들이 모두 서로 연결되어 있어 계획대로 여행이 가능한지 판별하시오.",
+    "constraints": "2 ≤ N ≤ 1000\n0 ≤ M ≤ N×(N-1)/2\n2 ≤ K ≤ N\n도시 번호는 1 이상 N 이하의 정수이며, 여행 계획에 포함된 도시 번호는 서로 다르다.",
+    "input_format": "첫째 줄에 N과 M이 주어진다. 이후 M개의 줄에 걸쳐 도로로 연결된 두 도시 번호 u, v가 주어진다. 다음 줄에 K, 마지막 줄에 여행 계획에 포함된 도시 번호 K개가 공백으로 구분되어 주어진다.",
+    "output_format": "여행 계획대로 이동할 수 있으면 \"YES\", 불가능하면 \"NO\"를 출력한다.",
+    "samples": [
+      {
+        "input": "4 3\n1 2\n2 3\n3 4\n3\n1 2 4\n",
+        "output": "YES\n",
+        "explanation": "1-2-3-4가 도로로 모두 연결되어 있으므로 1, 2, 4를 방문하는 여행이 가능하다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 3\n1 2\n2 3\n3 4\n3\n1 2 4\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "4 2\n1 2\n3 4\n2\n1 3\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "2 1\n1 2\n2\n1 2\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "5 0\n2\n1 2\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "6 5\n1 2\n2 3\n3 4\n4 5\n5 6\n6\n1 2 3 4 5 6\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "3 1\n1 2\n3\n1 2 3\n",
+        "output": "NO\n"
+      }
+    ],
+    "힌트": "도로로 연결된 도시들을 하나의 그룹으로 묶어 나가다가, 여행 계획에 있는 도시들이 모두 같은 그룹에 속하는지만 확인하면 된다.",
+    "해설": "유니온-파인드(Union-Find)로 도로 정보를 이용해 도시들을 그룹으로 합친다. 그 후 여행 계획에 있는 도시들의 대표(루트)가 모두 동일한지 확인하면, 모든 도시가 하나로 연결되어 있는지 판별할 수 있다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n\n    parent = list(range(n + 1))\n\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]  # 경로 압축\n            x = parent[x]\n        return x\n\n    def union(a, b):\n        ra, rb = find(a), find(b)\n        if ra != rb:\n            parent[ra] = rb\n\n    for _ in range(m):\n        u = int(data[idx]); idx += 1\n        v = int(data[idx]); idx += 1\n        union(u, v)\n\n    k = int(data[idx]); idx += 1\n    plan = [int(data[idx + i]) for i in range(k)]\n    idx += k\n\n    root = find(plan[0])\n    ok = all(find(city) == root for city in plan)\n    print(\"YES\" if ok else \"NO\")\n\nsolve()\n",
+    "시간복잡도": "O((N+M) α(N)) — 유니온-파인드 연산 M+K번을 거의 상수 시간에 수행한다."
+  },
+  {
+    "id": "p_daily_20260717_g",
+    "유형": "G",
+    "title": "최단 경로의 가짓수",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 정점과 M개의 양방향 가중치 간선으로 이루어진 그래프가 주어진다(간선의 가중치는 모두 양의 정수이며, 두 정점 사이에 서로 다른 간선이 여러 개 존재할 수 있고 이 경우 서로 다른 간선을 사용하는 경로는 다른 경로로 센다). 정점 1번에서 정점 N번까지의 최단 거리와, 그 최단 거리와 정확히 같은 길이를 갖는 서로 다른 경로의 개수를 구하시오. 경로의 개수가 매우 커질 수 있으므로 1,000,000,007로 나눈 나머지를 출력한다. 정점 1에서 정점 N까지는 항상 도달 가능하다고 가정한다.",
+    "constraints": "2 ≤ N ≤ 1000\n1 ≤ M ≤ 10,000\n각 간선의 가중치는 1 이상 1000 이하의 정수이다.",
+    "input_format": "첫째 줄에 N과 M이 주어진다. 이후 M개의 줄에 걸쳐 간선 정보 u, v, w(정점 u와 v를 잇는 가중치 w인 간선)가 주어진다.",
+    "output_format": "정점 1에서 정점 N까지의 최단 거리와 그 최단 거리를 만드는 경로의 개수(1,000,000,007로 나눈 나머지)를 공백으로 구분하여 한 줄에 출력한다.",
+    "samples": [
+      {
+        "input": "4 4\n1 2 1\n1 3 1\n2 4 1\n3 4 1\n",
+        "output": "2 2\n",
+        "explanation": "1→2→4와 1→3→4 두 경로 모두 길이 2로 최단 거리이므로 경로의 개수는 2이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 4\n1 2 1\n1 3 1\n2 4 1\n3 4 1\n",
+        "output": "2 2\n"
+      },
+      {
+        "input": "2 1\n1 2 5\n",
+        "output": "5 1\n"
+      },
+      {
+        "input": "3 3\n1 2 2\n2 3 2\n1 3 4\n",
+        "output": "4 2\n"
+      },
+      {
+        "input": "5 4\n1 2 1\n2 3 1\n3 4 1\n4 5 1\n",
+        "output": "4 1\n"
+      },
+      {
+        "input": "2 2\n1 2 3\n1 2 3\n",
+        "output": "3 2\n"
+      },
+      {
+        "input": "6 7\n1 2 2\n1 3 2\n2 4 2\n3 4 2\n4 5 1\n2 5 5\n3 6 10\n",
+        "output": "12 1\n"
+      }
+    ],
+    "힌트": "다익스트라로 최단 거리를 구하는 과정에서, 어떤 정점까지의 최단 거리가 갱신될 때는 경로 수를 새로 대입하고, 이미 알려진 최단 거리와 정확히 같은 거리가 또 발견되면 경로 수를 더해 나가면 된다.",
+    "해설": "다익스트라 알고리즘을 변형하여 dist 배열과 함께 ways 배열(해당 정점까지의 최단 경로 개수)을 관리한다. 정점 u를 거쳐 정점 v에 더 짧은 거리로 도달하면 dist[v]를 갱신하고 ways[v] = ways[u]로 대입하며, 이미 알려진 최단 거리와 같은 거리로 도달하면 ways[v]에 ways[u]를 더한다(모두 1,000,000,007로 나눈 나머지로 관리).",
+    "정답_코드": "def solve():\n    import sys\n    import heapq\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n\n    MOD = 1_000_000_007\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(m):\n        u = int(data[idx]); idx += 1\n        v = int(data[idx]); idx += 1\n        w = int(data[idx]); idx += 1\n        graph[u].append((v, w))\n        graph[v].append((u, w))\n\n    INF = float('inf')\n    dist = [INF] * (n + 1)\n    ways = [0] * (n + 1)\n    dist[1] = 0\n    ways[1] = 1\n    pq = [(0, 1)]\n    while pq:\n        d, u = heapq.heappop(pq)\n        if d > dist[u]:\n            continue\n        for v, w in graph[u]:\n            nd = d + w\n            if nd < dist[v]:\n                dist[v] = nd\n                ways[v] = ways[u] % MOD  # 더 짧은 경로를 찾았으므로 경로 수를 새로 대입\n                heapq.heappush(pq, (nd, v))\n            elif nd == dist[v]:\n                ways[v] = (ways[v] + ways[u]) % MOD  # 동일한 최단 거리이므로 경로 수를 더함\n\n    print(dist[n], ways[n] % MOD)\n\nsolve()\n",
+    "시간복잡도": "O((N+M) log N) — 다익스트라의 우선순위 큐 연산에 비례한다."
+  }
+]
