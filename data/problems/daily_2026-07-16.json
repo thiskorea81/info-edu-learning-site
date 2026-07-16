@@ -1,0 +1,350 @@
+[
+  {
+    "id": "p_daily_20260716_a",
+    "유형": "A",
+    "title": "K분 후의 시각",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "현재 시각이 H시 M분이다(24시간제, 0 ≤ H ≤ 23, 0 ≤ M ≤ 59). 이 시각으로부터 K분이 지난 후의 시각을 24시간제 \"HH:MM\" 형식(시와 분을 각각 두 자리로, 필요하면 앞에 0을 채워서)으로 출력하시오. K분이 지나 자정을 넘어가면(24시간을 넘으면) 시각은 다시 00:00부터 순환한다고 가정한다.",
+    "constraints": "0 ≤ H ≤ 23\n0 ≤ M ≤ 59\n0 ≤ K ≤ 1000000",
+    "input_format": "첫째 줄에 H, M, K가 공백으로 구분되어 주어진다.",
+    "output_format": "K분 후의 시각을 \"HH:MM\" 형식으로 출력한다.",
+    "samples": [
+      {
+        "input": "9 30 45\n",
+        "output": "10:15\n",
+        "explanation": "9시 30분에서 45분이 지나면 10시 15분이 된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "9 30 45\n",
+        "output": "10:15\n"
+      },
+      {
+        "input": "23 50 20\n",
+        "output": "00:10\n"
+      },
+      {
+        "input": "0 0 0\n",
+        "output": "00:00\n"
+      },
+      {
+        "input": "12 0 1440\n",
+        "output": "12:00\n"
+      },
+      {
+        "input": "23 59 1\n",
+        "output": "00:00\n"
+      },
+      {
+        "input": "5 15 1000000\n",
+        "output": "15:55\n"
+      },
+      {
+        "input": "0 0 1439\n",
+        "output": "23:59\n"
+      }
+    ],
+    "힌트": "분 단위로 변환한 뒤 하루의 총 분(1440)으로 나눈 나머지를 이용하면 자정을 넘는 경우도 한 번에 처리할 수 있다.",
+    "해설": "현재 시각을 자정으로부터 지난 분의 수(H*60+M)로 바꾼 뒤 K를 더하고, 하루는 1440분이므로 1440으로 나눈 나머지를 구하면 자정을 몇 번 넘어가든 상관없이 올바른 시각이 자동으로 계산된다. 그 값을 다시 시와 분으로 나누어 두 자리 형식으로 출력한다.",
+    "정답_코드": "def solve():\n    import sys\n    h, m, k = map(int, sys.stdin.read().split())\n\n    total = h * 60 + m + k  # 자정으로부터 지난 총 분\n    total %= 24 * 60  # 하루(1440분) 단위로 순환\n    nh, nm = divmod(total, 60)\n\n    print(f\"{nh:02d}:{nm:02d}\")\n\nsolve()\n",
+    "시간복잡도": "O(1) — 입력 크기와 무관하게 정해진 횟수의 산술 연산만 수행한다."
+  },
+  {
+    "id": "p_daily_20260716_b",
+    "유형": "B",
+    "title": "인접한 두 수의 최대 차이",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "N개의 정수가 순서대로 주어진다. 이웃한 두 수, 즉 i번째 수와 (i+1)번째 수(1 ≤ i ≤ N-1)의 차이의 절댓값 중 최댓값을 구하시오.",
+    "constraints": "2 ≤ N ≤ 100000\n각 정수는 -1000000000 이상 1000000000 이하이다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 N개의 정수가 공백으로 구분되어 주어진다.",
+    "output_format": "이웃한 두 수의 차이의 절댓값 중 최댓값을 출력한다.",
+    "samples": [
+      {
+        "input": "5\n1 5 2 10 3\n",
+        "output": "8\n",
+        "explanation": "이웃한 쌍의 차이의 절댓값은 |5-1|=4, |2-5|=3, |10-2|=8, |3-10|=7이며 이 중 최댓값은 8이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n1 5 2 10 3\n",
+        "output": "8\n"
+      },
+      {
+        "input": "2\n5 5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2\n-1000000000 1000000000\n",
+        "output": "2000000000\n"
+      },
+      {
+        "input": "3\n-5 -5 -5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "6\n1 2 3 4 5 100\n",
+        "output": "95\n"
+      },
+      {
+        "input": "4\n10 -10 10 -10\n",
+        "output": "20\n"
+      }
+    ],
+    "힌트": "리스트를 한 번 순회하면서 바로 앞 원소와의 차이만 계속 비교하면 된다.",
+    "해설": "리스트를 처음부터 끝까지 한 번 순회하면서 i번째와 (i+1)번째 원소의 차이의 절댓값을 계산하고, 지금까지 구한 최댓값보다 크면 답을 갱신한다. 모든 이웃한 쌍을 한 번씩만 확인하면 되므로 별도의 정렬이나 이중 반복문이 필요 없다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    nums = list(map(int, data[1:1 + n]))\n\n    best = 0\n    for i in range(n - 1):\n        diff = abs(nums[i + 1] - nums[i])  # 이웃한 두 수의 차이\n        if diff > best:\n            best = diff\n\n    print(best)\n\nsolve()\n",
+    "시간복잡도": "O(N) — 리스트를 한 번만 순회하며 인접한 두 수를 비교한다."
+  },
+  {
+    "id": "p_daily_20260716_c",
+    "유형": "C",
+    "title": "장애물이 있는 계단 오르기",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "0번부터 N번까지 번호가 매겨진 계단이 있다. 지면(0번 계단)에서 출발하여 한 번에 1칸 또는 2칸씩 올라가 N번 계단(정상)에 도달하는 방법의 수를 구하시오. 계단 중 B개는 부서져 있어 밟을 수 없다(부서진 계단의 번호는 1 이상 N-1 이하이며, 0번과 N번 계단은 부서지지 않는다). 방법의 수가 매우 커질 수 있으므로 1,000,000,007로 나눈 나머지를 출력한다.",
+    "constraints": "1 ≤ N ≤ 100000\n0 ≤ B ≤ N-1\n부서진 계단의 번호는 1 이상 N-1 이하의 서로 다른 정수이다.",
+    "input_format": "첫째 줄에 N과 B. 둘째 줄에 부서진 계단의 번호 B개가 공백으로 구분되어 주어진다(B=0이면 둘째 줄에는 아무 값도 없다).",
+    "output_format": "정상까지 올라가는 방법의 수를 1,000,000,007로 나눈 나머지를 출력한다. 방법이 없으면 0을 출력한다.",
+    "samples": [
+      {
+        "input": "4 0\n\n",
+        "output": "5\n",
+        "explanation": "1칸/2칸씩 올라가 4번 계단에 도달하는 방법은 1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2로 총 5가지이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 0\n\n",
+        "output": "5\n"
+      },
+      {
+        "input": "4 1\n2\n",
+        "output": "1\n"
+      },
+      {
+        "input": "1 0\n\n",
+        "output": "1\n"
+      },
+      {
+        "input": "2 1\n1\n",
+        "output": "1\n"
+      },
+      {
+        "input": "5 2\n2 4\n",
+        "output": "1\n"
+      },
+      {
+        "input": "10 0\n\n",
+        "output": "89\n"
+      },
+      {
+        "input": "100000 0\n\n",
+        "output": "967618232\n"
+      },
+      {
+        "input": "3 2\n1 2\n",
+        "output": "0\n"
+      }
+    ],
+    "힌트": "dp[i]를 지면에서 i번 계단까지 올라가는 방법의 수로 정의하고, 부서진 계단은 방법의 수를 0으로 처리해 보자.",
+    "해설": "dp[i]를 지면(0번)에서 i번 계단까지 올라가는 방법의 수라고 하면, i번 계단이 부서지지 않았을 때 dp[i] = dp[i-1] + dp[i-2] (i번에 도달하는 마지막 이동이 i-1에서 1칸 오르거나 i-2에서 2칸 오르는 두 가지뿐이므로), 부서졌다면 dp[i] = 0이다. 계산 도중 값이 한없이 커지는 것을 막기 위해 매 단계 1,000,000,007로 나눈 나머지를 유지한다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); b = int(data[idx + 1]); idx += 2\n    broken = set()\n    for _ in range(b):\n        broken.add(int(data[idx]))\n        idx += 1\n\n    MOD = 1000000007\n    dp = [0] * (n + 1)\n    dp[0] = 1  # 지면에 서 있는 방법은 1가지\n    for i in range(1, n + 1):\n        if i in broken:\n            dp[i] = 0\n            continue\n        val = dp[i - 1]\n        if i >= 2:\n            val += dp[i - 2]\n        dp[i] = val % MOD\n\n    print(dp[n] % MOD)\n\nsolve()\n",
+    "시간복잡도": "O(N) — 계단을 1번부터 N번까지 한 번씩만 확인하며 dp 값을 계산한다."
+  },
+  {
+    "id": "p_daily_20260716_d",
+    "유형": "D",
+    "title": "마감시한이 있는 작업 스케줄링",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "N개의 작업이 있다. 각 작업은 마감일 d_i와 그 작업을 완료했을 때 얻는 이익 p_i를 가진다. 모든 작업은 완료하는 데 정확히 하루가 걸리며, 하루에는 최대 한 개의 작업만 수행할 수 있다. 작업 i를 완료해 이익 p_i를 얻으려면 1일부터 d_i일까지 중 하루에 그 작업을 수행해야 한다. 작업들을 적절히 선택하고 날짜를 배정하여 얻을 수 있는 이익의 합의 최댓값을 구하시오.",
+    "constraints": "1 ≤ N ≤ 100000\n1 ≤ d_i ≤ N\n1 ≤ p_i ≤ 1000000000",
+    "input_format": "첫째 줄에 N. 이후 N개의 줄에 걸쳐 각 작업의 마감일 d_i와 이익 p_i가 공백으로 구분되어 주어진다.",
+    "output_format": "얻을 수 있는 이익의 합의 최댓값을 출력한다.",
+    "samples": [
+      {
+        "input": "5\n2 100\n1 19\n2 27\n1 25\n3 15\n",
+        "output": "142\n",
+        "explanation": "마감일이 2인 두 작업(이익 100, 27)을 각각 1일과 2일에 수행하고, 마감일이 3인 작업(이익 15)을 3일에 수행하면 100+27+15=142로 최댓값이 된다. 마감일이 1인 두 작업(이익 19, 25)은 마감일이 2인 두 작업보다 이익이 작아 선택하지 않는 것이 유리하다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n2 100\n1 19\n2 27\n1 25\n3 15\n",
+        "output": "142\n"
+      },
+      {
+        "input": "1\n1 50\n",
+        "output": "50\n"
+      },
+      {
+        "input": "3\n1 10\n1 30\n1 20\n",
+        "output": "30\n"
+      },
+      {
+        "input": "4\n4 5\n4 5\n4 5\n4 5\n",
+        "output": "20\n"
+      },
+      {
+        "input": "4\n1 10\n2 20\n3 30\n4 40\n",
+        "output": "100\n"
+      },
+      {
+        "input": "2\n1 1000000000\n1 1\n",
+        "output": "1000000000\n"
+      }
+    ],
+    "힌트": "이익이 큰 작업부터 순서대로 살펴보면서, 그 작업의 마감일 이전 날짜 중 아직 비어 있는 가장 늦은 날짜에 배정해 보자.",
+    "해설": "이익이 큰 작업을 먼저 고려해야 손해를 볼 일이 없으므로, 작업을 이익 내림차순으로 정렬한다. 각 작업은 배정 가능한 날짜(1일부터 마감일까지) 중 가장 늦은 빈 날짜에 배정하는 것이, 이후에 마감일이 더 빠듯한 다른 작업을 위해 앞쪽 날짜를 남겨두는 데 유리하다. '가장 늦은 빈 날짜 찾기'는 유니온-파인드로 각 날짜가 가리키는 '자신 이하에서 가장 늦은 빈 날짜'를 관리하면 빠르게 처리할 수 있다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    jobs = []\n    for _ in range(n):\n        d = int(data[idx]); p = int(data[idx + 1]); idx += 2\n        jobs.append((p, d))\n    jobs.sort(key=lambda x: -x[0])  # 이익 내림차순 정렬\n\n    parent = list(range(n + 1))  # parent[x] = x 이하에서 아직 비어 있는 가장 늦은 날짜\n\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n\n    total = 0\n    for p, d in jobs:\n        slot = find(min(d, n))\n        if slot > 0:  # 배정 가능한 빈 날짜가 있다면\n            total += p\n            parent[slot] = slot - 1  # 이 날짜는 이제 사용했으므로 이전 날짜를 가리키게 함\n\n    print(total)\n\nsolve()\n",
+    "시간복잡도": "O(N log N) — 작업을 이익 기준으로 정렬하는 데 드는 시간이 지배적이며, 유니온-파인드 연산은 거의 상수 시간이다."
+  },
+  {
+    "id": "p_daily_20260716_e",
+    "유형": "E",
+    "title": "이분 그래프 판별",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 정점과 M개의 무방향 간선으로 이루어진 그래프가 주어진다(그래프는 여러 연결 요소로 나뉘어 있을 수 있다). 이 그래프가 이분 그래프인지 판별하시오. 이분 그래프란 모든 정점을 두 그룹으로 나누어, 모든 간선이 서로 다른 그룹에 속한 정점끼리만 연결되도록 나눌 수 있는 그래프를 말한다.",
+    "constraints": "1 ≤ N ≤ 100000\n0 ≤ M ≤ 200000\n같은 두 정점을 잇는 자기 자신을 향한 간선이나 중복 간선은 주어지지 않는다.",
+    "input_format": "첫째 줄에 N과 M. 이후 M개의 줄에 걸쳐 간선의 양 끝 정점 u, v가 공백으로 구분되어 주어진다.",
+    "output_format": "이분 그래프이면 YES, 아니면 NO를 출력한다.",
+    "samples": [
+      {
+        "input": "4 4\n1 2\n2 3\n3 4\n4 1\n",
+        "output": "YES\n",
+        "explanation": "정점을 {1,3}과 {2,4} 두 그룹으로 나누면 모든 간선이 서로 다른 그룹을 잇게 되므로 이분 그래프이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 4\n1 2\n2 3\n3 4\n4 1\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "3 3\n1 2\n2 3\n3 1\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "1 0\n\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "2 1\n1 2\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "5 0\n\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "6 5\n1 2\n2 3\n4 5\n5 6\n6 4\n",
+        "output": "NO\n"
+      }
+    ],
+    "힌트": "한 정점의 색을 정하면 그와 인접한 정점은 반드시 반대 색이어야 한다는 점을 이용해 BFS로 색을 칠해 보자.",
+    "해설": "임의의 방문하지 않은 정점에서 시작해 BFS(또는 DFS)로 인접한 정점에 번갈아 다른 색(0과 1)을 칠한다. 만약 이미 색이 칠해진 정점을 다시 만났는데 그 색이 현재 정점과 같은 색이라면 인접한 두 정점이 같은 그룹에 속하게 되어 이분 그래프가 될 수 없다. 그래프가 여러 연결 요소로 나뉘어 있을 수 있으므로, 아직 방문하지 않은 정점이 남아 있다면 그 정점에서 새로 BFS를 시작해 모든 정점을 확인해야 한다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import deque\n\n    data = sys.stdin.buffer.read().split()\n    idx = 0\n    n = int(data[idx]); m = int(data[idx + 1]); idx += 2\n\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(m):\n        u = int(data[idx]); v = int(data[idx + 1]); idx += 2\n        graph[u].append(v)\n        graph[v].append(u)\n\n    color = [-1] * (n + 1)  # -1: 미방문, 0/1: 두 그룹\n    ok = True\n    for s in range(1, n + 1):\n        if color[s] == -1:\n            color[s] = 0\n            q = deque([s])\n            while q:\n                u = q.popleft()\n                for v in graph[u]:\n                    if color[v] == -1:\n                        color[v] = 1 - color[u]  # 반대 색으로 칠함\n                        q.append(v)\n                    elif color[v] == color[u]:\n                        ok = False\n\n    print(\"YES\" if ok else \"NO\")\n\nsolve()\n",
+    "시간복잡도": "O(N+M) — 모든 정점과 간선을 한 번씩만 방문한다."
+  },
+  {
+    "id": "p_daily_20260716_f",
+    "유형": "F",
+    "title": "사이클을 만드는 간선 찾기",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 정점(1번부터 N번까지)으로 이루어진 그래프에 정확히 N개의 무방향 간선이 주어진다. 간선들은 입력에 주어진 순서대로 하나씩 그래프에 추가된다. 이 그래프에서 사이클을 만드는 간선(추가하는 순간 두 끝점이 이미 같은 연결 요소에 속해 있게 되는 간선)을 찾아 출력하시오. 입력은 사이클을 만드는 간선이 정확히 하나만 존재하도록 주어진다.",
+    "constraints": "3 ≤ N ≤ 100000\n간선은 정확히 N개 주어지며, 자기 자신을 향한 간선은 없다.",
+    "input_format": "첫째 줄에 N. 이후 N개의 줄에 걸쳐 간선의 양 끝 정점 u, v가 공백으로 구분되어 주어진다.",
+    "output_format": "사이클을 만드는 간선의 두 정점 u v를 공백으로 구분해 출력한다.",
+    "samples": [
+      {
+        "input": "3\n1 2\n1 3\n2 3\n",
+        "output": "2 3\n",
+        "explanation": "간선 1-2, 1-3을 추가하면 세 정점이 모두 연결되고, 이후 추가되는 간선 2-3은 이미 같은 연결 요소에 속한 두 정점을 이으므로 사이클을 만든다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3\n1 2\n1 3\n2 3\n",
+        "output": "2 3\n"
+      },
+      {
+        "input": "4\n1 2\n2 3\n3 4\n4 2\n",
+        "output": "4 2\n"
+      },
+      {
+        "input": "5\n1 2\n1 3\n1 4\n1 5\n2 3\n",
+        "output": "2 3\n"
+      },
+      {
+        "input": "6\n1 2\n2 3\n3 4\n4 5\n5 6\n6 3\n",
+        "output": "6 3\n"
+      },
+      {
+        "input": "3\n1 2\n2 3\n1 2\n",
+        "output": "1 2\n"
+      },
+      {
+        "input": "4\n1 2\n3 4\n1 3\n2 4\n",
+        "output": "2 4\n"
+      }
+    ],
+    "힌트": "간선을 입력 순서대로 하나씩 유니온-파인드에 추가하면서, 두 정점이 이미 같은 그룹에 속해 있는 순간을 찾아보자.",
+    "해설": "유니온-파인드로 정점들의 연결 상태를 관리하면서 간선을 입력 순서대로 하나씩 추가한다. 두 정점이 이미 같은 그룹(같은 루트)에 속해 있는데 그 둘을 잇는 간선이 또 주어지면, 그 간선을 추가하는 순간 사이클이 만들어진다. 문제 조건에 의해 이러한 간선은 정확히 하나만 존재하므로, 그 간선을 찾아 출력하면 된다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    parent = list(range(n + 1))\n\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]  # 경로 압축\n            x = parent[x]\n        return x\n\n    ans = None\n    for _ in range(n):\n        u = int(data[idx]); v = int(data[idx + 1]); idx += 2\n        ru, rv = find(u), find(v)\n        if ru == rv:  # 이미 같은 그룹이면 사이클을 만드는 간선\n            ans = (u, v)\n        else:\n            parent[ru] = rv\n\n    print(f\"{ans[0]} {ans[1]}\")\n\nsolve()\n",
+    "시간복잡도": "O(N α(N)) — N개의 간선에 대해 유니온-파인드의 find와 union 연산을 수행하며, α는 애커만 함수의 역함수로 사실상 상수이다."
+  },
+  {
+    "id": "p_daily_20260716_g",
+    "유형": "G",
+    "title": "특정 정점을 반드시 거치는 최단 경로",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 정점과 M개의 양방향 간선으로 이루어진 가중치 그래프가 주어진다. 각 간선은 정점 u와 v를 가중치 w(이동 비용)로 연결한다. 정점 1에서 출발해 반드시 정점 K를 거쳐 정점 N에 도착하는 최단 경로의 길이를 구하시오. 그러한 경로가 존재하지 않으면 -1을 출력한다.",
+    "constraints": "1 ≤ N ≤ 1000\n0 ≤ M ≤ 10000\n1 ≤ K ≤ N\n간선의 가중치 w는 1 이상 1000 이하의 정수이다.",
+    "input_format": "첫째 줄에 N, M, K. 이후 M개의 줄에 걸쳐 간선 u, v, w가 공백으로 구분되어 주어진다.",
+    "output_format": "정점 1에서 K를 거쳐 N까지 가는 최단 경로의 길이를 출력한다. 그러한 경로가 없으면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "5 6 3\n1 2 2\n2 3 3\n1 3 10\n3 4 1\n4 5 2\n3 5 10\n",
+        "output": "8\n",
+        "explanation": "1→2→3 경로의 비용은 2+3=5이고 3→4→5 경로의 비용은 1+2=3이므로, K=3을 거치는 최단 경로의 길이는 5+3=8이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5 6 3\n1 2 2\n2 3 3\n1 3 10\n3 4 1\n4 5 2\n3 5 10\n",
+        "output": "8\n"
+      },
+      {
+        "input": "2 1 1\n1 2 5\n",
+        "output": "5\n"
+      },
+      {
+        "input": "4 1 3\n1 2 1\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "3 2 3\n1 2 4\n2 3 5\n",
+        "output": "9\n"
+      },
+      {
+        "input": "4 3 1\n1 2 3\n2 3 2\n3 4 4\n",
+        "output": "9\n"
+      },
+      {
+        "input": "4 4 2\n1 2 1\n2 4 1\n1 3 1\n3 4 1\n",
+        "output": "2\n"
+      }
+    ],
+    "힌트": "정점 1에서 K까지의 최단 거리와 K에서 N까지의 최단 거리를 각각 구해서 더하면 K를 반드시 거치는 최단 경로가 된다.",
+    "해설": "정점 1을 시작점으로 하는 다익스트라와 정점 N을 시작점으로 하는 다익스트라를 각각 한 번씩 수행하면, 모든 정점까지의 최단 거리를 알 수 있다. 그래프가 양방향이므로 N에서 K까지의 최단 거리는 K에서 N까지의 최단 거리와 같다. 따라서 (1에서 K까지의 최단 거리) + (K에서 N까지의 최단 거리)가 K를 반드시 거쳐 1에서 N까지 가는 최단 경로의 길이가 된다. 둘 중 하나라도 도달할 수 없으면 -1을 출력한다.",
+    "정답_코드": "def solve():\n    import sys\n    import heapq\n\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); m = int(data[idx + 1]); k = int(data[idx + 2]); idx += 3\n\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(m):\n        u = int(data[idx]); v = int(data[idx + 1]); w = int(data[idx + 2]); idx += 3\n        graph[u].append((v, w))\n        graph[v].append((u, w))\n\n    def dijkstra(src):\n        INF = float(\"inf\")\n        dist = [INF] * (n + 1)\n        dist[src] = 0\n        pq = [(0, src)]\n        while pq:\n            d, u = heapq.heappop(pq)\n            if d > dist[u]:\n                continue\n            for v, w in graph[u]:\n                nd = d + w\n                if nd < dist[v]:\n                    dist[v] = nd\n                    heapq.heappush(pq, (nd, v))\n        return dist\n\n    dist_from_1 = dijkstra(1)\n    dist_from_n = dijkstra(n)\n\n    if dist_from_1[k] == float(\"inf\") or dist_from_n[k] == float(\"inf\"):\n        print(-1)\n    else:\n        print(dist_from_1[k] + dist_from_n[k])\n\nsolve()\n",
+    "시간복잡도": "O((N+M) log N) — 다익스트라를 두 번 수행하며, 각각 우선순위 큐를 사용한다."
+  }
+]
