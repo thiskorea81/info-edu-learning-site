@@ -7,6 +7,7 @@ const props = defineProps({
 })
 
 const table = computed(() => parsePipeTable(props.question.표))
+const isSvgMarkup = computed(() => props.question.이미지?.trim().startsWith('<svg'))
 </script>
 
 <template>
@@ -26,7 +27,8 @@ const table = computed(() => parsePipeTable(props.question.표))
       </tbody>
     </table>
 
-    <img v-if="question.이미지" :src="question.이미지" class="question-image" alt="문제 이미지" />
+    <div v-if="question.이미지 && isSvgMarkup" class="question-image diagram" v-html="question.이미지"></div>
+    <img v-else-if="question.이미지" :src="question.이미지" class="question-image" alt="문제 이미지" />
 
     <pre v-if="question.코드" class="code-block"><code>{{ question.코드 }}</code></pre>
     <div v-if="question.실행결과" class="run-result-label">
@@ -58,6 +60,16 @@ const table = computed(() => parsePipeTable(props.question.표))
   max-width: 100%;
   border-radius: 6px;
   margin: 10px 0;
+}
+
+.question-image.diagram {
+  overflow-x: auto;
+}
+
+.question-image.diagram :deep(svg) {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 .run-result-label {
