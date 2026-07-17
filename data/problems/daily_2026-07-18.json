@@ -1,0 +1,338 @@
+[
+  {
+    "id": "p_daily_20260718_a",
+    "유형": "A",
+    "title": "짝수와 홀수 개수의 차",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "N개의 정수가 주어진다. 이 중 짝수의 개수와 홀수의 개수의 차이(절댓값)를 출력하시오. 0은 짝수로 취급한다.",
+    "constraints": "1 ≤ N ≤ 1000\n각 정수는 -1,000,000 이상 1,000,000 이하이다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 정수 N개가 공백으로 구분되어 주어진다.",
+    "output_format": "짝수 개수와 홀수 개수의 차이(절댓값)를 출력한다.",
+    "samples": [
+      {
+        "input": "5\n1 2 3 4 5\n",
+        "output": "1\n",
+        "explanation": "짝수는 2, 4로 2개, 홀수는 1, 3, 5로 3개이다. 차이는 |2-3|=1이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n1 2 3 4 5\n",
+        "output": "1\n"
+      },
+      {
+        "input": "1\n7\n",
+        "output": "1\n"
+      },
+      {
+        "input": "1\n0\n",
+        "output": "1\n"
+      },
+      {
+        "input": "4\n2 4 6 8\n",
+        "output": "4\n"
+      },
+      {
+        "input": "6\n-1 -2 -3 -4 -5 -6\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\n1000000 -1000000 999999\n",
+        "output": "1\n"
+      }
+    ],
+    "힌트": "각 수를 2로 나눈 나머지가 0인지 확인하면 짝수와 홀수를 구분할 수 있다.",
+    "해설": "정수를 하나씩 확인하며 짝수 개수를 세고, 전체 개수 N에서 짝수 개수를 빼면 홀수 개수를 구할 수 있다. 두 개수의 차의 절댓값을 출력한다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    even = sum(1 for x in arr if x % 2 == 0)\n    odd = n - even\n    print(abs(even - odd))  # 짝수 개수와 홀수 개수의 차이(절댓값)\n\nsolve()\n",
+    "시간복잡도": "O(N) — 리스트를 한 번만 순회하며 짝수 개수를 센다."
+  },
+  {
+    "id": "p_daily_20260718_b",
+    "유형": "B",
+    "title": "리스트 오른쪽 회전",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "N개의 정수로 이루어진 리스트가 주어진다. 이 리스트를 오른쪽으로 K칸 회전시킨 결과를 출력하시오. 오른쪽으로 1칸 회전한다는 것은 리스트의 마지막 원소가 맨 앞으로 이동하고 나머지 원소들이 한 칸씩 뒤로 밀리는 것을 의미한다(예: [1,2,3,4]를 오른쪽으로 1칸 회전하면 [4,1,2,3]이 된다).",
+    "constraints": "1 ≤ N ≤ 1000\n0 ≤ K ≤ 1,000,000,000\n각 정수는 -1000 이상 1000 이하이다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 정수 N개가 공백으로 구분되어 주어진다. 셋째 줄에 K가 주어진다.",
+    "output_format": "오른쪽으로 K칸 회전시킨 리스트를 공백으로 구분하여 한 줄에 출력한다.",
+    "samples": [
+      {
+        "input": "5\n1 2 3 4 5\n2\n",
+        "output": "4 5 1 2 3\n",
+        "explanation": "오른쪽으로 2칸 회전하면 마지막 2개 원소 4, 5가 앞으로 이동한다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n1 2 3 4 5\n2\n",
+        "output": "4 5 1 2 3\n"
+      },
+      {
+        "input": "1\n9\n1\n",
+        "output": "9\n"
+      },
+      {
+        "input": "4\n1 2 3 4\n4\n",
+        "output": "1 2 3 4\n"
+      },
+      {
+        "input": "4\n1 2 3 4\n0\n",
+        "output": "1 2 3 4\n"
+      },
+      {
+        "input": "6\n10 20 30 40 50 60\n7\n",
+        "output": "60 10 20 30 40 50\n"
+      },
+      {
+        "input": "3\n-1 -2 -3\n5\n",
+        "output": "-2 -3 -1\n"
+      }
+    ],
+    "힌트": "K가 N보다 커질 수 있으므로, K를 N으로 나눈 나머지만 실제 회전에 의미가 있다는 점을 이용하자.",
+    "해설": "K를 N으로 나눈 나머지를 구하면 실질적인 회전 칸 수를 얻을 수 있다. 리스트의 뒤에서부터 그 칸 수만큼의 원소들을 잘라 앞에 붙이고, 나머지를 뒤에 이어 붙이면 오른쪽으로 회전한 결과가 된다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    k = int(data[1 + n]) % n  # 회전 칸 수는 N으로 나눈 나머지만 의미가 있다\n    rotated = arr[-k:] + arr[:-k] if k != 0 else arr\n    print(' '.join(map(str, rotated)))\n\nsolve()\n",
+    "시간복잡도": "O(N) — 리스트를 자르고 이어 붙이는 데 원소 개수에 비례하는 시간이 든다."
+  },
+  {
+    "id": "p_daily_20260718_c",
+    "유형": "C",
+    "title": "가장 큰 수 만들기",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "N개의 음이 아닌 정수가 주어진다. 이 수들을 각각 10진법 문자열로 나타낸 뒤, 순서를 자유롭게 정해 모두 이어 붙였을 때 만들 수 있는 가장 큰 수를 구하시오. (예를 들어 3과 30을 이어 붙이는 순서는 \"330\" 또는 \"303\" 두 가지가 가능하며, 이 중 더 큰 값은 330이다.) 결과에 불필요한 선행 0이 있어서는 안 된다. 단, 모든 수가 0이면 0 하나만 출력한다.",
+    "constraints": "1 ≤ N ≤ 1000\n각 정수는 0 이상 10,000 이하이다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 정수 N개가 공백으로 구분되어 주어진다.",
+    "output_format": "만들 수 있는 가장 큰 수를 하나의 정수 형태(문자열)로 출력한다.",
+    "samples": [
+      {
+        "input": "5\n3 30 34 5 9\n",
+        "output": "9534330\n",
+        "explanation": "9, 5, 34, 3, 30 순서로 이어 붙이면 \"9534330\"이 되며 이것이 최댓값이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n3 30 34 5 9\n",
+        "output": "9534330\n"
+      },
+      {
+        "input": "1\n0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\n0 0 0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2\n10 2\n",
+        "output": "210\n"
+      },
+      {
+        "input": "4\n1 1 1 1\n",
+        "output": "1111\n"
+      },
+      {
+        "input": "3\n121 12 12\n",
+        "output": "1212121\n"
+      }
+    ],
+    "힌트": "단순히 숫자 크기로 정렬하면 안 된다. 두 수 a, b를 문자열로 이어 붙였을 때 \"a+b\"와 \"b+a\" 중 어느 쪽이 더 큰지를 기준으로 정렬해야 한다.",
+    "해설": "각 수를 문자열로 바꾼 뒤, 두 문자열 x, y에 대해 x+y와 y+x를 비교하는 사용자 정의 비교 함수로 정렬한다(x+y가 더 크면 x가 앞에 와야 한다). 정렬된 순서대로 이어 붙이면 가장 큰 수가 만들어진다. 다만 결과의 맨 앞 글자가 0이라면 모든 수가 0이라는 뜻이므로 \"0\" 하나만 출력한다.",
+    "정답_코드": "def solve():\n    import sys\n    from functools import cmp_to_key\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    nums = data[1:1 + n]  # 문자열 그대로 다룬다\n\n    def cmp(x, y):\n        if x + y > y + x:\n            return -1\n        elif x + y < y + x:\n            return 1\n        return 0\n\n    nums.sort(key=cmp_to_key(cmp))\n    result = ''.join(nums)\n    if result[0] == '0':\n        result = '0'  # 모든 수가 0인 경우 불필요한 선행 0 제거\n    print(result)\n\nsolve()\n",
+    "시간복잡도": "O(N log N · L) — L은 수의 최대 자릿수로, 정렬 시 문자열 비교 비용이 곱해진다."
+  },
+  {
+    "id": "p_daily_20260718_d",
+    "유형": "D",
+    "title": "최장 공통 부분수열의 길이",
+    "difficulty": "보통",
+    "time_limit_ms": 2000,
+    "statement": "알파벳 소문자로 이루어진 두 문자열 A와 B가 주어진다. A의 부분수열이면서 동시에 B의 부분수열이기도 한 문자열 중 가장 긴 것의 길이를 구하시오. 부분수열이란 원래 문자열에서 몇 개의 문자를 순서를 바꾸지 않고 골라낸 것으로, 반드시 연속할 필요는 없다.",
+    "constraints": "1 ≤ |A|, |B| ≤ 1000\nA, B는 알파벳 소문자로만 이루어진다.",
+    "input_format": "첫째 줄에 문자열 A, 둘째 줄에 문자열 B가 주어진다.",
+    "output_format": "A와 B의 최장 공통 부분수열의 길이를 출력한다.",
+    "samples": [
+      {
+        "input": "abcde\nace\n",
+        "output": "3\n",
+        "explanation": "\"ace\"는 \"abcde\"와 \"ace\" 모두의 부분수열이며, 길이 3보다 긴 공통 부분수열은 없다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "abcde\nace\n",
+        "output": "3\n"
+      },
+      {
+        "input": "a\na\n",
+        "output": "1\n"
+      },
+      {
+        "input": "a\nb\n",
+        "output": "0\n"
+      },
+      {
+        "input": "abc\nabc\n",
+        "output": "3\n"
+      },
+      {
+        "input": "abcdefghij\njihgfedcba\n",
+        "output": "1\n"
+      },
+      {
+        "input": "aaaa\naa\n",
+        "output": "2\n"
+      }
+    ],
+    "힌트": "A의 앞에서 i번째까지, B의 앞에서 j번째까지만 봤을 때의 최장 공통 부분수열 길이를 표로 채워나가는 방법을 생각해 보자.",
+    "해설": "dp[i][j]를 A의 앞 i개 문자와 B의 앞 j개 문자로 만들 수 있는 최장 공통 부분수열의 길이로 정의한다. A[i-1]==B[j-1]이면 dp[i][j]=dp[i-1][j-1]+1이고, 그렇지 않으면 dp[i][j]=max(dp[i-1][j], dp[i][j-1])이다. dp[n][m]이 정답이다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    a = data[0]\n    b = data[1]\n    n, m = len(a), len(b)\n    dp = [[0] * (m + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for j in range(1, m + 1):\n            if a[i - 1] == b[j - 1]:\n                dp[i][j] = dp[i - 1][j - 1] + 1\n            else:\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])\n    print(dp[n][m])\n\nsolve()\n",
+    "시간복잡도": "O(N×M) — N, M은 각각 A, B의 길이로, 모든 (i, j) 쌍에 대해 표를 한 번씩 채운다."
+  },
+  {
+    "id": "p_daily_20260718_e",
+    "유형": "E",
+    "title": "트리의 지름",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 정점과 N-1개의 간선으로 이루어진 트리(모든 정점이 연결되어 있고 사이클이 없는 무방향 그래프)가 주어진다. 모든 간선의 길이는 1이다. 트리에 있는 임의의 두 정점 사이의 최단 거리 중 가장 큰 값(트리의 지름)을 구하시오.",
+    "constraints": "2 ≤ N ≤ 100,000\n입력으로 주어지는 N-1개의 간선은 항상 하나의 트리를 이룬다.",
+    "input_format": "첫째 줄에 N, 이후 N-1개의 줄에 걸쳐 간선으로 연결된 두 정점 번호가 공백으로 구분되어 주어진다.",
+    "output_format": "트리의 지름을 출력한다.",
+    "samples": [
+      {
+        "input": "4\n1 2\n2 3\n3 4\n",
+        "output": "3\n",
+        "explanation": "정점 1과 정점 4 사이의 거리 3이 가장 멀리 떨어진 두 정점 사이의 거리이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4\n1 2\n2 3\n3 4\n",
+        "output": "3\n"
+      },
+      {
+        "input": "2\n1 2\n",
+        "output": "1\n"
+      },
+      {
+        "input": "5\n1 2\n1 3\n1 4\n1 5\n",
+        "output": "2\n"
+      },
+      {
+        "input": "5\n1 2\n2 3\n3 4\n4 5\n",
+        "output": "4\n"
+      },
+      {
+        "input": "6\n1 2\n2 3\n3 4\n2 5\n5 6\n",
+        "output": "4\n"
+      },
+      {
+        "input": "3\n1 2\n1 3\n",
+        "output": "2\n"
+      }
+    ],
+    "힌트": "트리에서 아무 정점이나 골라 BFS로 가장 먼 정점을 찾고, 그 정점에서 다시 BFS를 수행해 가장 먼 정점까지의 거리를 구하면 그것이 지름이 된다는 성질을 이용하자.",
+    "해설": "트리의 지름을 이루는 두 끝 정점 중 하나는, 임의의 정점에서 BFS로 가장 멀리 있는 정점이라는 성질이 있다. 이 성질을 이용해 먼저 정점 1에서 BFS로 가장 먼 정점 u를 찾고, 다시 u에서 BFS를 수행해 가장 먼 정점까지의 거리를 구하면 그 값이 트리의 지름이다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import deque\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(n - 1):\n        u = int(data[idx]); idx += 1\n        v = int(data[idx]); idx += 1\n        graph[u].append(v)\n        graph[v].append(u)\n\n    def bfs(start):\n        dist = [-1] * (n + 1)\n        dist[start] = 0\n        q = deque([start])\n        far_node, far_dist = start, 0\n        while q:\n            cur = q.popleft()\n            if dist[cur] > far_dist:\n                far_dist = dist[cur]\n                far_node = cur\n            for nxt in graph[cur]:\n                if dist[nxt] == -1:\n                    dist[nxt] = dist[cur] + 1\n                    q.append(nxt)\n        return far_node, far_dist\n\n    # 트리의 지름은 임의의 정점에서 가장 먼 정점을 찾고,\n    # 그 정점에서 다시 가장 먼 정점까지의 거리로 구할 수 있다\n    u, _ = bfs(1)\n    _, diameter = bfs(u)\n    print(diameter)\n\nsolve()\n",
+    "시간복잡도": "O(N) — BFS를 두 번 수행하며 각 정점과 간선을 상수 번만 방문한다."
+  },
+  {
+    "id": "p_daily_20260718_f",
+    "유형": "F",
+    "title": "필요한 선행 작업의 개수",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 작업(1번부터 N번까지)이 있고, M개의 선후 관계 정보가 주어진다. \"a b\"는 작업 a를 작업 b보다 먼저 완료해야 함을 의미한다. 이 선후 관계에는 사이클이 존재하지 않는다고 보장된다. 어떤 작업 X를 완료하기 위해 반드시 먼저 완료해야 하는 작업의 개수(직접 선행 작업뿐 아니라, 그 선행 작업을 완료하기 위해 또 필요한 간접 선행 작업까지 모두 포함)를 구하시오. 작업 X 자기 자신은 세지 않는다.",
+    "constraints": "1 ≤ N ≤ 100,000\n0 ≤ M ≤ 200,000\n1 ≤ X ≤ N\n선후 관계에 사이클은 없다.",
+    "input_format": "첫째 줄에 N, M, X가 공백으로 구분되어 주어진다. 이후 M개의 줄에 걸쳐 선후 관계 a, b(작업 a가 작업 b보다 먼저 수행되어야 함)가 공백으로 구분되어 주어진다.",
+    "output_format": "작업 X를 완료하기 위해 반드시 먼저 완료해야 하는 작업의 개수를 출력한다.",
+    "samples": [
+      {
+        "input": "5 4 3\n1 2\n2 3\n1 4\n4 5\n",
+        "output": "2\n",
+        "explanation": "작업 3을 하려면 작업 2가 필요하고, 작업 2를 하려면 작업 1이 필요하다. 따라서 필요한 선행 작업은 1, 2로 총 2개이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5 4 3\n1 2\n2 3\n1 4\n4 5\n",
+        "output": "2\n"
+      },
+      {
+        "input": "5 4 1\n1 2\n2 3\n1 4\n4 5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "5 4 5\n1 2\n2 3\n1 4\n4 5\n",
+        "output": "2\n"
+      },
+      {
+        "input": "4 4 4\n1 2\n1 3\n2 4\n3 4\n",
+        "output": "3\n"
+      },
+      {
+        "input": "2 1 2\n1 2\n",
+        "output": "1\n"
+      },
+      {
+        "input": "3 1 3\n1 2\n",
+        "output": "0\n"
+      }
+    ],
+    "힌트": "\"a는 b보다 먼저\"라는 간선의 방향을 거꾸로 뒤집어서, X로부터 거슬러 올라가며 도달할 수 있는 모든 정점을 탐색해 보자.",
+    "해설": "주어진 간선 a→b(a가 b의 선행 작업)를 뒤집어 b→a 형태의 역방향 그래프를 만든다. X에서 시작해 이 역방향 그래프를 BFS(또는 DFS)로 탐색하면서 방문하는 모든 정점이 X의 직·간접 선행 작업이다. 방문한 정점의 개수(X 자신 제외)가 정답이다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import deque\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n    x = int(data[idx]); idx += 1\n\n    rev_graph = [[] for _ in range(n + 1)]\n    for _ in range(m):\n        a = int(data[idx]); idx += 1\n        b = int(data[idx]); idx += 1\n        rev_graph[b].append(a)  # a가 b의 선행 작업이므로 역방향 간선을 만든다\n\n    visited = [False] * (n + 1)\n    visited[x] = True\n    q = deque([x])\n    count = 0\n    while q:\n        cur = q.popleft()\n        for prev in rev_graph[cur]:\n            if not visited[prev]:\n                visited[prev] = True\n                count += 1\n                q.append(prev)\n    print(count)\n\nsolve()\n",
+    "시간복잡도": "O(N + M) — 역방향 그래프를 만들고 BFS로 모든 정점과 간선을 한 번씩만 방문한다."
+  },
+  {
+    "id": "p_daily_20260718_g",
+    "유형": "G",
+    "title": "DAG에서의 최장 경로",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 정점과 M개의 단방향 가중치 간선으로 이루어진 방향 그래프가 주어진다. 이 그래프에는 사이클이 존재하지 않는다고 보장된다(방향 비순환 그래프, DAG). 정점 1번에서 출발하여 간선의 방향을 따라 이동할 수 있는 경로들 중, 지나간 간선의 가중치 합이 가장 큰 값을 구하시오. 정점 1에서 한 번도 이동하지 않는 경로(가중치 합 0)도 후보에 포함한다.",
+    "constraints": "2 ≤ N ≤ 100,000\n1 ≤ M ≤ 200,000\n각 간선의 가중치는 1 이상 1000 이하의 정수이다.\n그래프에는 사이클이 없다.",
+    "input_format": "첫째 줄에 N과 M이 주어진다. 이후 M개의 줄에 걸쳐 간선 정보 u, v, w(정점 u에서 정점 v로 가는 가중치 w인 간선)가 공백으로 구분되어 주어진다.",
+    "output_format": "정점 1에서 출발해 만들 수 있는 경로의 가중치 합 중 최댓값을 출력한다.",
+    "samples": [
+      {
+        "input": "4 4\n1 2 1\n2 3 1\n3 4 1\n1 4 2\n",
+        "output": "3\n",
+        "explanation": "1→2→3→4 경로의 가중치 합은 1+1+1=3으로, 1→4(가중치 2)보다 크다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 4\n1 2 1\n2 3 1\n3 4 1\n1 4 2\n",
+        "output": "3\n"
+      },
+      {
+        "input": "2 1\n1 2 5\n",
+        "output": "5\n"
+      },
+      {
+        "input": "3 1\n2 3 10\n",
+        "output": "0\n"
+      },
+      {
+        "input": "5 4\n1 2 1\n2 3 1\n3 4 1\n4 5 1\n",
+        "output": "4\n"
+      },
+      {
+        "input": "5 5\n1 2 3\n2 3 3\n3 4 3\n1 4 5\n4 5 1\n",
+        "output": "10\n"
+      },
+      {
+        "input": "3 1\n1 2 7\n",
+        "output": "7\n"
+      }
+    ],
+    "힌트": "사이클이 없는 그래프이므로 위상 정렬로 정점의 순서를 정한 뒤, 그 순서대로 '정점 1에서 여기까지 올 수 있는 최대 가중치 합'을 갱신해 나가는 방법을 생각해 보자.",
+    "해설": "DAG에서는 위상 정렬(Kahn 알고리즘 등)로 정점들을 순서대로 나열할 수 있다. dist[1]=0으로 시작해서, 위상 순서대로 각 정점 u를 처리하며 u에서 나가는 간선 (u, v, w)에 대해 dist[u]+w가 dist[v]보다 크면 dist[v]를 갱신한다(dist[u]가 도달 불가능이면 건너뛴다). 모든 정점을 처리한 뒤 dist 값들 중 도달 가능한 것들의 최댓값이 정답이다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import deque\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n\n    graph = [[] for _ in range(n + 1)]\n    indegree = [0] * (n + 1)\n    for _ in range(m):\n        u = int(data[idx]); idx += 1\n        v = int(data[idx]); idx += 1\n        w = int(data[idx]); idx += 1\n        graph[u].append((v, w))\n        indegree[v] += 1\n\n    q = deque(v for v in range(1, n + 1) if indegree[v] == 0)\n    topo = []\n    while q:\n        cur = q.popleft()\n        topo.append(cur)\n        for nxt, _ in graph[cur]:\n            indegree[nxt] -= 1\n            if indegree[nxt] == 0:\n                q.append(nxt)\n\n    NEG = float('-inf')\n    dist = [NEG] * (n + 1)\n    dist[1] = 0\n    for u in topo:\n        if dist[u] == NEG:\n            continue\n        for v, w in graph[u]:\n            if dist[u] + w > dist[v]:\n                dist[v] = dist[u] + w\n\n    print(max(d for d in dist[1:] if d != NEG))\n\nsolve()\n",
+    "시간복잡도": "O(N + M) — 위상 정렬과 각 간선을 한 번씩 완화(relax)하는 데 정점, 간선 수에 비례하는 시간이 걸린다."
+  }
+]
