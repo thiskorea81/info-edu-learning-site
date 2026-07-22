@@ -36,6 +36,30 @@
       "code": "import struct\n\ndef to_ieee754_32(value):\n    packed = struct.pack('>f', value)          # 실제 컴퓨터가 저장하는 IEEE 754 32비트 값\n    bits = ''.join(format(b, '08b') for b in packed)\n    sign, exponent, mantissa = bits[0], bits[1:9], bits[9:]\n    return sign, exponent, mantissa, bits\n\nvalue = 10.75\nsign, exponent, mantissa, bits = to_ieee754_32(value)\nprint(f'10진수 {value}를 IEEE 754 32비트로 표현하면')\nprint('부호부:', sign)\nprint('지수부:', exponent, '->', int(exponent, 2), '- 127 =', int(exponent, 2) - 127, '(실제 지수)')\nprint('가수부:', mantissa)\nprint('전체 32비트:', bits)\nprint('16진수:', '0x' + format(int(bits, 2), '08X'))\n\n# 실행 결과:\n# 부호부: 0\n# 지수부: 10000010 -> 130 - 127 = 3 (실제 지수)\n# 가수부: 01011000000000000000000\n# 전체 32비트: 01000001001011000000000000000000\n# 16진수: 0x412C0000"
     },
     {
+      "heading": "2진수의 덧셈",
+      "content": "2진수의 덧셈은 10진수 덧셈과 같은 방식으로 계산하되, 더한 값이 2 이상이 되면 윗자리로 자리 올림이 발생한다는 점만 다르다.",
+      "표": "| 덧셈 규칙 | 결과 |\n| :--- | :--- |\n| 0 + 0 | 0 |\n| 0 + 1 | 1 |\n| 1 + 0 | 1 |\n| 1 + 1 | 10 (자리 올림 발생) |",
+      "code": "def bin_add(a, b):\n    return bin(int(a, 2) + int(b, 2))[2:]\n\na, b = '1101', '110'\nprint(f'{a} + {b} = {bin_add(a, b)}')     # 자리 올림이 여러 번 겹치는 예\n# 1의 자리: 1+0=1\n# 2의 자리: 0+1=1\n# 4의 자리: 1+1=10 -> 이 자리는 0, 8의 자리로 올림 1 발생\n# 8의 자리: 1(올림)+1(원래 값)=10 -> 이 자리는 0, 16의 자리로 올림 1 발생\n# 결과: 10011\n"
+    },
+    {
+      "heading": "2진수의 뺄셈",
+      "content": "2진수의 뺄셈도 10진수처럼 뺄 수(피감수)의 해당 자리가 뺄셈할 값(감수)보다 작으면 윗자리에서 1을 빌려온다(빌림수, borrow). 이때 빌려온 1은 그 자리에서 2로 계산된다.",
+      "표": "| 뺄셈 규칙 | 결과 |\n| :--- | :--- |\n| 0 − 0 | 0 |\n| 1 − 0 | 1 |\n| 1 − 1 | 0 |\n| 0 − 1 | 1 (윗자리에서 빌림수 발생) |",
+      "code": "def bin_sub(a, b):\n    return format(int(a, 2) - int(b, 2), '0' + str(len(a)) + 'b')\n\na, b = '1010', '0001'\nprint(f'{a} - {b} = {bin_sub(a, b)}')\n# 1의 자리: 0-1은 뺄 수 없으므로 2의 자리에서 1을 빌려온다 -> (2)-1=1, 2의 자리에는 빌림수 1이 남음\n# 2의 자리: 원래 1이었는데 1을 빌려줬으므로 0, 0-0=0 (더 이상 빌림 없음)\n# 4의 자리: 0-0=0\n# 8의 자리: 1-0=1\n# 결과: 1001 (10진수로 10-1=9와 일치)\n"
+    },
+    {
+      "heading": "2진수의 곱셈",
+      "content": "2진수의 곱셈은 10진수의 세로셈 곱셈과 같이, 곱하는 수(승수)의 각 자리 숫자로 곱해지는 수(피승수)를 곱한 부분곱을 자리를 맞추어 구한 뒤 모두 더한다. 부분곱은 승수의 해당 자리가 1이면 피승수를 그대로 내려 쓰고, 0이면 전부 0이 된다.",
+      "표": "| 곱셈 규칙 | 결과 |\n| :--- | :--- |\n| 0 × 0 | 0 |\n| 0 × 1 | 0 |\n| 1 × 0 | 0 |\n| 1 × 1 | 1 |",
+      "code": "def bin_mul(a, b):\n    return bin(int(a, 2) * int(b, 2))[2:]\n\na, b = '1101', '101'\nprint(f'{a} x {b} = {bin_mul(a, b)}')\n# 부분곱: 1101 x 1(1의 자리) = 1101\n#         1101 x 0(2의 자리) = 0000\n#         1101 x 1(4의 자리) = 1101\n# 자리를 맞추어 더하면: 1101 + 00000 + 110100 = 1000001\n"
+    },
+    {
+      "heading": "2진수의 나눗셈",
+      "content": "2진수의 나눗셈도 10진수의 나눗셈처럼 뺄셈을 반복하는 방식으로 계산한다. 나누는 수(제수)를 나누어지는 수(피제수)에서 뺄 수 있으면 몫에 1을, 뺄 수 없으면 몫에 0을 세우고 다음 자리로 넘어간다.",
+      "표": "| 나눗셈 규칙 | 결과 |\n| :--- | :--- |\n| 0 ÷ 1 | 0 |\n| 1 ÷ 1 | 1 |\n| 0 ÷ 0 | 부정 |\n| 1 ÷ 0 | 불능 |",
+      "code": "def bin_div(a, b):\n    q, r = divmod(int(a, 2), int(b, 2))\n    return bin(q)[2:], r\n\na, b = '1001110', '1101'\nquotient, remainder = bin_div(a, b)\nprint(f'{a} / {b} = 몫 {quotient}, 나머지 {remainder}')\n# 제수 1101을 피제수에서 뺄 수 있는지 자리마다 확인하며 몫을 세우면\n# 몫 110, 나머지 0(나누어떨어짐)\n"
+    },
+    {
       "heading": "1의 보수와 2의 보수",
       "content": "보수(complement)는 기준이 되는 수에서 주어진 수를 뺀 나머지 값이다. 예를 들어 6에 대한 10의 보수는 10-6=4이다. 2진수에는 1의 보수와 2의 보수가 있다.\n\n1의 보수: 각 자리의 0은 1로, 1은 0으로 바꾼 값이다.\n2의 보수: 1의 보수를 구한 뒤 그 결과에 1을 더한 값이다.\n\n예) 2진수 (10110)₂\n1의 보수: 각 비트를 반전 → (01001)₂\n2의 보수: 1의 보수(01001)에 1을 더함 → (01010)₂",
       "code": "def ones_complement(bits):\n    return \"\".join(\"1\" if b == \"0\" else \"0\" for b in bits)\n\ndef twos_complement(bits):\n    ones = ones_complement(bits)\n    carry = 1\n    result = list(ones)\n    for i in range(len(result) - 1, -1, -1):\n        total = int(result[i]) + carry\n        result[i] = str(total % 2)\n        carry = total // 2\n        if carry == 0:\n            break\n    return \"\".join(result)\n\nn = \"10110\"\nprint(f\"2진수: {n}\")\nprint(f\"1의 보수: {ones_complement(n)}\")\nprint(f\"2의 보수: {twos_complement(n)}\")\n"
