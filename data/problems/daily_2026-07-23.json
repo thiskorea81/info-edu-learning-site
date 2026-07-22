@@ -1,0 +1,338 @@
+[
+  {
+    "id": "p_daily_20260723_a",
+    "유형": "A",
+    "title": "구간에 속하는 정수의 개수",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "N개의 정수와 구간을 나타내는 두 정수 L, R(L ≤ R)이 주어진다. N개의 정수 중 L 이상 R 이하인 정수의 개수를 구하시오.",
+    "constraints": "1 ≤ N ≤ 1000\n각 정수는 -1,000,000 이상 1,000,000 이하이다.\n-1,000,000 ≤ L ≤ R ≤ 1,000,000",
+    "input_format": "첫째 줄에 N, 둘째 줄에 정수 N개가 공백으로 구분되어 주어진다. 셋째 줄에 L과 R이 공백으로 구분되어 주어진다.",
+    "output_format": "L 이상 R 이하인 정수의 개수를 출력한다.",
+    "samples": [
+      {
+        "input": "5\n3 -2 10 7 0\n0 7\n",
+        "output": "3\n",
+        "explanation": "0 이상 7 이하인 수는 3, 0, 7로 총 3개이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n3 -2 10 7 0\n0 7\n",
+        "output": "3\n"
+      },
+      {
+        "input": "1\n5\n5 5\n",
+        "output": "1\n"
+      },
+      {
+        "input": "1\n5\n6 10\n",
+        "output": "0\n"
+      },
+      {
+        "input": "4\n-5 -3 -1 0\n-3 0\n",
+        "output": "3\n"
+      },
+      {
+        "input": "6\n1 2 3 4 5 6\n1 6\n",
+        "output": "6\n"
+      },
+      {
+        "input": "3\n-1000000 0 1000000\n-1000000 1000000\n",
+        "output": "3\n"
+      }
+    ],
+    "힌트": "각 수를 하나씩 확인하며 L 이상이고 동시에 R 이하인지를 조건문으로 검사하면 된다.",
+    "해설": "정수를 순서대로 확인하면서 L 이상 R 이하라는 두 조건을 모두 만족하는 경우에만 개수를 하나씩 늘려가면 답을 구할 수 있다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    l = int(data[1 + n])\n    r = int(data[2 + n])\n    count = sum(1 for x in arr if l <= x <= r)  # 구간 [l, r]에 속하는 수만 센다\n    print(count)\n\nsolve()\n",
+    "시간복잡도": "O(N) — 리스트를 한 번만 순회하며 각 원소가 구간에 속하는지 검사한다."
+  },
+  {
+    "id": "p_daily_20260723_b",
+    "유형": "B",
+    "title": "서로 다른 값 중 두 번째로 큰 수",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "N개의 정수로 이루어진 리스트가 주어진다. 이 중 서로 다른 값들만 모았을 때, 두 번째로 큰 값을 출력하시오. 예를 들어 리스트가 [5, 5, 3]이라면 서로 다른 값은 5와 3뿐이므로 두 번째로 큰 값은 3이다.",
+    "constraints": "2 ≤ N ≤ 1000\n각 정수는 -1,000,000 이상 1,000,000 이하이다.\n서로 다른 값이 2개 이상 존재함이 보장된다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 정수 N개가 공백으로 구분되어 주어진다.",
+    "output_format": "서로 다른 값들 중 두 번째로 큰 값을 출력한다.",
+    "samples": [
+      {
+        "input": "6\n5 5 3 9 9 1\n",
+        "output": "5\n",
+        "explanation": "서로 다른 값은 9, 5, 3, 1이며 이 중 가장 큰 값은 9, 두 번째로 큰 값은 5이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "6\n5 5 3 9 9 1\n",
+        "output": "5\n"
+      },
+      {
+        "input": "2\n1 2\n",
+        "output": "1\n"
+      },
+      {
+        "input": "3\n-5 -5 -3\n",
+        "output": "-5\n"
+      },
+      {
+        "input": "4\n100 100 100 1\n",
+        "output": "1\n"
+      },
+      {
+        "input": "5\n7 3 7 3 5\n",
+        "output": "5\n"
+      },
+      {
+        "input": "3\n1000000 -1000000 0\n",
+        "output": "0\n"
+      }
+    ],
+    "힌트": "집합(set)을 이용해 중복된 값을 먼저 제거한 뒤 정렬하면 편리하다.",
+    "해설": "리스트를 집합으로 변환해 중복을 제거하고, 내림차순으로 정렬한 뒤 두 번째 원소를 출력하면 된다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    distinct = sorted(set(arr), reverse=True)  # 중복 제거 후 내림차순 정렬\n    print(distinct[1])\n\nsolve()\n",
+    "시간복잡도": "O(N log N) — 중복을 제거한 값들을 정렬하는 데 걸리는 시간이 지배적이다."
+  },
+  {
+    "id": "p_daily_20260723_c",
+    "유형": "C",
+    "title": "왼쪽 신발과 오른쪽 신발 짝짓기",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "왼쪽 신발 N개와 오른쪽 신발 N개가 있고, 각 신발에는 크기가 매겨져 있다. 왼쪽 신발과 오른쪽 신발을 하나씩 일대일로 모두 짝지어야 한다. 짝지어진 두 신발의 크기 차이의 절댓값을 모든 짝에 대해 더한 값을 총 불편함이라고 할 때, 총 불편함을 최소로 만드는 짝짓기 방법에서의 총 불편함 값을 구하시오.",
+    "constraints": "1 ≤ N ≤ 1000\n각 신발의 크기는 1 이상 1,000,000 이하의 정수이다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 왼쪽 신발 N개의 크기, 셋째 줄에 오른쪽 신발 N개의 크기가 각각 공백으로 구분되어 주어진다.",
+    "output_format": "최소로 만들 수 있는 총 불편함 값을 출력한다.",
+    "samples": [
+      {
+        "input": "3\n3 1 4\n2 5 1\n",
+        "output": "2\n",
+        "explanation": "왼쪽을 [1,3,4], 오른쪽을 [1,2,5]로 정렬한 뒤 순서대로 짝지으면 |1-1|+|3-2|+|4-5|=0+1+1=2로 최소가 된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3\n3 1 4\n2 5 1\n",
+        "output": "2\n"
+      },
+      {
+        "input": "1\n5\n10\n",
+        "output": "5\n"
+      },
+      {
+        "input": "2\n1 1\n1 1\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\n1 2 3\n1 2 3\n",
+        "output": "0\n"
+      },
+      {
+        "input": "4\n10 20 30 40\n1 1 1 1\n",
+        "output": "96\n"
+      },
+      {
+        "input": "2\n1000000 1\n1 1000000\n",
+        "output": "0\n"
+      }
+    ],
+    "힌트": "왼쪽 신발과 오른쪽 신발을 각각 크기순으로 정렬한 뒤, 같은 순서끼리 짝지으면 총 불편함이 최소가 된다는 성질을 이용하자.",
+    "해설": "두 그룹을 각각 오름차순으로 정렬한 뒤 같은 순서의 원소끼리 짝지으면 절댓값 차이의 합이 최소가 된다(교환 논증으로 증명 가능: 정렬 순서를 어긋나게 짝짓는 두 쌍이 있다면 서로 맞바꿔도 합이 늘어나지 않는다). 따라서 두 리스트를 정렬한 뒤 같은 인덱스끼리의 차이의 절댓값을 모두 더하면 된다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    left = list(map(int, data[idx:idx + n])); idx += n\n    right = list(map(int, data[idx:idx + n])); idx += n\n    left.sort()\n    right.sort()  # 두 그룹을 각각 정렬한 뒤 같은 순서끼리 짝짓는다\n    total = sum(abs(a - b) for a, b in zip(left, right))\n    print(total)\n\nsolve()\n",
+    "시간복잡도": "O(N log N) — 두 리스트를 각각 정렬하는 데 걸리는 시간이 지배적이다."
+  },
+  {
+    "id": "p_daily_20260723_d",
+    "유형": "D",
+    "title": "1×2 타일로 2×N 벽 채우기",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "가로 길이가 N, 세로 길이가 2인 직사각형 벽이 있다. 이 벽을 1×2 크기의 타일(가로로 눕히거나 세로로 세워서 사용할 수 있다)로 겹치거나 빈틈이 남지 않게 완전히 채우는 방법의 수를 구하시오. 답이 매우 커질 수 있으므로 1,000,000,007로 나눈 나머지를 출력한다.",
+    "constraints": "1 ≤ N ≤ 1,000,000",
+    "input_format": "첫째 줄에 N이 주어진다.",
+    "output_format": "벽을 채우는 방법의 수를 1,000,000,007로 나눈 나머지를 출력한다.",
+    "samples": [
+      {
+        "input": "4\n",
+        "output": "5\n",
+        "explanation": "2×4 벽을 1×2 타일로 채우는 방법은 총 5가지이다(세로 타일 4개를 나란히 놓거나, 가로 타일 2개씩 짝지어 놓는 등의 조합)."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4\n",
+        "output": "5\n"
+      },
+      {
+        "input": "1\n",
+        "output": "1\n"
+      },
+      {
+        "input": "2\n",
+        "output": "2\n"
+      },
+      {
+        "input": "3\n",
+        "output": "3\n"
+      },
+      {
+        "input": "10\n",
+        "output": "89\n"
+      },
+      {
+        "input": "1000000\n",
+        "output": "534400663\n"
+      }
+    ],
+    "힌트": "2×N 벽의 맨 오른쪽 한 줄을 어떻게 채우는지에 따라 2×(N-1) 벽 또는 2×(N-2) 벽을 채우는 경우로 나누어 생각해 보자.",
+    "해설": "2×N 벽을 채우는 방법의 수를 dp[N]이라 하자. 맨 오른쪽 열은 세로 타일 1개로 채우거나(남은 2×(N-1) 벽을 채우는 경우의 수 dp[N-1]), 가로 타일 2개를 위아래로 겹쳐 오른쪽 두 열을 채운다(남은 2×(N-2) 벽을 채우는 경우의 수 dp[N-2]). 따라서 dp[N] = dp[N-1] + dp[N-2]이며, dp[0]=1, dp[1]=1인 피보나치 형태의 점화식이 된다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    MOD = 1_000_000_007\n    dp = [0] * (n + 1)\n    dp[0] = 1\n    if n >= 1:\n        dp[1] = 1\n    for i in range(2, n + 1):\n        dp[i] = (dp[i - 1] + dp[i - 2]) % MOD  # 세로 타일 1개 또는 가로 타일 2개로 채우는 경우\n    print(dp[n])\n\nsolve()\n",
+    "시간복잡도": "O(N) — 점화식을 이용해 dp 배열을 한 번만 순회하며 채운다."
+  },
+  {
+    "id": "p_daily_20260723_e",
+    "유형": "E",
+    "title": "가장 넓은 섬의 크기",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "R행 C열의 격자 지도가 주어진다. 각 칸은 '1'(육지) 또는 '0'(바다)이다. 상하좌우로 인접한 육지 칸들은 하나의 섬으로 연결된다(대각선으로만 인접한 경우는 연결로 보지 않는다). 이 지도에서 가장 넓은 섬에 속한 칸의 개수를 구하시오. 육지가 하나도 없다면 0을 출력한다.",
+    "constraints": "1 ≤ R, C ≤ 50",
+    "input_format": "첫째 줄에 R과 C, 이후 R개의 줄에 걸쳐 각 줄에 C개의 문자('0' 또는 '1')로 이루어진 격자가 주어진다.",
+    "output_format": "가장 넓은 섬에 속한 칸의 개수를 출력한다.",
+    "samples": [
+      {
+        "input": "3 3\n110\n100\n001\n",
+        "output": "3\n",
+        "explanation": "(0,0), (0,1), (1,0)이 상하좌우로 연결되어 크기 3인 섬을 이루며, (2,2)는 크기 1인 별도의 섬이다. 가장 넓은 섬의 크기는 3이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3 3\n110\n100\n001\n",
+        "output": "3\n"
+      },
+      {
+        "input": "2 2\n00\n00\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2 2\n11\n11\n",
+        "output": "4\n"
+      },
+      {
+        "input": "1 5\n10101\n",
+        "output": "1\n"
+      },
+      {
+        "input": "3 1\n1\n1\n1\n",
+        "output": "3\n"
+      },
+      {
+        "input": "4 4\n1100\n1100\n0011\n0011\n",
+        "output": "4\n"
+      }
+    ],
+    "힌트": "아직 방문하지 않은 육지 칸을 찾을 때마다 BFS 또는 DFS로 연결된 육지 칸의 개수를 세고, 그 중 최댓값을 기록해 나가자.",
+    "해설": "격자를 순서대로 훑으면서 아직 방문하지 않은 '1' 칸을 발견하면 BFS(또는 DFS)로 상하좌우로 연결된 모든 육지 칸을 방문 처리하며 그 섬의 크기를 센다. 모든 섬에 대해 이렇게 크기를 구한 뒤 그 중 최댓값을 출력하면 된다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import deque\n    data = sys.stdin.read().split(\"\\n\")\n    r, c = map(int, data[0].split())\n    grid = [data[1 + i] for i in range(r)]\n\n    visited = [[False] * c for _ in range(r)]\n    best = 0\n    for i in range(r):\n        for j in range(c):\n            if grid[i][j] == '1' and not visited[i][j]:\n                visited[i][j] = True\n                q = deque([(i, j)])\n                size = 0\n                while q:\n                    y, x = q.popleft()\n                    size += 1\n                    for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):\n                        ny, nx = y + dy, x + dx\n                        if 0 <= ny < r and 0 <= nx < c and grid[ny][nx] == '1' and not visited[ny][nx]:\n                            visited[ny][nx] = True\n                            q.append((ny, nx))\n                best = max(best, size)  # 지금까지 찾은 섬들 중 가장 큰 크기 갱신\n    print(best)\n\nsolve()\n",
+    "시간복잡도": "O(R×C) — 모든 칸을 BFS로 최대 한 번씩만 방문한다."
+  },
+  {
+    "id": "p_daily_20260723_f",
+    "유형": "F",
+    "title": "그룹 합치기 후 가장 큰 그룹의 크기",
+    "difficulty": "어려움",
+    "time_limit_ms": 1500,
+    "statement": "1번부터 N번까지 번호가 매겨진 N개의 원소가 있다. 처음에는 각 원소가 자기 자신만으로 이루어진 그룹에 속해 있다. M개의 합치기 연산이 순서대로 주어지며, \"a b\"는 a가 속한 그룹과 b가 속한 그룹을 하나로 합침을 의미한다(a와 b가 이미 같은 그룹이라면 아무 일도 일어나지 않는다). M개의 연산을 모두 처리한 후, 원소 개수가 가장 많은 그룹에 속한 원소의 개수를 구하시오.",
+    "constraints": "1 ≤ N ≤ 100,000\n0 ≤ M ≤ 200,000\n1 ≤ a, b ≤ N",
+    "input_format": "첫째 줄에 N과 M이 주어진다. 이후 M개의 줄에 걸쳐 합치기 연산 a, b가 공백으로 구분되어 주어진다.",
+    "output_format": "모든 연산을 처리한 후 가장 큰 그룹에 속한 원소의 개수를 출력한다.",
+    "samples": [
+      {
+        "input": "6 4\n1 2\n2 3\n4 5\n5 6\n",
+        "output": "3\n",
+        "explanation": "{1,2,3}과 {4,5,6} 두 그룹이 만들어지며 각각 크기가 3이므로 가장 큰 그룹의 크기는 3이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "6 4\n1 2\n2 3\n4 5\n5 6\n",
+        "output": "3\n"
+      },
+      {
+        "input": "1 0\n",
+        "output": "1\n"
+      },
+      {
+        "input": "5 0\n",
+        "output": "1\n"
+      },
+      {
+        "input": "5 4\n1 2\n2 3\n3 4\n4 5\n",
+        "output": "5\n"
+      },
+      {
+        "input": "4 2\n1 2\n3 4\n",
+        "output": "2\n"
+      },
+      {
+        "input": "7 5\n1 2\n2 3\n3 1\n4 5\n6 7\n",
+        "output": "3\n"
+      }
+    ],
+    "힌트": "합집합-찾기(Union-Find) 자료구조를 이용하되, 각 그룹(대표 원소)마다 그룹의 크기를 함께 관리하며 합칠 때 크기를 더해 나가자.",
+    "해설": "Union-Find 자료구조에서 각 대표 원소(루트)마다 그 그룹에 속한 원소 수를 저장하는 size 배열을 함께 관리한다. 두 그룹을 합칠 때는 두 루트가 다르면 한쪽 루트를 다른 쪽 루트 아래로 붙이고 size를 더해준다. 이미 같은 그룹이면 아무것도 하지 않는다. 모든 연산 후 각 원소의 루트를 찾아 그 루트의 size 중 최댓값이 정답이다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n\n    parent = list(range(n + 1))\n    size = [1] * (n + 1)\n\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]  # 경로 압축\n            x = parent[x]\n        return x\n\n    def union(a, b):\n        ra, rb = find(a), find(b)\n        if ra == rb:\n            return\n        if size[ra] < size[rb]:\n            ra, rb = rb, ra\n        parent[rb] = ra  # 작은 그룹을 큰 그룹 아래로 붙인다\n        size[ra] += size[rb]\n\n    for _ in range(m):\n        a = int(data[idx]); idx += 1\n        b = int(data[idx]); idx += 1\n        union(a, b)\n\n    ans = max(size[find(v)] for v in range(1, n + 1))\n    print(ans)\n\nsolve()\n",
+    "시간복잡도": "O((N+M)×α(N)) — 경로 압축과 크기 기반 합치기를 사용한 Union-Find 연산은 원소 수에 대해 거의 상수 시간이다."
+  },
+  {
+    "id": "p_daily_20260723_g",
+    "유형": "G",
+    "title": "최대 K개의 노선만 이용한 최소 비용",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 도시(1번부터 N번까지)와 M개의 단방향 항공 노선이 주어진다. 각 노선은 도시 u에서 도시 v로 비용 w를 들여 이동할 수 있음을 의미한다. 도시 1번에서 출발하여 노선을 최대 K개까지만 이용해 도시 N번에 도착할 때 드는 비용의 최솟값을 구하시오. K개 이하의 노선으로는 도시 N번에 도착할 수 없다면 -1을 출력한다.",
+    "constraints": "2 ≤ N ≤ 300\n1 ≤ M ≤ 3000\n1 ≤ K ≤ 300\n각 노선의 비용은 1 이상 1000 이하의 정수이다.\n같은 두 도시를 잇는 노선이 여러 개 주어질 수 있다.",
+    "input_format": "첫째 줄에 N, M, K가 공백으로 구분되어 주어진다. 이후 M개의 줄에 걸쳐 노선 정보 u, v, w가 공백으로 구분되어 주어진다.",
+    "output_format": "도시 1번에서 도시 N번까지 노선을 최대 K개 이용해 도착하는 데 드는 최소 비용을 출력한다. 불가능하면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "4 4 3\n1 2 5\n2 3 5\n3 4 5\n1 4 20\n",
+        "output": "15\n",
+        "explanation": "1→2→3→4 경로는 노선 3개를 사용해 비용 15가 들며, 직항 노선(1개, 비용 20)보다 저렴하고 K=3 이내이므로 15가 답이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 4 3\n1 2 5\n2 3 5\n3 4 5\n1 4 20\n",
+        "output": "15\n"
+      },
+      {
+        "input": "4 4 1\n1 2 5\n2 3 5\n3 4 5\n1 4 20\n",
+        "output": "20\n"
+      },
+      {
+        "input": "2 1 1\n1 2 7\n",
+        "output": "7\n"
+      },
+      {
+        "input": "3 1 5\n2 3 5\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "5 5 2\n1 2 1\n2 3 1\n3 4 1\n4 5 1\n1 5 10\n",
+        "output": "10\n"
+      },
+      {
+        "input": "6 6 4\n1 2 2\n2 3 2\n3 4 2\n4 5 2\n5 6 2\n1 6 100\n",
+        "output": "100\n"
+      }
+    ],
+    "힌트": "다익스트라처럼 간선 수 제한 없이 최단 거리를 구하는 대신, '사용한 간선 수'를 기준으로 단계를 나누어 최소 비용을 갱신해 나가는 방법(벨만-포드와 비슷한 방식)을 생각해 보자.",
+    "해설": "dp[v]를 '도시 1에서 도시 v까지 지금까지 허용된 간선 수 이내로 도달하는 최소 비용'이라 하자. dp[1]=0, 나머지는 무한대로 초기화한다. 이후 최대 K번 반복하면서, 매 반복마다 모든 간선 (u, v, w)에 대해 dp[u]+w가 (갱신 전) dp[v]보다 작으면 새로운 dp 값 후보로 갱신한다. 단, 한 번의 반복에서는 간선을 딱 한 번만 추가로 사용하는 효과를 내야 하므로, 이전 단계의 dp 값을 기준으로 계산한 뒤 한꺼번에 반영해야 한다(벨만-포드의 간선 수 제한 버전). K번 반복 후 dp[N]이 답이며, 여전히 무한대라면 -1을 출력한다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n    k = int(data[idx]); idx += 1\n\n    edges = []\n    for _ in range(m):\n        u = int(data[idx]); idx += 1\n        v = int(data[idx]); idx += 1\n        w = int(data[idx]); idx += 1\n        edges.append((u, v, w))\n\n    INF = float('inf')\n    dp = [INF] * (n + 1)\n    dp[1] = 0\n\n    for _ in range(k):\n        new_dp = dp[:]  # 이전 단계 값을 기준으로 갱신해야 간선을 정확히 1개만 추가로 쓰는 효과가 난다\n        for u, v, w in edges:\n            if dp[u] != INF and dp[u] + w < new_dp[v]:\n                new_dp[v] = dp[u] + w\n        dp = new_dp\n\n    print(dp[n] if dp[n] != INF else -1)\n\nsolve()\n",
+    "시간복잡도": "O(K×M) — 최대 K번의 단계마다 모든 간선을 한 번씩 완화(relax)한다."
+  }
+]
