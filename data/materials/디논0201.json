@@ -32,9 +32,13 @@
       "content": "논리학자이자 수학자인 드모르간(Augustus De Morgan, 1806~1871)이 제안한 드모르간의 법칙은 쌍대 관계에 부정의 개념을 적용해, 불 대수식 사이에 논리합과 논리곱의 상호 교환이 가능하도록 한 정리이다. 논리식 간소화에 널리 이용된다.\n\n정리 1: (A+B)의 전체 부정 = A̅·B̅ (OR의 부정은 각 항을 부정한 AND)\n정리 2: (A·B)의 전체 부정 = A̅+B̅ (AND의 부정은 각 항을 부정한 OR)\n\n변수가 3개 이상이어도 항상 성립한다: A+B+C+…의 전체 부정 = A̅·B̅·C̅·…\n\n드모르간의 법칙은 논리식의 보수를 구할 때도 사용된다. 논리식의 보수를 구하는 방법은 다음과 같다.\n1) 각 논리 변수를 보수(부정)로 바꾼다.\n2) 각 논리 상수를 보수로 바꾼다. 즉 1은 0으로, 0은 1로 바꾼다.\n3) AND 연산은 OR 연산으로, OR 연산은 AND 연산으로 바꾼다."
     },
     {
+      "heading": "콘센서스 정리",
+      "content": "콘센서스 정리(consensus theorem)는 불 함수를 간단히 하는 데 유용한 정리이다. 논리식에 서로 여(반대)인 리터럴 A와 A̅가 각각 들어 있는 두 항이 있고, 그 두 항의 나머지 변수만으로 이루어진 세 번째 항이 함께 있을 때, 이 세 번째 항(콘센서스 항)은 항상 앞의 두 항에 포함되는 중복 항이므로 지워도 식의 값이 바뀌지 않는다.\n\nAB + A̅C + BC = AB + A̅C\n\n[증명]\nAB + A̅C + BC\n= AB + A̅C + (A+A̅)·BC  ← 기본 정리 A+A̅=1 적용\n= AB + A̅C + ABC + A̅BC  ← 분배 법칙\n= AB(1+C) + A̅C(1+B)  ← 분배 법칙(AB·1과 AB·C를 AB로, A̅C·1과 A̅C·B를 A̅C로 묶음)\n= AB + A̅C  ← 기본 정리 A+1=1 적용\n\n이렇게 사라진 BC 항을 콘센서스 항이라고 부른다. 논리식에서 'AB + A̅C + BC' 형태를 발견하면, 증명 과정을 거치지 않고도 콘센서스 항 BC를 바로 지워 AB + A̅C로 간소화할 수 있다."
+    },
+    {
       "heading": "파이썬으로 법칙 검증하기",
-      "content": "불 대수의 변수는 0과 1, 두 값만 가지므로 A, B, C가 가질 수 있는 조합은 2³=8가지뿐이다. 아래 코드는 이 8가지 조합 전체에 대해 교환·결합·분배·흡수·드모르간 법칙이 실제로 성립하는지 하나씩 확인한다.",
-      "code": "from itertools import product\n\ndef AND(a, b): return a & b\ndef OR(a, b): return a | b\ndef NOT(a): return 1 - a\n\nfor A, B, C in product([0, 1], repeat=3):\n    assert OR(A, B) == OR(B, A)                          # 교환\n    assert AND(A, AND(B, C)) == AND(AND(A, B), C)        # 결합\n    assert AND(A, OR(B, C)) == OR(AND(A, B), AND(A, C))  # 분배\n    assert OR(A, AND(A, B)) == A                          # 흡수\n    assert NOT(OR(A, B)) == AND(NOT(A), NOT(B))          # 드모르간\n\nprint(\"8가지 조합 모두에서 법칙이 성립함을 확인\")\n\nA, B = 1, 0\nprint(f\"A={A}, B={B}일 때 A+A·B =\", OR(A, AND(A, B)), \"(흡수 법칙: A와 같아야 함)\")\n"
+      "content": "불 대수의 변수는 0과 1, 두 값만 가지므로 A, B, C가 가질 수 있는 조합은 2³=8가지뿐이다. 아래 코드는 이 8가지 조합 전체에 대해 교환·결합·분배·흡수·드모르간·콘센서스 법칙이 실제로 성립하는지 하나씩 확인한다.",
+      "code": "from itertools import product\n\ndef AND(a, b): return a & b\ndef OR(a, b): return a | b\ndef NOT(a): return 1 - a\n\nfor A, B, C in product([0, 1], repeat=3):\n    assert OR(A, B) == OR(B, A)                          # 교환\n    assert AND(A, AND(B, C)) == AND(AND(A, B), C)        # 결합\n    assert AND(A, OR(B, C)) == OR(AND(A, B), AND(A, C))  # 분배\n    assert OR(A, AND(A, B)) == A                          # 흡수\n    assert NOT(OR(A, B)) == AND(NOT(A), NOT(B))          # 드모르간\n\n    # 콘센서스 정리: AB + A'C + BC = AB + A'C\n    left = OR(OR(AND(A, B), AND(NOT(A), C)), AND(B, C))\n    right = OR(AND(A, B), AND(NOT(A), C))\n    assert left == right                                  # 콘센서스\n\nprint(\"8가지 조합 모두에서 법칙이 성립함을 확인(콘센서스 포함)\")\n\nA, B = 1, 0\nprint(f\"A={A}, B={B}일 때 A+A·B =\", OR(A, AND(A, B)), \"(흡수 법칙: A와 같아야 함)\")\n"
     },
     {
       "heading": "정리",
