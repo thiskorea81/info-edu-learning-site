@@ -4,6 +4,10 @@ import { RouterLink } from 'vue-router'
 import api from '../api'
 import CodeEditor from '../components/CodeEditor.vue'
 import { parsePipeTable } from '../utils/markdownTable'
+import { isAdmin, isTeacher } from '../auth'
+
+// 코드가 길어지는 응용 과목은 타이핑 대신 복사해서 실습할 수 있도록 허용한다.
+const COPY_ALLOWED_SUBJECTS = ['인공지능 기초', '디지털 논리회로', '데이터 과학']
 
 const props = defineProps({
   standardId: { type: String, required: true },
@@ -84,6 +88,14 @@ const currentIndex = computed(() =>
   subjectStandards.value.findIndex((s) => s.standard_id === props.standardId)
 )
 
+const canCopyCode = computed(
+  () =>
+    isTeacher() ||
+    isAdmin() ||
+    COPY_ALLOWED_SUBJECTS.includes(currentLocation.value?.subject?.교과)
+)
+const copiedIndex = ref(null)
+
 const prevMaterial = computed(() => {
   const i = currentIndex.value
   if (i <= 0) return null
@@ -112,7 +124,30 @@ function clearPractice(i) {
 }
 
 function blockCopy(e) {
-  e.preventDefault()
+  if (!canCopyCode.value) e.preventDefault()
+}
+
+function blockContextMenu(e) {
+  if (!canCopyCode.value) e.preventDefault()
+}
+
+async function copyCode(i, code) {
+  try {
+    await navigator.clipboard.writeText(code)
+  } catch {
+    const textarea = document.createElement('textarea')
+    textarea.value = code
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
+  }
+  copiedIndex.value = i
+  setTimeout(() => {
+    if (copiedIndex.value === i) copiedIndex.value = null
+  }, 1500)
 }
 
 function sectionTable(s) {
@@ -197,10 +232,20 @@ function sectionTable(s) {
         <div v-if="s.image" class="diagram" v-html="s.image"></div>
         <div v-if="s.code" class="code-block-wrap">
           <div class="col-label-row">
-            <span class="col-label">📖 예제 코드 (읽기 전용)</span>
-            <button class="try-btn" @click="openPractice(i)">✏️ 직접 타이핑해보기</button>
+            <span class="col-label">📖 예제 코드{{ canCopyCode ? '' : ' (읽기 전용)' }}</span>
+            <div class="code-actions">
+              <button v-if="canCopyCode" class="copy-btn" @click="copyCode(i, s.code)">
+                {{ copiedIndex === i ? '✅ 복사됨' : '📋 코드 복사' }}
+              </button>
+              <button class="try-btn" @click="openPractice(i)">✏️ 직접 타이핑해보기</button>
+            </div>
           </div>
-          <pre class="code-block readonly" @copy="blockCopy" @contextmenu.prevent><code>{{ s.code }}</code></pre>
+          <pre
+            class="code-block"
+            :class="{ readonly: !canCopyCode }"
+            @copy="blockCopy"
+            @contextmenu="blockContextMenu"
+          ><code>{{ s.code }}</code></pre>
         </div>
       </section>
     </template>
@@ -444,7 +489,13 @@ function sectionTable(s) {
   color: var(--text-dim);
 }
 
-.try-btn {
+.code-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.try-btn,
+.copy-btn {
   background: var(--accent-bg);
   border: 1px solid var(--accent-border);
   color: var(--accent);
@@ -455,7 +506,8 @@ function sectionTable(s) {
   border-radius: 6px;
 }
 
-.try-btn:hover {
+.try-btn:hover,
+.copy-btn:hover {
   background: var(--accent-border);
 }
 
@@ -473,7 +525,7 @@ function sectionTable(s) {
   text-decoration: underline;
 }
 
-.code-block.readonly {
+.code-block {
   background: var(--code-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -483,6 +535,9 @@ function sectionTable(s) {
   font-size: 14px;
   line-height: 1.5;
   box-sizing: border-box;
+}
+
+.code-block.readonly {
   user-select: none;
   -webkit-user-select: none;
 }
