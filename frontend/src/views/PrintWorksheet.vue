@@ -16,6 +16,7 @@ const questionsById = reactive({}) // standard_id -> question[] (교사용 전�
 
 const mode = ref('student') // 'student' | 'teacher'
 const includeAdvanced = ref(false)
+const includeSolvingSpace = ref(true)
 const selected = ref(new Set())
 
 onMounted(async () => {
@@ -96,6 +97,7 @@ function doPrint() {
       </div>
       <div class="toolbar-row">
         <label><input type="checkbox" v-model="includeAdvanced" /> 심화 학습 내용 포함</label>
+        <label><input type="checkbox" v-model="includeSolvingSpace" /> 풀이 공간 포함</label>
       </div>
       <div class="toolbar-row standards-picker">
         <span class="toolbar-label">포함할 성취기준</span>
@@ -150,7 +152,11 @@ function doPrint() {
       </div>
       <p v-else class="no-material">(이 성취기준에는 아직 학습자료가 없습니다.)</p>
 
-      <div v-if="questionsById[std.standard_id]?.length" class="questions">
+      <div
+        v-if="questionsById[std.standard_id]?.length"
+        class="questions"
+        :class="{ 'page-split': materialsById[std.standard_id] }"
+      >
         <div v-for="(q, qi) in questionsById[std.standard_id]" :key="q.id" class="question-block">
           <p class="q-stem"><span class="q-num">{{ qi + 1 }}.</span> {{ q.문제 }}</p>
 
@@ -173,6 +179,10 @@ function doPrint() {
           <ol class="choices">
             <li v-for="(text, num) in q.선택지" :key="num">{{ text }}</li>
           </ol>
+
+          <div v-if="includeSolvingSpace" class="solving-space">
+            <span class="solving-label">풀이</span>
+          </div>
 
           <div v-if="mode === 'teacher'" class="answer-box">
             <strong>정답: {{ q.정답 }}번</strong>
@@ -314,6 +324,8 @@ function doPrint() {
   color: #18181b;
   font-size: 15px;
   margin: 16px 0 6px;
+  break-after: avoid-page;
+  page-break-after: avoid;
 }
 
 .content {
@@ -395,6 +407,22 @@ function doPrint() {
   gap: 4px;
 }
 
+.solving-space {
+  position: relative;
+  margin: 10px 0 4px;
+  min-height: 80px;
+  border: 1px dashed #a1a1aa;
+  border-radius: 4px;
+}
+
+.solving-label {
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  font-size: 11px;
+  color: #a1a1aa;
+}
+
 .answer-box {
   margin-top: 8px;
   padding: 8px 12px;
@@ -447,6 +475,11 @@ function doPrint() {
 
   .standard-block:first-of-type {
     break-before: auto;
+  }
+
+  /* 학습자료 내용과 평가문항은 항상 페이지를 분리한다 */
+  .questions.page-split {
+    break-before: page;
   }
 }
 </style>
