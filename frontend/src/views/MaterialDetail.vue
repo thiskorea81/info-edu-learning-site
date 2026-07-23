@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import api from '../api'
 import CodeEditor from '../components/CodeEditor.vue'
@@ -18,22 +18,74 @@ const activeIndex = ref(null)
 const hasProblems = ref(false)
 const hasQuestions = ref(false)
 
-onMounted(async () => {
-  const { data } = await api.get(`/api/materials/${props.standardId}`)
+const allSubjects = ref([])
+const materialsById = ref(new Map())
+
+async function loadMaterial(id) {
+  loading.value = true
+  const { data } = await api.get(`/api/materials/${id}`)
   material.value = data
+  Object.keys(practiceCode).forEach((k) => delete practiceCode[k])
   data.sections.forEach((s, i) => {
     if (s.code) practiceCode[i] = ''
   })
   const first = data.sections.findIndex((s) => s.code)
-  if (first !== -1) activeIndex.value = first
+  activeIndex.value = first !== -1 ? first : null
   loading.value = false
 
   const [{ data: problems }, { data: questions }] = await Promise.all([
-    api.get('/api/problems', { params: { standard_id: props.standardId } }),
-    api.get('/api/questions', { params: { standard_id: props.standardId, include_similar: true } }),
+    api.get('/api/problems', { params: { standard_id: id } }),
+    api.get('/api/questions', { params: { standard_id: id, include_similar: true } }),
   ])
   hasProblems.value = problems.length > 0
   hasQuestions.value = questions.length > 0
+}
+
+onMounted(async () => {
+  const [{ data: subjects }, { data: mats }] = await Promise.all([
+    api.get('/api/subjects'),
+    api.get('/api/materials'),
+  ])
+  allSubjects.value = subjects
+  materialsById.value = new Map(mats.map((m) => [m.standard_id, m]))
+
+  await loadMaterial(props.standardId)
+})
+
+watch(
+  () => props.standardId,
+  (id) => {
+    panelOpen.value = false
+    loadMaterial(id)
+  }
+)
+
+// 같은 단원 안에서 실제 학습자료가 있는 성취기준만 순서대로 모은 목록
+const siblingStandards = computed(() => {
+  for (const subject of allSubjects.value) {
+    for (const unit of subject.units) {
+      if (unit.standards.some((s) => s.standard_id === props.standardId)) {
+        return unit.standards.filter((s) => materialsById.value.has(s.standard_id))
+      }
+    }
+  }
+  return []
+})
+
+const currentIndex = computed(() =>
+  siblingStandards.value.findIndex((s) => s.standard_id === props.standardId)
+)
+
+const prevMaterial = computed(() => {
+  const i = currentIndex.value
+  if (i <= 0) return null
+  return materialsById.value.get(siblingStandards.value[i - 1].standard_id)
+})
+
+const nextMaterial = computed(() => {
+  const i = currentIndex.value
+  if (i === -1 || i >= siblingStandards.value.length - 1) return null
+  return materialsById.value.get(siblingStandards.value[i + 1].standard_id)
 })
 
 const codeSections = computed(() =>
@@ -65,6 +117,40 @@ function sectionTable(s) {
 
   <p v-if="loading">불러오는 중…</p>
   <template v-else-if="material">
+    <nav class="material-nav">
+      <RouterLink
+        v-if="prevMaterial"
+        :to="`/materials/${prevMaterial.standard_id}`"
+        class="nav-link prev"
+      >
+        <span class="nav-arrow">←</span>
+        <span class="nav-text">
+          <span class="nav-label">이전 학습자료</span>
+          <span class="nav-title">{{ prevMaterial.title }}</span>
+        </span>
+      </RouterLink>
+      <span v-else class="nav-link disabled">
+        <span class="nav-arrow">←</span>
+        <span class="nav-text"><span class="nav-label">이전 학습자료</span></span>
+      </span>
+
+      <RouterLink
+        v-if="nextMaterial"
+        :to="`/materials/${nextMaterial.standard_id}`"
+        class="nav-link next"
+      >
+        <span class="nav-text">
+          <span class="nav-label">다음 학습자료</span>
+          <span class="nav-title">{{ nextMaterial.title }}</span>
+        </span>
+        <span class="nav-arrow">→</span>
+      </RouterLink>
+      <span v-else class="nav-link disabled next">
+        <span class="nav-text"><span class="nav-label">다음 학습자료</span></span>
+        <span class="nav-arrow">→</span>
+      </span>
+    </nav>
+
     <h1>{{ material.title }}</h1>
     <p class="std-name">[{{ material.standard_id }}] {{ material.성취기준명 }}</p>
 
@@ -114,6 +200,40 @@ function sectionTable(s) {
       </RouterLink>
     </div>
 
+    <nav class="material-nav bottom">
+      <RouterLink
+        v-if="prevMaterial"
+        :to="`/materials/${prevMaterial.standard_id}`"
+        class="nav-link prev"
+      >
+        <span class="nav-arrow">←</span>
+        <span class="nav-text">
+          <span class="nav-label">이전 학습자료</span>
+          <span class="nav-title">{{ prevMaterial.title }}</span>
+        </span>
+      </RouterLink>
+      <span v-else class="nav-link disabled">
+        <span class="nav-arrow">←</span>
+        <span class="nav-text"><span class="nav-label">이전 학습자료</span></span>
+      </span>
+
+      <RouterLink
+        v-if="nextMaterial"
+        :to="`/materials/${nextMaterial.standard_id}`"
+        class="nav-link next"
+      >
+        <span class="nav-text">
+          <span class="nav-label">다음 학습자료</span>
+          <span class="nav-title">{{ nextMaterial.title }}</span>
+        </span>
+        <span class="nav-arrow">→</span>
+      </RouterLink>
+      <span v-else class="nav-link disabled next">
+        <span class="nav-text"><span class="nav-label">다음 학습자료</span></span>
+        <span class="nav-arrow">→</span>
+      </span>
+    </nav>
+
     <button
       v-if="codeSections.length && !panelOpen"
       class="fab"
@@ -158,6 +278,71 @@ function sectionTable(s) {
   color: var(--text-dim);
   font-size: 14px;
   margin-bottom: 24px;
+}
+
+.material-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.material-nav.bottom {
+  margin-top: 32px;
+  margin-bottom: 0;
+}
+
+.nav-link {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+  min-width: 0;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.nav-link.next {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.nav-link:not(.disabled):hover {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+.nav-link.disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.nav-arrow {
+  flex-shrink: 0;
+  font-size: 16px;
+  color: var(--text-dim);
+}
+
+.nav-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nav-label {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.nav-title {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .section {
