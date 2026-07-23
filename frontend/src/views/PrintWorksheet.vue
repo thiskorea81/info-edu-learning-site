@@ -65,6 +65,26 @@ function isSvgMarkup(image) {
   return image?.trim().startsWith('<svg')
 }
 
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+// content 안의 {{용어}}를 학생용은 빈칸으로, 교사용은 하이라이트로 렌더링한다.
+function renderContent(text) {
+  if (!text) return ''
+  const parts = text.split(/\{\{(.+?)\}\}/g)
+  return parts
+    .map((part, i) => {
+      if (i % 2 === 0) return escapeHtml(part)
+      const term = escapeHtml(part)
+      if (mode.value === 'teacher') {
+        return `<mark class="cloze-highlight">${term}</mark>`
+      }
+      return `<span class="cloze-blank" style="min-width:${Math.max(part.length, 2)}ch"></span>`
+    })
+    .join('')
+}
+
 function toggleAll(checked) {
   selected.value = checked ? new Set(standards.value.map((s) => s.standard_id)) : new Set()
 }
@@ -119,6 +139,13 @@ function doPrint() {
     <header class="worksheet-header">
       <h1>{{ subject }} — {{ unit }}</h1>
       <p class="mode-tag">{{ mode === 'teacher' ? '[교사용]' : '[학생용]' }}</p>
+      <p class="cloze-note">
+        {{
+          mode === 'teacher'
+            ? '노란색으로 표시된 부분이 학생용 학습지에서는 빈칸으로 제시됩니다.'
+            : '밑줄 친 빈칸에 알맞은 핵심 용어를 채워 넣으며 학습하세요.'
+        }}
+      </p>
       <div v-if="mode === 'student'" class="name-fields">
         <span>학번: ______________</span>
         <span>이름: ______________</span>
@@ -133,7 +160,7 @@ function doPrint() {
       <div v-if="materialsById[std.standard_id]" class="material">
         <template v-for="(s, i) in visibleSections(materialsById[std.standard_id])" :key="i">
           <h3>{{ s.heading }}</h3>
-          <p class="content">{{ s.content }}</p>
+          <p class="content" v-html="renderContent(s.content)"></p>
           <table v-if="sectionTable(s)" class="section-table">
             <thead>
               <tr>
@@ -303,6 +330,12 @@ function doPrint() {
   color: #18181b;
 }
 
+.cloze-note {
+  font-size: 12px;
+  color: #52525b;
+  margin: 0 0 10px;
+}
+
 .standard-block {
   margin-bottom: 36px;
 }
@@ -333,6 +366,24 @@ function doPrint() {
   line-height: 1.7;
   font-size: 14px;
   margin: 0 0 8px;
+}
+
+.content :deep(.cloze-blank) {
+  display: inline-block;
+  border-bottom: 1.5px solid #18181b;
+  min-height: 1em;
+  vertical-align: baseline;
+  margin: 0 2px;
+}
+
+.content :deep(mark.cloze-highlight) {
+  background: #fef08a;
+  color: #18181b;
+  padding: 0 3px;
+  border-radius: 2px;
+  font-weight: 700;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 .section-table {
