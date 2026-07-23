@@ -15,6 +15,7 @@ const materialsById = reactive({}) // standard_id -> material | null
 const questionsById = reactive({}) // standard_id -> question[] (교사용 전체 필드 포함)
 
 const mode = ref('student') // 'student' | 'teacher'
+const printType = ref('full') // 'full' | 'summary' | 'questions'
 const includeAdvanced = ref(false)
 const includeSolvingSpace = ref(true)
 const selected = ref(new Set())
@@ -61,6 +62,29 @@ function sectionTable(s) {
   return parsePipeTable(s.표)
 }
 
+// content 안에서 {{용어}} 빈칸이 포함된 문장/줄만 뽑아 핵심정리용 목록으로 만든다.
+function extractClozeSentences(content) {
+  if (!content) return []
+  const lines = content.split('\n')
+  const sentences = []
+  for (const line of lines) {
+    const parts = line.split(/(?<=[.?!])\s+(?=\S)/)
+    for (const part of parts) {
+      const t = part.trim()
+      if (t.includes('{{')) sentences.push(t)
+    }
+  }
+  return sentences
+}
+
+// 성취기준의 학습자료를 소제목 단위로 묶어, 빈칸이 있는 문장만 남긴 핵심정리 목록을 만든다.
+function summaryGroups(material) {
+  if (!material) return []
+  return visibleSections(material)
+    .map((s) => ({ heading: s.heading, sentences: extractClozeSentences(s.content) }))
+    .filter((g) => g.sentences.length > 0)
+}
+
 function isSvgMarkup(image) {
   return image?.trim().startsWith('<svg')
 }
@@ -84,6 +108,12 @@ function renderContent(text) {
     })
     .join('')
 }
+
+const printTypeLabel = computed(() => {
+  if (printType.value === 'summary') return '핵심정리 빈칸 채우기'
+  if (printType.value === 'questions') return '문제만'
+  return null
+})
 
 function toggleAll(checked) {
   selected.value = checked ? new Set(standards.value.map((s) => s.standard_id)) : new Set()
@@ -116,6 +146,12 @@ function doPrint() {
         <label><input type="radio" value="teacher" v-model="mode" /> 교사용 (정답·해설 문항 아래 표시)</label>
       </div>
       <div class="toolbar-row">
+        <span class="toolbar-label">구성</span>
+        <label><input type="radio" value="full" v-model="printType" /> 전체 (학습자료 + 평가문항)</label>
+        <label><input type="radio" value="summary" v-model="printType" /> 핵심정리 빈칸 채우기 (성취기준별 1장)</label>
+        <label><input type="radio" value="questions" v-model="printType" /> 문제만 출력</label>
+      </div>
+      <div class="toolbar-row">
         <label><input type="checkbox" v-model="includeAdvanced" /> 심화 학습 내용 포함</label>
         <label><input type="checkbox" v-model="includeSolvingSpace" /> 풀이 공간 포함</label>
       </div>
@@ -138,8 +174,10 @@ function doPrint() {
   <div v-if="!loading" class="worksheet">
     <header class="worksheet-header">
       <h1>{{ subject }} — {{ unit }}</h1>
-      <p class="mode-tag">{{ mode === 'teacher' ? '[교사용]' : '[학생용]' }}</p>
-      <p class="cloze-note">
+      <p class="mode-tag">
+        {{ mode === 'teacher' ? '[교사용]' : '[학생용]' }}<template v-if="printTypeLabel"> · [{{ printTypeLabel }}]</template>
+      </p>
+      <p v-if="printType !== 'questions'" class="cloze-note">
         {{
           mode === 'teacher'
             ? '노란색으로 표시된 부분이 학생용 학습지에서는 빈칸으로 제시됩니다.'
@@ -157,32 +195,46 @@ function doPrint() {
       <h2>[{{ std.standard_id }}] {{ materialsById[std.standard_id]?.title ?? std.성취기준명 }}</h2>
       <p class="std-desc">{{ std.성취기준명 }}</p>
 
-      <div v-if="materialsById[std.standard_id]" class="material">
-        <template v-for="(s, i) in visibleSections(materialsById[std.standard_id])" :key="i">
-          <h3>{{ s.heading }}</h3>
-          <p class="content" v-html="renderContent(s.content)"></p>
-          <table v-if="sectionTable(s)" class="section-table">
-            <thead>
-              <tr>
-                <th v-for="(h, hi) in sectionTable(s).headers" :key="hi">{{ h }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, ri) in sectionTable(s).rows" :key="ri">
-                <td v-for="(cell, ci) in row" :key="ci">{{ cell }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div v-if="s.image" class="diagram" v-html="s.image"></div>
-          <pre v-if="s.code" class="code-block"><code>{{ s.code }}</code></pre>
-        </template>
-      </div>
-      <p v-else class="no-material">(이 성취기준에는 아직 학습자료가 없습니다.)</p>
+      <template v-if="printType === 'summary'">
+        <div v-if="summaryGroups(materialsById[std.standard_id]).length" class="summary">
+          <template v-for="(g, gi) in summaryGroups(materialsById[std.standard_id])" :key="gi">
+            <h3>{{ g.heading }}</h3>
+            <ul class="summary-list">
+              <li v-for="(sentence, si) in g.sentences" :key="si" v-html="renderContent(sentence)"></li>
+            </ul>
+          </template>
+        </div>
+        <p v-else class="no-material">(이 성취기준에는 핵심정리로 뽑을 학습자료가 아직 없습니다.)</p>
+      </template>
+
+      <template v-if="printType === 'full'">
+        <div v-if="materialsById[std.standard_id]" class="material">
+          <template v-for="(s, i) in visibleSections(materialsById[std.standard_id])" :key="i">
+            <h3>{{ s.heading }}</h3>
+            <p class="content" v-html="renderContent(s.content)"></p>
+            <table v-if="sectionTable(s)" class="section-table">
+              <thead>
+                <tr>
+                  <th v-for="(h, hi) in sectionTable(s).headers" :key="hi">{{ h }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row, ri) in sectionTable(s).rows" :key="ri">
+                  <td v-for="(cell, ci) in row" :key="ci">{{ cell }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div v-if="s.image" class="diagram" v-html="s.image"></div>
+            <pre v-if="s.code" class="code-block"><code>{{ s.code }}</code></pre>
+          </template>
+        </div>
+        <p v-else class="no-material">(이 성취기준에는 아직 학습자료가 없습니다.)</p>
+      </template>
 
       <div
-        v-if="questionsById[std.standard_id]?.length"
+        v-if="printType !== 'summary' && questionsById[std.standard_id]?.length"
         class="questions"
-        :class="{ 'page-split': materialsById[std.standard_id] }"
+        :class="{ 'page-split': printType === 'full' && materialsById[std.standard_id] }"
       >
         <div v-for="(q, qi) in questionsById[std.standard_id]" :key="q.id" class="question-block">
           <p class="q-stem"><span class="q-num">{{ qi + 1 }}.</span> {{ q.문제 }}</p>
@@ -219,7 +271,7 @@ function doPrint() {
       </div>
     </section>
 
-    <section v-if="mode === 'student'" class="answer-key">
+    <section v-if="mode === 'student' && printType !== 'summary'" class="answer-key">
       <h2>정답 및 해설</h2>
       <div v-for="std in includedStandards" :key="std.standard_id" class="answer-key-block">
         <h3>[{{ std.standard_id }}] {{ materialsById[std.standard_id]?.title ?? std.성취기준명 }}</h3>
@@ -384,6 +436,25 @@ function doPrint() {
   font-weight: 700;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+}
+
+.summary h3 {
+  color: #18181b;
+  font-size: 15px;
+  margin: 14px 0 4px;
+  break-after: avoid-page;
+  page-break-after: avoid;
+}
+
+.summary-list {
+  margin: 0 0 6px;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.summary-list li {
+  break-inside: avoid;
 }
 
 .section-table {
