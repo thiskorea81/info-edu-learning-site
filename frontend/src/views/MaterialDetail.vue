@@ -60,32 +60,31 @@ watch(
   }
 )
 
-// 같은 단원 안에서 실제 학습자료가 있는 성취기준만 순서대로 모은 목록
-const siblingStandards = computed(() => {
-  for (const subject of allSubjects.value) {
-    for (const unit of subject.units) {
-      if (unit.standards.some((s) => s.standard_id === props.standardId)) {
-        return unit.standards.filter((s) => materialsById.value.has(s.standard_id))
-      }
-    }
-  }
-  return []
+// 같은 "과목" 안에서 실제 학습자료가 있는 성취기준을, 단원 경계를 넘어 전부 순서대로 이어붙인 목록
+const subjectStandards = computed(() => {
+  const subject = allSubjects.value.find((sub) =>
+    sub.units.some((unit) => unit.standards.some((s) => s.standard_id === props.standardId))
+  )
+  if (!subject) return []
+  return subject.units
+    .flatMap((unit) => unit.standards)
+    .filter((s) => materialsById.value.has(s.standard_id))
 })
 
 const currentIndex = computed(() =>
-  siblingStandards.value.findIndex((s) => s.standard_id === props.standardId)
+  subjectStandards.value.findIndex((s) => s.standard_id === props.standardId)
 )
 
 const prevMaterial = computed(() => {
   const i = currentIndex.value
   if (i <= 0) return null
-  return materialsById.value.get(siblingStandards.value[i - 1].standard_id)
+  return materialsById.value.get(subjectStandards.value[i - 1].standard_id)
 })
 
 const nextMaterial = computed(() => {
   const i = currentIndex.value
-  if (i === -1 || i >= siblingStandards.value.length - 1) return null
-  return materialsById.value.get(siblingStandards.value[i + 1].standard_id)
+  if (i === -1 || i >= subjectStandards.value.length - 1) return null
+  return materialsById.value.get(subjectStandards.value[i + 1].standard_id)
 })
 
 const codeSections = computed(() =>
