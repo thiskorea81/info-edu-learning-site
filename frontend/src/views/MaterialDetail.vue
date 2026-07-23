@@ -60,11 +60,20 @@ watch(
   }
 )
 
+// 현재 성취기준이 속한 과목·단원 (뒤로 가기 링크와 이전/다음 목록 계산에 함께 사용)
+const currentLocation = computed(() => {
+  for (const subject of allSubjects.value) {
+    const unit = subject.units.find((u) =>
+      u.standards.some((s) => s.standard_id === props.standardId)
+    )
+    if (unit) return { subject, unit }
+  }
+  return null
+})
+
 // 같은 "과목" 안에서 실제 학습자료가 있는 성취기준을, 단원 경계를 넘어 전부 순서대로 이어붙인 목록
 const subjectStandards = computed(() => {
-  const subject = allSubjects.value.find((sub) =>
-    sub.units.some((unit) => unit.standards.some((s) => s.standard_id === props.standardId))
-  )
+  const subject = currentLocation.value?.subject
   if (!subject) return []
   return subject.units
     .flatMap((unit) => unit.standards)
@@ -112,7 +121,17 @@ function sectionTable(s) {
 </script>
 
 <template>
-  <RouterLink to="/materials" class="back">← 학습자료</RouterLink>
+  <RouterLink
+    v-if="currentLocation"
+    :to="{
+      name: 'material-unit-standards',
+      params: { subject: currentLocation.subject.교과, unit: currentLocation.unit.단원 },
+    }"
+    class="back"
+  >
+    ← {{ currentLocation.unit.단원 }}
+  </RouterLink>
+  <RouterLink v-else to="/materials" class="back">← 학습자료</RouterLink>
 
   <p v-if="loading">불러오는 중…</p>
   <template v-else-if="material">
