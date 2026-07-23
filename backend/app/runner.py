@@ -1,9 +1,13 @@
-import resource
 import subprocess
 import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+
+try:
+    import resource
+except ModuleNotFoundError:
+    resource = None
 
 DEFAULT_TIMEOUT_SECONDS = 5
 CPU_SECONDS = 3
@@ -20,6 +24,9 @@ class ExecResult:
 
 
 def _limit_resources() -> None:
+    if resource is None:
+        return
+
     resource.setrlimit(resource.RLIMIT_CPU, (CPU_SECONDS, CPU_SECONDS))
     resource.setrlimit(resource.RLIMIT_AS, (MEMORY_BYTES, MEMORY_BYTES))
     resource.setrlimit(resource.RLIMIT_NPROC, (32, 32))
@@ -32,15 +39,20 @@ def execute_python(code: str, stdin: str = "", timeout_seconds: float = DEFAULT_
         script_path.write_text(code, encoding="utf-8")
 
         try:
+            run_kwargs = {
+                "input": stdin,
+                "capture_output": True,
+                "text": True,
+                "timeout": timeout_seconds,
+                "cwd": tmpdir,
+                "env": {"PATH": "/usr/bin:/bin", "LANG": "C.UTF-8", "PYTHONIOENCODING": "utf-8"},
+            }
+            if resource is not None and sys.platform != "win32":
+                run_kwargs["preexec_fn"] = _limit_resources
+
             proc = subprocess.run(
                 [sys.executable, "-I", "-S", "-B", str(script_path)],
-                input=stdin,
-                capture_output=True,
-                text=True,
-                timeout=timeout_seconds,
-                cwd=tmpdir,
-                env={"PATH": "/usr/bin:/bin", "LANG": "C.UTF-8", "PYTHONIOENCODING": "utf-8"},
-                preexec_fn=_limit_resources,
+                **run_kwargs,
             )
         except subprocess.TimeoutExpired as e:
             return ExecResult(
