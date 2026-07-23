@@ -408,6 +408,7 @@ function doPrint() {
 .material h3 {
   color: #18181b;
   font-size: 15px;
+  font-weight: 400;
   margin: 16px 0 6px;
   break-after: avoid-page;
   page-break-after: avoid;
@@ -443,6 +444,7 @@ function doPrint() {
 .summary h3 {
   color: #18181b;
   font-size: 15px;
+  font-weight: 400;
   margin: 14px 0 4px;
   break-after: avoid-page;
   page-break-after: avoid;

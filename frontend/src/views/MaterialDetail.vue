@@ -369,6 +369,7 @@ function sectionTable(s) {
 
 .section h2 {
   font-size: 18px;
+  font-weight: 400;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
