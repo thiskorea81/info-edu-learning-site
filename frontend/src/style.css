@@ -62,6 +62,17 @@ a {
   color: inherit;
 }
 
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 15mm 12mm;
+  }
+}
+
 button {
   font: inherit;
 }

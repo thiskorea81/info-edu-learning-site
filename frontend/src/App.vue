@@ -11,7 +11,7 @@ async function doLogout() {
 </script>
 
 <template>
-  <header v-if="isLoggedIn()" class="topbar">
+  <header v-if="isLoggedIn()" class="topbar no-print">
     <div class="topbar-row">
       <RouterLink to="/" class="brand">정보ON</RouterLink>
       <div class="user-box">

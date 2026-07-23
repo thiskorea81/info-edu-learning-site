@@ -46,7 +46,16 @@ watch(() => [props.subject, props.unit], load)
   <RouterLink :to="{ name: 'subject-units', params: { subject } }" class="back">
     ← {{ subject }}
   </RouterLink>
-  <h1>{{ unit }}</h1>
+  <div class="title-row">
+    <h1>{{ unit }}</h1>
+    <RouterLink
+      v-if="isTeacher()"
+      :to="{ name: 'print-worksheet', params: { subject, unit } }"
+      class="print-link"
+    >
+      🖨️ 인쇄용 학습지
+    </RouterLink>
+  </div>
 
   <p v-if="loading">불러오는 중…</p>
   <p v-else-if="questions.length === 0" class="empty">이 단원에는 아직 문제가 없습니다.</p>
@@ -84,6 +93,37 @@ watch(() => [props.subject, props.unit], load)
   text-decoration: none;
   font-size: 14px;
   margin-bottom: 12px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.title-row h1 {
+  margin: 0;
+}
+
+.print-link {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.print-link:hover {
+  background: var(--accent);
+  color: #ffffff;
 }
 
 .empty {

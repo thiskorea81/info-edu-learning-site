@@ -24,6 +24,7 @@ import AssignmentList from '../views/AssignmentList.vue'
 import AssignmentDetail from '../views/AssignmentDetail.vue'
 import TextbookSubjectList from '../views/TextbookSubjectList.vue'
 import TextbookList from '../views/TextbookList.vue'
+import PrintWorksheet from '../views/PrintWorksheet.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -51,6 +52,13 @@ const router = createRouter({
       props: true,
     },
     { path: '/questions/:id', name: 'question-solve', component: QuestionSolve, props: true },
+    {
+      path: '/subjects/:subject/units/:unit/print',
+      name: 'print-worksheet',
+      component: PrintWorksheet,
+      props: true,
+      meta: { teacherOnly: true },
+    },
     { path: '/wrong-notes', name: 'wrong-notes', component: WrongNotes, meta: { studentOnly: true } },
     {
       path: '/practice/:standardId',
