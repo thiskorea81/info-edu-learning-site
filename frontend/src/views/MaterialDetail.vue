@@ -320,7 +320,7 @@ function sectionTable(s) {
         </div>
         <CodeEditor
           v-model:code="practiceCode[activeIndex]"
-          no-paste
+          :no-paste="!canCopyCode"
           placeholder="왼쪽 본문의 예제 코드를 보고 한 줄씩 직접 입력해보세요"
         />
       </div>
