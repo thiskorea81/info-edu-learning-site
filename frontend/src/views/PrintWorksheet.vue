@@ -420,7 +420,8 @@ function doPrint() {
   margin: 0 0 8px;
 }
 
-.content :deep(.cloze-blank) {
+.content :deep(.cloze-blank),
+.summary-list :deep(.cloze-blank) {
   display: inline-block;
   border-bottom: 1.5px solid #18181b;
   min-height: 1em;
@@ -428,7 +429,8 @@ function doPrint() {
   margin: 0 2px;
 }
 
-.content :deep(mark.cloze-highlight) {
+.content :deep(mark.cloze-highlight),
+.summary-list :deep(mark.cloze-highlight) {
   background: #fef08a;
   color: #18181b;
   padding: 0 3px;
