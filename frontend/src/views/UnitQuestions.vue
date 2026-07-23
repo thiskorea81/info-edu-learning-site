@@ -53,7 +53,10 @@ watch(() => [props.subject, props.unit], load)
 
   <ul v-else class="list">
     <li v-for="(q, i) in questions" :key="q.id">
-      <RouterLink :to="`/questions/${q.id}`" class="item">
+      <RouterLink
+        :to="{ path: `/questions/${q.id}`, query: { scope: 'unit', subject, unit } }"
+        class="item"
+      >
         <span class="num">{{ i + 1 }}</span>
         <span class="stem">{{ q.문제 }}</span>
         <span v-if="q.기출" class="badge exam">기출</span>

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import api from '../api'
 import { isTeacher } from '../auth'
 import QuestionBody from '../components/QuestionBody.vue'
@@ -8,6 +8,7 @@ import CodeEditor from '../components/CodeEditor.vue'
 
 const props = defineProps({ id: { type: String, required: true } })
 const router = useRouter()
+const route = useRoute()
 const teacherMode = isTeacher()
 
 const question = ref(null)
@@ -27,6 +28,18 @@ const nextId = computed(() =>
     : null
 )
 
+// 단원 문제 목록(UnitQuestions)에서 들어온 경우, 성취기준(exam_id) 경계에서
+// 끊기지 않고 그 단원의 문제 전체를 이어서 풀 수 있도록 목록 범위를 넓힌다.
+function backTarget() {
+  if (route.query.scope === 'unit' && route.query.subject && route.query.unit) {
+    return {
+      name: 'unit-questions',
+      params: { subject: route.query.subject, unit: route.query.unit },
+    }
+  }
+  return null
+}
+
 async function load() {
   question.value = null
   result.value = null
@@ -39,14 +52,26 @@ async function load() {
   editableCode.value = data.코드 ?? ''
 
   if (siblingIds.value.length === 0) {
-    const { data: list } = await api.get('/api/questions', {
-      params: { exam_id: data.exam_id, include_similar: true },
-    })
+    const { scope, subject, unit } = route.query
+    const params =
+      scope === 'unit' && subject && unit
+        ? { 교과: subject, 단원: unit, include_similar: teacherMode || undefined }
+        : { exam_id: data.exam_id, include_similar: true }
+    const { data: list } = await api.get('/api/questions', { params })
     siblingIds.value = list.map((q) => q.id)
   }
 }
 
 watch(() => props.id, load, { immediate: true })
+
+function goBack() {
+  const target = backTarget()
+  if (target) {
+    router.push(target)
+  } else {
+    router.back()
+  }
+}
 
 async function submit() {
   if (selected.value === null) return
@@ -65,7 +90,9 @@ function retry() {
 }
 
 function goto(id) {
-  if (id) router.push(`/questions/${id}`)
+  // scope/subject/unit 쿼리를 계속 이어 붙여야, 몇 문제를 넘어간 뒤에도
+  // '← 뒤로'가 원래 목록(단원 문제 목록 등)으로 정확히 돌아갈 수 있다.
+  if (id) router.push({ path: `/questions/${id}`, query: route.query })
 }
 
 const verifying = ref(false)
@@ -85,6 +112,8 @@ async function toggleVerified() {
 
 <template>
   <div v-if="question" class="solve">
+    <button class="back" @click="goBack">← 뒤로</button>
+
     <div class="meta">
       <span>{{ question.내용영역 }}</span>
       <span class="sep">·</span>
@@ -161,6 +190,22 @@ async function toggleVerified() {
 </template>
 
 <style scoped>
+.back {
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.back:hover {
+  color: var(--text);
+}
+
 .meta {
   font-size: 13px;
   color: var(--text-dim);
