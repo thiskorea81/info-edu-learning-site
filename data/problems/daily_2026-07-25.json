@@ -1,0 +1,366 @@
+[
+  {
+    "id": "p_daily_20260725_a",
+    "유형": "A",
+    "title": "각 자리 숫자의 최댓값과 최솟값의 차",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "하나의 양의 정수 N이 주어진다. N을 이루는 각 자리 숫자 중 최댓값에서 최솟값을 뺀 값을 출력하시오.",
+    "constraints": "1 ≤ N ≤ 10^18\nN은 앞에 불필요한 0이 없는 정수로 주어진다.",
+    "input_format": "첫째 줄에 정수 N이 주어진다.",
+    "output_format": "N의 각 자리 숫자 중 최댓값에서 최솟값을 뺀 값을 출력한다.",
+    "samples": [
+      {
+        "input": "1234\n",
+        "output": "3\n",
+        "explanation": "각 자리 숫자는 1, 2, 3, 4이며 최댓값 4에서 최솟값 1을 뺀 값은 3이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "1234\n",
+        "output": "3\n"
+      },
+      {
+        "input": "5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "1111\n",
+        "output": "0\n"
+      },
+      {
+        "input": "1000000000000000000\n",
+        "output": "1\n"
+      },
+      {
+        "input": "987654321\n",
+        "output": "8\n"
+      },
+      {
+        "input": "100\n",
+        "output": "1\n"
+      },
+      {
+        "input": "121212121212121219\n",
+        "output": "8\n"
+      }
+    ],
+    "힌트": "정수를 문자열로 다루면 각 자리 숫자를 한 글자씩 쉽게 꺼내 볼 수 있다.",
+    "해설": "N을 문자열로 입력받아 각 문자를 정수로 변환하면 자리별 숫자 리스트를 얻을 수 있다. 이 리스트의 최댓값과 최솟값을 구해 그 차를 출력하면 된다.",
+    "정답_코드": "def solve():\n    import sys\n    s = sys.stdin.read().strip()\n    digits = [int(c) for c in s]\n    print(max(digits) - min(digits))\n\nsolve()\n",
+    "시간복잡도": "O(D) — N의 자릿수 D만큼만 한 번씩 확인한다."
+  },
+  {
+    "id": "p_daily_20260725_b",
+    "유형": "B",
+    "title": "홀수 번 등장하는 수 찾기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "N개의 정수로 이루어진 리스트가 주어진다. 이 리스트에서 정확히 하나의 정수만 홀수 번 등장하고, 나머지 정수는 모두 짝수 번(0번 포함) 등장한다. 홀수 번 등장하는 그 정수를 구하시오.",
+    "constraints": "1 ≤ N ≤ 200,000\n각 정수는 -1,000,000,000 이상 1,000,000,000 이하이다.\n입력은 항상 정확히 하나의 정수만 홀수 번 등장하도록 주어진다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 정수 N개가 공백으로 구분되어 주어진다.",
+    "output_format": "홀수 번 등장하는 정수를 출력한다.",
+    "samples": [
+      {
+        "input": "1\n7\n",
+        "output": "7\n",
+        "explanation": "7이 1번(홀수 번) 등장하므로 정답은 7이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "1\n7\n",
+        "output": "7\n"
+      },
+      {
+        "input": "5\n1 1 1 2 2\n",
+        "output": "1\n"
+      },
+      {
+        "input": "7\n3 3 5 5 5 9 9\n",
+        "output": "5\n"
+      },
+      {
+        "input": "3\n-4 -4 -4\n",
+        "output": "-4\n"
+      },
+      {
+        "input": "9\n2 2 3 3 3 4 4 4 4\n",
+        "output": "3\n"
+      },
+      {
+        "input": "1\n0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "11\n1 2 1 2 3 4 3 4 5 4 4\n",
+        "output": "5\n"
+      }
+    ],
+    "힌트": "각 정수가 몇 번씩 등장하는지 세어 보면 답을 바로 찾을 수 있다.",
+    "해설": "딕셔너리(또는 Counter)를 이용해 각 정수의 등장 횟수를 센 뒤, 등장 횟수가 홀수인 정수를 찾아 출력하면 된다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import Counter\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    cnt = Counter(arr)\n    for k, v in cnt.items():\n        if v % 2 == 1:\n            print(k)\n            return\n\nsolve()\n",
+    "시간복잡도": "O(N) — 리스트를 한 번 순회하며 각 수의 등장 횟수를 센다."
+  },
+  {
+    "id": "p_daily_20260725_c",
+    "유형": "C",
+    "title": "두 수열 곱의 합 최소로 짝짓기",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "길이가 N인 두 정수 수열 A와 B가 주어진다. B의 원소들을 자유롭게 재배열하여 A_i와 B의 원소를 하나씩 짝지은 뒤, 짝지어진 두 수의 곱을 모두 더한 값을 최소로 만들고자 한다. 이때 만들 수 있는 합의 최솟값을 구하시오.",
+    "constraints": "1 ≤ N ≤ 1000\n각 정수는 -1000 이상 1000 이하이다.",
+    "input_format": "첫째 줄에 N, 둘째 줄에 수열 A의 원소 N개, 셋째 줄에 수열 B의 원소 N개가 공백으로 구분되어 주어진다.",
+    "output_format": "짝지은 두 수의 곱의 합의 최솟값을 출력한다.",
+    "samples": [
+      {
+        "input": "3\n1 2 3\n4 5 6\n",
+        "output": "28\n",
+        "explanation": "A를 오름차순 [1,2,3], B를 내림차순 [6,5,4]로 짝지으면 1*6+2*5+3*4=28로 최소가 된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3\n1 2 3\n4 5 6\n",
+        "output": "28\n"
+      },
+      {
+        "input": "1\n5\n7\n",
+        "output": "35\n"
+      },
+      {
+        "input": "3\n0 0 0\n1 2 3\n",
+        "output": "0\n"
+      },
+      {
+        "input": "4\n-1 -2 -3 -4\n1 2 3 4\n",
+        "output": "-30\n"
+      },
+      {
+        "input": "2\n1000 -1000\n1000 -1000\n",
+        "output": "-2000000\n"
+      },
+      {
+        "input": "5\n1 1 1 1 1\n2 2 2 2 2\n",
+        "output": "10\n"
+      },
+      {
+        "input": "4\n3 1 4 1\n5 9 2 6\n",
+        "output": "38\n"
+      }
+    ],
+    "힌트": "한 수열은 오름차순으로, 다른 수열은 내림차순으로 정렬해서 순서대로 짝지어 보자.",
+    "해설": "정렬 부등식(rearrangement inequality)에 의해, 두 수열을 서로 반대 순서(하나는 오름차순, 다른 하나는 내림차순)로 정렬하여 순서대로 짝지으면 곱의 합이 최소가 된다. A를 오름차순, B를 내림차순으로 정렬한 뒤 같은 위치끼리 곱해서 더하면 된다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    A = list(map(int, data[idx:idx + n])); idx += n\n    B = list(map(int, data[idx:idx + n])); idx += n\n    A.sort()\n    B.sort(reverse=True)\n    print(sum(a * b for a, b in zip(A, B)))\n\nsolve()\n",
+    "시간복잡도": "O(N log N) — 두 수열을 각각 정렬하는 데 걸리는 시간이 지배적이다."
+  },
+  {
+    "id": "p_daily_20260725_d",
+    "유형": "D",
+    "title": "최장 팰린드롬 부분 문자열의 길이",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "영어 소문자로만 이루어진 문자열 S가 주어진다. S의 연속한 부분 문자열 중에서 팰린드롬(앞으로 읽어도 뒤로 읽어도 같은 문자열)인 것의 길이 중 최댓값을 구하시오.",
+    "constraints": "1 ≤ |S| ≤ 1000\nS는 영어 소문자로만 이루어진다.",
+    "input_format": "첫째 줄에 문자열 S가 주어진다.",
+    "output_format": "S의 부분 문자열 중 팰린드롬인 것의 최대 길이를 출력한다.",
+    "samples": [
+      {
+        "input": "babad\n",
+        "output": "3\n",
+        "explanation": "부분 문자열 \"bab\" 또는 \"aba\"가 팰린드롬이며 길이는 3이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "babad\n",
+        "output": "3\n"
+      },
+      {
+        "input": "cbbd\n",
+        "output": "2\n"
+      },
+      {
+        "input": "a\n",
+        "output": "1\n"
+      },
+      {
+        "input": "aaaa\n",
+        "output": "4\n"
+      },
+      {
+        "input": "ab\n",
+        "output": "1\n"
+      },
+      {
+        "input": "abacdfgdcaba\n",
+        "output": "3\n"
+      },
+      {
+        "input": "racecarxyz\n",
+        "output": "7\n"
+      }
+    ],
+    "힌트": "각 위치(또는 두 글자 사이)를 팰린드롬의 중심으로 놓고 좌우로 얼마나 넓힐 수 있는지 확인해 보자.",
+    "해설": "팰린드롬은 항상 어떤 중심을 기준으로 좌우 대칭이다. 문자열의 각 위치를 홀수 길이 팰린드롬의 중심으로, 각 위치와 다음 위치 사이를 짝수 길이 팰린드롬의 중심으로 삼아 양쪽으로 같은 문자가 나오는 동안 확장하면서 최대 길이를 갱신하면 모든 팰린드롬 부분 문자열 중 최댓값을 구할 수 있다.",
+    "정답_코드": "def solve():\n    s = input().strip()\n    n = len(s)\n\n    def expand(l, r):\n        while l >= 0 and r < n and s[l] == s[r]:\n            l -= 1\n            r += 1\n        return r - l - 1\n\n    best = 1\n    for i in range(n):\n        best = max(best, expand(i, i), expand(i, i + 1))\n    print(best)\n\nsolve()\n",
+    "시간복잡도": "O(N^2) — N개의 중심 후보마다 최대 O(N)만큼 확장할 수 있다."
+  },
+  {
+    "id": "p_daily_20260725_e",
+    "유형": "E",
+    "title": "케빈 베이컨 수가 가장 작은 사람",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "1번부터 N번까지 번호가 매겨진 N명의 사람과 이들 사이의 M개의 무방향 친구 관계가 주어진다. 어떤 사람의 케빈 베이컨 수는 그 사람과 다른 모든 사람 사이의 최단 거리(간선 수)의 합으로 정의한다. 케빈 베이컨 수가 가장 작은 사람의 번호를 구하시오. 그러한 사람이 여러 명이면 그중 번호가 가장 작은 사람을 출력한다. 모든 사람은 친구 관계를 통해 서로 도달 가능하다고 보장한다.",
+    "constraints": "2 ≤ N ≤ 100\n1 ≤ M ≤ N×(N-1)/2\n두 사람 사이의 관계는 중복되지 않는다.",
+    "input_format": "첫째 줄에 N과 M이 주어진다. 이후 M개의 줄에 걸쳐 친구 관계 a, b가 공백으로 구분되어 주어진다.",
+    "output_format": "케빈 베이컨 수가 가장 작은 사람의 번호를 출력한다.",
+    "samples": [
+      {
+        "input": "5 5\n1 3\n1 4\n4 5\n4 3\n3 2\n",
+        "output": "3\n",
+        "explanation": "3번 사람이 다른 모든 사람과의 최단 거리 합이 가장 작으므로 정답은 3이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5 5\n1 3\n1 4\n4 5\n4 3\n3 2\n",
+        "output": "3\n"
+      },
+      {
+        "input": "5 4\n1 2\n2 3\n3 4\n4 5\n",
+        "output": "3\n"
+      },
+      {
+        "input": "4 3\n1 2\n1 3\n1 4\n",
+        "output": "1\n"
+      },
+      {
+        "input": "2 1\n1 2\n",
+        "output": "1\n"
+      },
+      {
+        "input": "4 3\n1 2\n2 3\n3 4\n",
+        "output": "2\n"
+      },
+      {
+        "input": "4 6\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4\n",
+        "output": "1\n"
+      },
+      {
+        "input": "6 6\n1 2\n2 3\n3 4\n4 5\n5 6\n2 5\n",
+        "output": "2\n"
+      }
+    ],
+    "힌트": "각 사람을 시작점으로 BFS를 한 번씩 수행하면 그 사람의 케빈 베이컨 수를 구할 수 있다.",
+    "해설": "친구 관계를 인접 리스트로 표현한 뒤, 모든 사람에 대해 각각을 시작점으로 BFS를 수행하여 다른 모든 사람까지의 최단 거리 합(케빈 베이컨 수)을 구한다. N번의 BFS 결과 중 값이 가장 작은 사람을 찾으면 되며, 값이 같다면 먼저(작은 번호부터) 확인한 사람이 남도록 비교 조건을 엄격한 부등호로 둔다.",
+    "정답_코드": "def solve():\n    import sys\n    from collections import deque\n\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(m):\n        a = int(data[idx]); idx += 1\n        b = int(data[idx]); idx += 1\n        graph[a].append(b)\n        graph[b].append(a)\n\n    def bfs_sum(start):\n        dist = [-1] * (n + 1)\n        dist[start] = 0\n        q = deque([start])\n        while q:\n            cur = q.popleft()\n            for nxt in graph[cur]:\n                if dist[nxt] == -1:\n                    dist[nxt] = dist[cur] + 1\n                    q.append(nxt)\n        return sum(dist[1:])\n\n    best_person = 1\n    best_sum = None\n    for person in range(1, n + 1):\n        s = bfs_sum(person)\n        if best_sum is None or s < best_sum:\n            best_sum = s\n            best_person = person\n\n    print(best_person)\n\nsolve()\n",
+    "시간복잡도": "O(N×(N+M)) — N번의 BFS를 수행하며 각 BFS는 O(N+M)이 걸린다."
+  },
+  {
+    "id": "p_daily_20260725_f",
+    "유형": "F",
+    "title": "친구인지 원수인지 판정하기",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "1번부터 N번까지 번호가 매겨진 N명의 사람이 있다. M개의 진술이 순서대로 주어지며, 각 진술은 \"1 a b\"(a와 b는 친구이다) 또는 \"2 a b\"(a와 b는 원수이다) 형태이다. 사람 사이의 관계는 \"친구의 친구는 친구\", \"친구의 원수는 원수\", \"원수의 원수는 친구\"라는 규칙을 따른다. 각 진술이 주어질 때, 그 진술이 이전까지 확정된 관계들과 모순되지 않으면 \"참\"을, 모순되면(즉 그 진술이 거짓이면) \"거짓\"을 출력하시오. \"거짓\"으로 판정된 진술은 관계 확정에 반영하지 않는다.",
+    "constraints": "1 ≤ N ≤ 100,000\n1 ≤ M ≤ 100,000\n1 ≤ a, b ≤ N, a ≠ b",
+    "input_format": "첫째 줄에 N과 M이 주어진다. 이후 M개의 줄에 걸쳐 진술이 \"t a b\" 형태로 주어진다(t는 1 또는 2).",
+    "output_format": "각 진술에 대해 \"참\" 또는 \"거짓\"을 한 줄에 하나씩 출력한다.",
+    "samples": [
+      {
+        "input": "4 4\n1 1 2\n2 2 3\n1 1 3\n2 1 3\n",
+        "output": "참\n참\n거짓\n참\n",
+        "explanation": "1,2는 친구, 2,3은 원수이므로 1,3은 원수여야 한다. \"1 1 3\"(친구)은 모순이라 거짓이고, \"2 1 3\"(원수)은 참이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 4\n1 1 2\n2 2 3\n1 1 3\n2 1 3\n",
+        "output": "참\n참\n거짓\n참\n"
+      },
+      {
+        "input": "5 5\n1 1 2\n1 2 3\n1 3 4\n2 4 5\n2 1 5\n",
+        "output": "참\n참\n참\n참\n참\n"
+      },
+      {
+        "input": "6 3\n1 1 2\n2 3 4\n1 5 6\n",
+        "output": "참\n참\n참\n"
+      },
+      {
+        "input": "3 3\n2 1 2\n2 1 2\n1 1 2\n",
+        "output": "참\n참\n거짓\n"
+      },
+      {
+        "input": "2 1\n2 1 2\n",
+        "output": "참\n"
+      },
+      {
+        "input": "6 6\n1 1 2\n2 2 3\n1 3 4\n2 1 4\n1 1 4\n2 4 5\n",
+        "output": "참\n참\n참\n참\n거짓\n참\n"
+      },
+      {
+        "input": "4 4\n2 1 2\n2 3 4\n1 1 3\n2 2 4\n",
+        "output": "참\n참\n참\n거짓\n"
+      }
+    ],
+    "힌트": "각 사람이 자신이 속한 그룹의 대표(루트)와 친구인지 원수인지를 함께 저장하는 확장된 유니온-파인드를 생각해 보자.",
+    "해설": "각 원소마다 부모뿐 아니라 부모와의 관계(친구=0, 원수=1)를 함께 저장하는 가중치 유니온-파인드를 사용한다. find 연산에서 경로 압축을 하며 루트까지의 관계를 XOR로 누적한다. 같은 그룹에 속한 두 사람을 다시 질문하면 각자의 루트까지의 관계를 XOR하여 진술과 비교해 참/거짓을 판정하고, 서로 다른 그룹이면 두 그룹을 진술에 맞는 관계로 합치고 참을 출력한다.",
+    "정답_코드": "def solve():\n    import sys\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n\n    parent = list(range(n + 1))\n    parity = [0] * (n + 1)  # 부모와의 관계(0: 친구, 1: 원수)\n\n    def find(x):\n        if parent[x] == x:\n            return x, 0\n        root, p = find(parent[x])\n        parity[x] ^= p\n        parent[x] = root\n        return root, parity[x]\n\n    out = []\n    for _ in range(m):\n        t = int(data[idx]); idx += 1\n        a = int(data[idx]); idx += 1\n        b = int(data[idx]); idx += 1\n        rel = 0 if t == 1 else 1  # 1: 친구(같은 관계), 2: 원수(다른 관계)\n\n        ra, pa = find(a)\n        rb, pb = find(b)\n        if ra == rb:\n            if (pa ^ pb) == rel:\n                out.append(\"참\")\n            else:\n                out.append(\"거짓\")\n        else:\n            parent[rb] = ra\n            parity[rb] = pa ^ pb ^ rel\n            out.append(\"참\")\n\n    print(\"\\n\".join(out))\n\nsolve()\n",
+    "시간복잡도": "O((N+M)×α(N)) — 경로 압축을 사용한 유니온-파인드 연산은 거의 상수 시간이다."
+  },
+  {
+    "id": "p_daily_20260725_g",
+    "유형": "G",
+    "title": "여러 소방서 중 가장 가까운 곳에서 출동하기",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "N개의 건물(1번부터 N번까지)과 M개의 양방향 도로가 주어진다. 각 도로는 두 건물을 연결하며 이동 시간(가중치)을 가진다. 이 중 K개의 건물에는 소방서가 있다. 한 건물에 화재가 나면, 모든 소방서 중 그 건물까지 최단 시간으로 도착할 수 있는 소방서에서 소방차가 출동하며, 도착 시간은 그 최단 시간이다. 모든 건물에 대해 소방차가 도착하는 시간을 계산했을 때, 그중 가장 오래 걸리는 시간(최댓값)을 구하시오. 소방서에서 출발해 도착할 수 없는 건물이 하나라도 있다면 -1을 출력한다.",
+    "constraints": "2 ≤ N ≤ 1000\n1 ≤ M ≤ 10,000\n1 ≤ K ≤ N\n각 도로의 이동 시간은 1 이상 1000 이하의 정수이다.\n두 건물을 잇는 도로가 여러 개 주어질 수 있다.",
+    "input_format": "첫째 줄에 N, M, K가 주어진다. 둘째 줄에 소방서가 있는 건물 번호 K개가 공백으로 구분되어 주어진다. 이후 M개의 줄에 걸쳐 도로 정보 u, v, w가 공백으로 구분되어 주어진다.",
+    "output_format": "모든 건물에 소방차가 도착하는 시간 중 최댓값을 출력한다. 도착할 수 없는 건물이 있다면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "5 5 1\n1\n1 2 2\n1 3 5\n2 4 1\n3 4 2\n4 5 3\n",
+        "output": "6\n",
+        "explanation": "소방서는 1번 건물에 있다. 각 건물까지의 최단 거리 중 가장 오래 걸리는 건물은 5번(거리 6)이므로 정답은 6이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5 5 1\n1\n1 2 2\n1 3 5\n2 4 1\n3 4 2\n4 5 3\n",
+        "output": "6\n"
+      },
+      {
+        "input": "6 6 2\n1 6\n1 2 3\n2 3 3\n3 4 3\n4 5 3\n5 6 3\n1 6 100\n",
+        "output": "6\n"
+      },
+      {
+        "input": "3 1 1\n1\n1 2 5\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "2 1 2\n1 2\n1 2 10\n",
+        "output": "0\n"
+      },
+      {
+        "input": "2 1 1\n1\n1 2 7\n",
+        "output": "7\n"
+      },
+      {
+        "input": "4 2 2\n1 3\n1 2 4\n3 4 6\n",
+        "output": "6\n"
+      },
+      {
+        "input": "6 7 3\n1 3 5\n1 2 4\n2 3 1\n3 4 2\n4 5 3\n5 6 4\n1 6 50\n2 6 20\n",
+        "output": "4\n"
+      }
+    ],
+    "힌트": "모든 소방서를 거리 0으로 동시에 시작점에 넣고 다익스트라를 수행하면 각 건물까지의 최단 거리를 한 번에 구할 수 있다.",
+    "해설": "K개의 소방서를 모두 시작점으로 하는 다중 시작점 다익스트라를 수행한다. 우선순위 큐에 모든 소방서를 거리 0으로 넣고 일반적인 다익스트라처럼 진행하면, 각 건물에 저장되는 최단 거리는 자연스럽게 '가장 가까운 소방서까지의 거리'가 된다. 모든 건물의 최단 거리 중 최댓값을 구하되, 거리가 갱신되지 않은(도달 불가능한) 건물이 있으면 -1을 출력한다.",
+    "정답_코드": "def solve():\n    import sys\n    import heapq\n\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n    k = int(data[idx]); idx += 1\n\n    stations = [int(data[idx + i]) for i in range(k)]\n    idx += k\n\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(m):\n        u = int(data[idx]); idx += 1\n        v = int(data[idx]); idx += 1\n        w = int(data[idx]); idx += 1\n        graph[u].append((v, w))\n        graph[v].append((u, w))\n\n    INF = float('inf')\n    dist = [INF] * (n + 1)\n    pq = []\n    for s in stations:\n        dist[s] = 0\n        heapq.heappush(pq, (0, s))\n\n    while pq:\n        d, u = heapq.heappop(pq)\n        if d > dist[u]:\n            continue\n        for v, w in graph[u]:\n            nd = d + w\n            if nd < dist[v]:\n                dist[v] = nd\n                heapq.heappush(pq, (nd, v))\n\n    if any(dist[i] == INF for i in range(1, n + 1)):\n        print(-1)\n    else:\n        print(max(dist[1:]))\n\nsolve()\n",
+    "시간복잡도": "O((N+M) log N) — 우선순위 큐를 사용하는 다익스트라의 시간 복잡도와 같다."
+  }
+]
