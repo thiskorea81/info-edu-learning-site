@@ -1,0 +1,362 @@
+[
+  {
+    "id": "p_daily_20260727_a",
+    "유형": "A",
+    "title": "두 수의 최대공약수",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "두 자연수 A와 B가 주어질 때, 두 수의 최대공약수(GCD)를 구하시오.",
+    "constraints": "1 ≤ A, B ≤ 1,000,000,000",
+    "input_format": "첫째 줄에 A와 B가 공백으로 구분되어 주어진다.",
+    "output_format": "A와 B의 최대공약수를 출력한다.",
+    "samples": [
+      {
+        "input": "24 36\n",
+        "output": "12\n",
+        "explanation": "24와 36의 최대공약수는 12이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "24 36\n",
+        "output": "12\n"
+      },
+      {
+        "input": "1 1\n",
+        "output": "1\n"
+      },
+      {
+        "input": "17 13\n",
+        "output": "1\n"
+      },
+      {
+        "input": "1000000000 1\n",
+        "output": "1\n"
+      },
+      {
+        "input": "48 18\n",
+        "output": "6\n"
+      },
+      {
+        "input": "7 7\n",
+        "output": "7\n"
+      },
+      {
+        "input": "999999999 1000000000\n",
+        "output": "1\n"
+      }
+    ],
+    "힌트": "유클리드 호제법을 사용하면 두 수 중 하나가 0이 될 때까지 나머지 연산을 반복해 최대공약수를 빠르게 구할 수 있다.",
+    "해설": "두 자연수 A, B(A ≥ B)에 대해 gcd(A, B) = gcd(B, A mod B)가 성립하고, 이를 B가 0이 될 때까지 반복하면 그 시점의 A가 최대공약수가 된다는 유클리드 호제법을 이용한다. 나눗셈을 반복하므로 숫자가 아무리 커도 매우 빠르게 답을 구할 수 있다.",
+    "정답_코드": "import sys\n\ndef solve():\n    a, b = map(int, sys.stdin.readline().split())\n    while b:\n        a, b = b, a % b\n    print(a)\n\nsolve()\n",
+    "시간복잡도": "O(log(min(A, B))) — 유클리드 호제법은 나머지 연산을 반복할 때마다 두 수 중 작은 쪽이 최소 절반 이하로 줄어든다."
+  },
+  {
+    "id": "p_daily_20260727_b",
+    "유형": "B",
+    "title": "합이 K가 되는 두 수의 쌍의 개수",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "N개의 정수로 이루어진 수열 A와 정수 K가 주어진다. i < j 이면서 A[i] + A[j] = K를 만족하는 (i, j) 쌍의 개수를 구하시오. 수열에는 같은 값이 여러 번 나올 수 있으며, 이때 인덱스가 다르면 서로 다른 쌍으로 센다.",
+    "constraints": "2 ≤ N ≤ 200,000\n-1,000,000,000 ≤ A_i ≤ 1,000,000,000\n-1,000,000,000 ≤ K ≤ 1,000,000,000",
+    "input_format": "첫째 줄에 N과 K가 공백으로 구분되어 주어진다.\n둘째 줄에 N개의 정수 A_1, A_2, …, A_N이 공백으로 구분되어 주어진다.",
+    "output_format": "조건을 만족하는 쌍 (i, j)의 개수를 출력한다.",
+    "samples": [
+      {
+        "input": "5 6\n1 5 2 4 3\n",
+        "output": "2\n",
+        "explanation": "수열 [1, 5, 2, 4, 3]에서 합이 6인 쌍은 (1번째, 2번째)=1+5, (3번째, 4번째)=2+4로 총 2개이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5 6\n1 5 2 4 3\n",
+        "output": "2\n"
+      },
+      {
+        "input": "3 4\n2 2 2\n",
+        "output": "3\n"
+      },
+      {
+        "input": "2 100\n1 2\n",
+        "output": "0\n"
+      },
+      {
+        "input": "6 0\n-3 3 1 -1 0 5\n",
+        "output": "2\n"
+      },
+      {
+        "input": "4 -2\n-1 -1 5 6\n",
+        "output": "1\n"
+      },
+      {
+        "input": "2 4\n2 2\n",
+        "output": "1\n"
+      }
+    ],
+    "힌트": "모든 쌍을 이중 반복문으로 확인하면 N이 클 때 시간 초과가 날 수 있다. 각 값이 몇 번 등장했는지 세어 두면 반복문 한 번으로 답을 구할 수 있다.",
+    "해설": "값별 등장 횟수를 저장하는 해시맵(딕셔너리)을 만든다. 서로 다른 값 v와 K-v(v < K-v인 경우)에 대해서는 (v의 개수) × (K-v의 개수)를 더하고, 2v = K인 경우에는 그 값의 개수를 c라 할 때 c개 중 2개를 고르는 조합 c×(c-1)/2를 더하면 이중 반복문 없이 답을 구할 수 있다.",
+    "정답_코드": "import sys\nfrom collections import Counter\n\ndef solve():\n    data = sys.stdin.read().split()\n    n, k = int(data[0]), int(data[1])\n    arr = list(map(int, data[2:2 + n]))\n\n    cnt = Counter(arr)\n    ans = 0\n    for v, c in cnt.items():\n        w = k - v\n        if w == v:\n            ans += c * (c - 1) // 2\n        elif w > v:\n            ans += c * cnt.get(w, 0)\n    print(ans)\n\nsolve()\n",
+    "시간복잡도": "O(N) — 수열을 한 번 순회하며 값의 개수를 센 뒤, 등장한 서로 다른 값들에 대해서만 한 번 더 순회한다."
+  },
+  {
+    "id": "p_daily_20260727_c",
+    "유형": "C",
+    "title": "분할 가능한 배낭에 담을 수 있는 최대 가치",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "무게가 W까지 담을 수 있는 배낭과 N개의 물건이 있다. i번째 물건의 무게는 w_i, 가치는 v_i이며, 물건은 원하는 비율만큼 잘라서 담을 수 있다(즉, 물건의 x(0 ≤ x ≤ 1) 비율만큼만 담으면 무게 x×w_i, 가치 x×v_i를 얻는다). 배낭에 담을 수 있는 물건 가치의 합의 최댓값을 구하시오.",
+    "constraints": "1 ≤ N ≤ 1,000\n0 ≤ W ≤ 100,000\n1 ≤ w_i, v_i ≤ 1,000",
+    "input_format": "첫째 줄에 물건의 개수 N과 배낭의 최대 무게 W가 주어진다.\n이후 N개의 줄에 걸쳐 각 물건의 무게 w_i와 가치 v_i가 주어진다.",
+    "output_format": "담을 수 있는 가치의 최댓값을 소수점 아래 둘째 자리까지 반올림하여 출력한다.",
+    "samples": [
+      {
+        "input": "3 50\n10 60\n20 100\n30 120\n",
+        "output": "240.00\n",
+        "explanation": "무게당 가치가 큰 순서(6, 5, 4)대로 담으면 첫 번째, 두 번째 물건을 전부(무게 30) 담고 남은 무게 20만큼 세 번째 물건을 20/30 비율로 담아 60+100+80=240의 가치를 얻는다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3 50\n10 60\n20 100\n30 120\n",
+        "output": "240.00\n"
+      },
+      {
+        "input": "2 10\n5 10\n5 10\n",
+        "output": "20.00\n"
+      },
+      {
+        "input": "2 0\n4 8\n6 12\n",
+        "output": "0.00\n"
+      },
+      {
+        "input": "1 5\n10 50\n",
+        "output": "25.00\n"
+      },
+      {
+        "input": "2 10\n4 8\n6 12\n",
+        "output": "20.00\n"
+      },
+      {
+        "input": "3 7\n3 10\n3 9\n3 8\n",
+        "output": "21.67\n"
+      },
+      {
+        "input": "1 1\n1000 1000\n",
+        "output": "1.00\n"
+      }
+    ],
+    "힌트": "물건을 자를 수 있으므로 무게당 가치(v_i / w_i)가 높은 물건부터 최대한 담는 그리디 방법이 항상 최적이다.",
+    "해설": "물건을 자를 수 있는 분할 가능 배낭 문제에서는 무게당 가치가 높은 물건을 먼저 담는 것이 항상 손해를 보지 않는 선택이다. 물건들을 v_i / w_i 기준 내림차순으로 정렬한 뒤, 배낭이 찰 때까지 물건을 통째로 담다가 마지막에 남은 무게만큼 다음 물건을 잘라서 담으면 최댓값을 얻을 수 있다.",
+    "정답_코드": "import sys\n\ndef solve():\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    w_limit = int(data[idx]); idx += 1\n    items = []\n    for _ in range(n):\n        w = int(data[idx]); idx += 1\n        v = int(data[idx]); idx += 1\n        items.append((w, v))\n\n    # 무게당 가치(v/w)가 높은 물건부터 채운다.\n    items.sort(key=lambda x: x[1] / x[0], reverse=True)\n\n    remain = w_limit\n    total = 0.0\n    for w, v in items:\n        if remain <= 0:\n            break\n        if w <= remain:\n            total += v\n            remain -= w\n        else:\n            total += v * (remain / w)\n            remain = 0\n\n    print(f\"{total:.2f}\")\n\nsolve()\n",
+    "시간복잡도": "O(N log N) — 무게당 가치 기준으로 정렬하는 데 걸리는 시간이 지배적이고, 이후 물건을 담는 과정은 O(N)이다."
+  },
+  {
+    "id": "p_daily_20260727_d",
+    "유형": "D",
+    "title": "개구리의 최소 이동 비용",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "1번부터 N번까지 번호가 매겨진 돌이 일렬로 놓여 있고, i번째 돌의 높이는 h_i이다. 개구리는 1번 돌에서 출발하여 N번 돌까지 이동하려 한다. 개구리는 현재 있는 돌이 i번째일 때 (i+1)번째 돌 또는 (i+2)번째 돌로만 점프할 수 있으며(단, 그런 돌이 존재해야 한다), i번째 돌에서 j번째 돌로 점프할 때 드는 비용은 |h_i - h_j|이다. 개구리가 N번째 돌까지 이동하는 데 필요한 비용의 합의 최솟값을 구하시오.",
+    "constraints": "2 ≤ N ≤ 100,000\n1 ≤ h_i ≤ 10,000",
+    "input_format": "첫째 줄에 돌의 개수 N이 주어진다.\n둘째 줄에 N개의 정수 h_1, h_2, …, h_N이 공백으로 구분되어 주어진다.",
+    "output_format": "N번째 돌까지 이동하는 데 필요한 최소 비용을 출력한다.",
+    "samples": [
+      {
+        "input": "4\n10 30 40 20\n",
+        "output": "30\n",
+        "explanation": "1→2→4번 돌로 이동하면 |30-10|+|20-30|=20+10=30이 되며, 이보다 더 작은 비용은 없다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4\n10 30 40 20\n",
+        "output": "30\n"
+      },
+      {
+        "input": "2\n100 1\n",
+        "output": "99\n"
+      },
+      {
+        "input": "2\n5 5\n",
+        "output": "0\n"
+      },
+      {
+        "input": "3\n10 10 10\n",
+        "output": "0\n"
+      },
+      {
+        "input": "6\n1 100 1 100 1 100\n",
+        "output": "99\n"
+      },
+      {
+        "input": "5\n1 2 3 4 5\n",
+        "output": "4\n"
+      },
+      {
+        "input": "7\n5 1 5 1 5 1 5\n",
+        "output": "0\n"
+      }
+    ],
+    "힌트": "i번째 돌까지의 최소 비용은 그 직전 돌(i-1) 또는 그 전전 돌(i-2)에서 온 경우의 최소 비용을 이용해 구할 수 있다.",
+    "해설": "dp[i]를 1번째 돌에서 i번째 돌까지 오는 데 드는 최소 비용이라고 정의하면, dp[i] = min(dp[i-1] + |h_i - h_{i-1}|, dp[i-2] + |h_i - h_{i-2}|)로 점화식을 세울 수 있다(i=2번째 돌은 반드시 1번째 돌을 거쳐야 하므로 dp[2] = |h_2 - h_1|). dp[1]=0에서 시작해 dp[N]까지 순서대로 계산하면 정답을 얻는다.",
+    "정답_코드": "import sys\n\ndef solve():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    h = list(map(int, data[1:1 + n]))\n\n    dp = [0] * n\n    if n >= 2:\n        dp[1] = abs(h[1] - h[0])\n    for i in range(2, n):\n        dp[i] = min(dp[i - 1] + abs(h[i] - h[i - 1]),\n                    dp[i - 2] + abs(h[i] - h[i - 2]))\n\n    print(dp[n - 1])\n\nsolve()\n",
+    "시간복잡도": "O(N) — 각 돌에 대해 이전 두 상태만 참조하며 한 번씩 계산한다."
+  },
+  {
+    "id": "p_daily_20260727_e",
+    "유형": "E",
+    "title": "가장 많은 정점에 도달할 수 있는 출발점",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "정점이 N개, 방향 간선이 M개인 방향 그래프가 주어진다. 이 그래프의 정점 중 하나를 출발점으로 선택했을 때, 그 정점에서 간선을 따라 이동해 도달할 수 있는 정점의 개수(출발점 자신을 포함)를 구할 수 있다. 모든 정점을 각각 출발점으로 시도했을 때 얻을 수 있는 도달 가능한 정점 개수의 최댓값을 구하시오.",
+    "constraints": "1 ≤ N ≤ 500\n0 ≤ M ≤ 1,000\n1 ≤ u, v ≤ N, u ≠ v (u에서 v로 가는 방향 간선)\n같은 간선이 여러 번 주어지지 않는다.",
+    "input_format": "첫째 줄에 N과 M이 주어진다.\n이후 M개의 줄에 걸쳐 방향 간선의 시작 정점 u와 끝 정점 v가 주어진다.",
+    "output_format": "도달 가능한 정점 개수의 최댓값을 출력한다.",
+    "samples": [
+      {
+        "input": "4 4\n1 2\n2 3\n3 1\n3 4\n",
+        "output": "4\n",
+        "explanation": "1번 정점에서 출발하면 1→2→3→1의 순환과 3→4를 통해 1, 2, 3, 4번 정점에 모두 도달할 수 있어 4개가 된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 4\n1 2\n2 3\n3 1\n3 4\n",
+        "output": "4\n"
+      },
+      {
+        "input": "3 0\n",
+        "output": "1\n"
+      },
+      {
+        "input": "5 4\n1 2\n2 3\n3 4\n4 5\n",
+        "output": "5\n"
+      },
+      {
+        "input": "3 3\n1 2\n2 3\n3 1\n",
+        "output": "3\n"
+      },
+      {
+        "input": "4 3\n1 2\n1 3\n1 4\n",
+        "output": "4\n"
+      },
+      {
+        "input": "6 2\n1 2\n4 5\n",
+        "output": "2\n"
+      },
+      {
+        "input": "2 2\n1 2\n2 1\n",
+        "output": "2\n"
+      }
+    ],
+    "힌트": "정점마다 그 정점을 출발점으로 하는 너비 우선 탐색(BFS) 또는 깊이 우선 탐색(DFS)을 수행해 도달 가능한 정점의 개수를 구하고, 그중 최댓값을 찾는다.",
+    "해설": "각 정점 v(1 ≤ v ≤ N)를 출발점으로 삼아 BFS를 수행하면서 방문한 정점의 개수를 센다. N개의 정점 각각에 대해 이 과정을 반복한 뒤 그 개수들의 최댓값을 출력하면 된다. 정점 수가 최대 500이고 간선 수가 최대 1,000이므로 정점마다 BFS를 수행해도 충분히 빠르게 계산할 수 있다.",
+    "정답_코드": "import sys\nfrom collections import deque\n\ndef solve():\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(m):\n        u = int(data[idx]); idx += 1\n        v = int(data[idx]); idx += 1\n        graph[u].append(v)\n\n    best = 0\n    for start in range(1, n + 1):\n        visited = [False] * (n + 1)\n        visited[start] = True\n        q = deque([start])\n        count = 1\n        while q:\n            cur = q.popleft()\n            for nxt in graph[cur]:\n                if not visited[nxt]:\n                    visited[nxt] = True\n                    count += 1\n                    q.append(nxt)\n        best = max(best, count)\n\n    print(best)\n\nsolve()\n",
+    "시간복잡도": "O(N × (N + M)) — 정점 N개 각각에 대해 O(N + M)의 BFS를 한 번씩 수행한다."
+  },
+  {
+    "id": "p_daily_20260727_f",
+    "유형": "F",
+    "title": "모든 도시를 연결하는 데 필요한 최소 추가 도로 수",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "constraints": "1 ≤ N ≤ 100,000\n0 ≤ M ≤ 100,000\n1 ≤ a, b ≤ N, a ≠ b (도시 a와 b를 잇는 이미 존재하는 양방향 도로)\n같은 도로가 여러 번 주어질 수 있다.",
+    "statement": "N개의 도시가 있고, 이미 놓여 있는 양방향 도로가 M개 있다(각 도로는 서로 다른 두 도시를 직접 연결한다). 도로를 여러 번 거쳐 가면 연결되어 있는 도시들끼리는 서로 오갈 수 있다. 아직 서로 오갈 수 없는 도시들이 모두 하나로 연결되도록 새로운 양방향 도로를 최소 개수로 추가하려고 한다. 추가해야 하는 도로의 최소 개수를 구하시오.",
+    "input_format": "첫째 줄에 도시의 개수 N과 이미 존재하는 도로의 개수 M이 주어진다.\n이후 M개의 줄에 걸쳐 도로로 연결된 두 도시 a와 b가 주어진다.",
+    "output_format": "모든 도시를 하나로 연결하는 데 필요한 새로운 도로의 최소 개수를 출력한다.",
+    "samples": [
+      {
+        "input": "5 2\n1 2\n2 3\n",
+        "output": "2\n",
+        "explanation": "1-2-3은 이미 서로 연결되어 있고 4, 5는 각각 혼자이므로, {1,2,3}, {4}, {5} 이렇게 3개의 그룹을 하나로 합치려면 도로가 2개 필요하다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5 2\n1 2\n2 3\n",
+        "output": "2\n"
+      },
+      {
+        "input": "1 0\n",
+        "output": "0\n"
+      },
+      {
+        "input": "4 0\n",
+        "output": "3\n"
+      },
+      {
+        "input": "6 5\n1 2\n2 3\n3 4\n4 5\n5 6\n",
+        "output": "0\n"
+      },
+      {
+        "input": "4 2\n1 2\n3 4\n",
+        "output": "1\n"
+      },
+      {
+        "input": "2 1\n1 2\n",
+        "output": "0\n"
+      },
+      {
+        "input": "5 3\n1 2\n1 3\n2 3\n",
+        "output": "2\n"
+      }
+    ],
+    "힌트": "유니온-파인드(Union-Find)로 이미 연결된 도시들을 하나의 그룹으로 묶은 뒤, 전체 그룹의 개수를 세어 보자.",
+    "해설": "유니온-파인드 자료구조를 이용해 M개의 도로가 나타내는 연결 관계를 모두 union 연산으로 합친다. 그 결과 만들어지는 서로 다른 그룹(연결 요소)의 개수를 C라고 하면, 그룹들을 하나로 합치는 데는 항상 C-1개의 도로만 추가하면 충분하고 그보다 적게는 불가능하므로 정답은 C-1이다.",
+    "정답_코드": "import sys\n\ndef solve():\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n\n    parent = list(range(n + 1))\n\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n\n    def union(a, b):\n        ra, rb = find(a), find(b)\n        if ra != rb:\n            parent[ra] = rb\n\n    for _ in range(m):\n        a = int(data[idx]); idx += 1\n        b = int(data[idx]); idx += 1\n        union(a, b)\n\n    components = len({find(i) for i in range(1, n + 1)})\n    print(components - 1)\n\nsolve()\n",
+    "시간복잡도": "O((N + M) α(N)) — 경로 압축을 사용하는 유니온-파인드에서 union·find 연산은 사실상 상수 시간에 가깝다(α는 애커만 함수의 역함수)."
+  },
+  {
+    "id": "p_daily_20260727_g",
+    "유형": "G",
+    "title": "최단 거리와 최소 간선 수",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "정점이 N개, 양방향 가중치 간선이 M개인 그래프가 주어진다. 1번 정점에서 N번 정점까지의 최단 거리를 구하고, 그 최단 거리 값을 만들어 내는 여러 경로 중에서 사용하는 간선의 개수가 가장 적은 경로의 간선 개수를 구하시오. 1번 정점에서 N번 정점으로 이동할 수 없다면 -1 하나만 출력한다.",
+    "constraints": "2 ≤ N ≤ 1,000\n1 ≤ M ≤ 10,000\n1 ≤ a, b ≤ N, a ≠ b\n1 ≤ w ≤ 1,000 (a와 b를 잇는 간선의 가중치)\n두 정점 사이에 여러 간선이 존재할 수 있다.",
+    "input_format": "첫째 줄에 정점의 개수 N과 간선의 개수 M이 주어진다.\n이후 M개의 줄에 걸쳐 간선의 양 끝 정점 a, b와 가중치 w가 주어진다.",
+    "output_format": "1번 정점에서 N번 정점으로 갈 수 있다면 최단 거리와 그 최단 거리를 만드는 경로 중 최소 간선 수를 공백으로 구분해 한 줄에 출력한다. 갈 수 없다면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "3 3\n1 2 1\n2 3 1\n1 3 2\n",
+        "output": "2 1\n",
+        "explanation": "1번에서 3번으로 가는 최단 거리는 2이며, 1-3 간선 하나만으로 거리 2를 만들 수 있으므로(1-2-3 경로도 거리 2이지만 간선 2개가 필요) 최소 간선 수는 1이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3 3\n1 2 1\n2 3 1\n1 3 2\n",
+        "output": "2 1\n"
+      },
+      {
+        "input": "3 1\n1 2 5\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "2 1\n1 2 10\n",
+        "output": "10 1\n"
+      },
+      {
+        "input": "5 5\n1 2 1\n2 3 1\n3 5 1\n1 4 1\n4 5 2\n",
+        "output": "3 2\n"
+      },
+      {
+        "input": "4 4\n1 2 2\n1 3 2\n2 4 2\n3 4 2\n",
+        "output": "4 2\n"
+      },
+      {
+        "input": "6 7\n1 2 2\n2 3 2\n3 6 2\n1 4 3\n4 5 1\n5 6 2\n1 6 100\n",
+        "output": "6 3\n"
+      },
+      {
+        "input": "2 2\n1 2 5\n1 2 3\n",
+        "output": "3 1\n"
+      }
+    ],
+    "힌트": "다익스트라 알고리즘에서 우선순위 큐에 (거리, 간선 수, 정점)을 함께 넣고, 거리가 같을 때는 간선 수가 더 적은 쪽을 우선하도록 비교 기준을 확장해 보자.",
+    "해설": "각 정점에 대해 최단 거리 dist[v]뿐 아니라 그 최단 거리를 만드는 데 사용한 최소 간선 수 edges[v]도 함께 갱신하는 다익스트라 알고리즘을 사용한다. 정점을 꺼낼 때와 인접 정점을 갱신할 때 (거리, 간선 수) 튜플을 기준으로 비교하여, 거리가 더 짧거나 거리가 같으면서 간선 수가 더 적은 경우에만 갱신하면 두 값을 동시에 정확히 구할 수 있다.",
+    "정답_코드": "import sys\nimport heapq\n\ndef solve():\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(m):\n        u = int(data[idx]); idx += 1\n        v = int(data[idx]); idx += 1\n        w = int(data[idx]); idx += 1\n        graph[u].append((v, w))\n        graph[v].append((u, w))\n\n    INF = float(\"inf\")\n    dist = [INF] * (n + 1)\n    edges = [INF] * (n + 1)\n    dist[1] = 0\n    edges[1] = 0\n    # (거리, 간선 수, 정점) 순으로 비교되는 힙을 사용해\n    # 거리가 같으면 간선 수가 적은 경로를 우선 탐색한다.\n    pq = [(0, 0, 1)]\n    while pq:\n        d, e, cur = heapq.heappop(pq)\n        if (d, e) > (dist[cur], edges[cur]):\n            continue\n        for nxt, w in graph[cur]:\n            nd, ne = d + w, e + 1\n            if (nd, ne) < (dist[nxt], edges[nxt]):\n                dist[nxt] = nd\n                edges[nxt] = ne\n                heapq.heappush(pq, (nd, ne, nxt))\n\n    if dist[n] == INF:\n        print(-1)\n    else:\n        print(dist[n], edges[n])\n\nsolve()\n",
+    "시간복잡도": "O((N + M) log N) — 우선순위 큐를 사용하는 다익스트라 알고리즘의 시간 복잡도와 동일하다."
+  }
+]
