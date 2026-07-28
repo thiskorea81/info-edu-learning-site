@@ -168,8 +168,6 @@ def info_table(unit, example=False, name="", sid=""):
     return table([
         row([cell("학번", w1, bold=True, shade="EEEEEE"), cell(sid, w2),
              cell("이름", w3, bold=True, shade="EEEEEE"), cell(name, w4)]),
-        row([cell("반", w1, bold=True, shade="EEEEEE"), cell("", w2),
-             cell("제출일", w3, bold=True, shade="EEEEEE"), cell("", w4)]),
         row([cell("대상 단원", w1, bold=True, shade="EEEEEE"),
              cell(info["label"], w2 + w3 + w4)]),
     ], [w1, w2, w3, w4])
