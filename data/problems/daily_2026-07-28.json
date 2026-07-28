@@ -1,0 +1,366 @@
+[
+  {
+    "id": "p_daily_20260728_a",
+    "유형": "A",
+    "title": "연속된 같은 문자의 최대 길이",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "영어 소문자로만 이루어진 문자열 S가 주어진다. S에서 같은 문자가 연속해서 나타나는 부분 중 가장 긴 것의 길이를 구하시오.",
+    "constraints": "1 ≤ |S| ≤ 1,000,000\nS는 영어 소문자('a'~'z')로만 이루어져 있다.",
+    "input_format": "첫째 줄에 문자열 S가 주어진다.",
+    "output_format": "같은 문자가 연속해서 나타나는 가장 긴 길이를 출력한다.",
+    "samples": [
+      {
+        "input": "aaabbbccd\n",
+        "output": "3\n",
+        "explanation": "'aaa'와 'bbb'가 모두 길이 3으로 가장 길다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "aaabbbccd\n",
+        "output": "3\n"
+      },
+      {
+        "input": "a\n",
+        "output": "1\n"
+      },
+      {
+        "input": "abcde\n",
+        "output": "1\n"
+      },
+      {
+        "input": "zzzzzzzzzz\n",
+        "output": "10\n"
+      },
+      {
+        "input": "aabbaabbcc\n",
+        "output": "2\n"
+      },
+      {
+        "input": "ppqqqrssss\n",
+        "output": "4\n"
+      },
+      {
+        "input": "xy\n",
+        "output": "1\n"
+      }
+    ],
+    "힌트": "문자열을 앞에서부터 한 글자씩 보면서, 바로 앞 글자와 같은지 다른지에 따라 지금 세고 있는 연속 길이를 늘리거나 다시 시작하면 된다.",
+    "해설": "현재까지의 연속 길이를 담는 변수 cur와 지금까지 찾은 최댓값 best를 둔다. 문자열을 인덱스 1부터 끝까지 순회하면서 이전 문자와 같으면 cur를 1 늘리고 best를 갱신하며, 다르면 cur를 1로 초기화한다. 문자열 길이가 1,000,000까지 가능하므로 전체를 한 번만 훑는 O(N) 방법이 필요하다.",
+    "정답_코드": "import sys\n\ndef solve():\n    s = sys.stdin.readline().strip()\n    best = 1\n    cur = 1\n    for i in range(1, len(s)):\n        if s[i] == s[i - 1]:\n            cur += 1  # 같은 문자가 이어지면 현재 연속 길이를 늘린다\n            best = max(best, cur)\n        else:\n            cur = 1  # 다른 문자가 나오면 연속 길이를 다시 1부터 센다\n    print(best)\n\nsolve()\n",
+    "시간복잡도": "O(N) — 문자열을 한 번만 순회하며 각 문자를 이전 문자와 비교한다."
+  },
+  {
+    "id": "p_daily_20260728_b",
+    "유형": "B",
+    "title": "구간별 등급 인원수 세기",
+    "difficulty": "쉬움",
+    "time_limit_ms": 1500,
+    "statement": "N명의 학생의 점수(0 이상 100 이하의 정수)가 주어진다. 점수가 90 이상이면 A, 80 이상 90 미만이면 B, 70 이상 80 미만이면 C, 60 이상 70 미만이면 D, 60 미만이면 F 등급을 받는다. 각 등급을 받은 학생 수를 A, B, C, D, F 순서로 출력하시오.",
+    "constraints": "1 ≤ N ≤ 100,000\n0 ≤ 각 학생의 점수 ≤ 100",
+    "input_format": "첫째 줄에 학생 수 N, 둘째 줄에 N명의 점수가 공백으로 구분되어 주어진다.",
+    "output_format": "A, B, C, D, F 등급을 받은 학생 수를 이 순서대로 공백으로 구분하여 한 줄에 출력한다.",
+    "samples": [
+      {
+        "input": "5\n95 82 77 61 40\n",
+        "output": "1 1 1 1 1\n",
+        "explanation": "95점은 A, 82점은 B, 77점은 C, 61점은 D, 40점은 F 등급이므로 각 등급마다 1명씩이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5\n95 82 77 61 40\n",
+        "output": "1 1 1 1 1\n"
+      },
+      {
+        "input": "1\n100\n",
+        "output": "1 0 0 0 0\n"
+      },
+      {
+        "input": "1\n0\n",
+        "output": "0 0 0 0 1\n"
+      },
+      {
+        "input": "4\n90 80 70 60\n",
+        "output": "1 1 1 1 0\n"
+      },
+      {
+        "input": "4\n89 79 69 59\n",
+        "output": "0 1 1 1 1\n"
+      },
+      {
+        "input": "6\n100 95 85 75 65 55\n",
+        "output": "2 1 1 1 1\n"
+      },
+      {
+        "input": "3\n59 59 59\n",
+        "output": "0 0 0 0 3\n"
+      }
+    ],
+    "힌트": "각 학생의 점수를 한 번씩 확인하면서 점수 구간에 맞는 등급 카운터를 하나씩 늘려 가면 된다. 조건 비교 순서를 90점부터 내림차순으로 검사하면 elif만으로 간단히 처리할 수 있다.",
+    "해설": "등급별 인원수를 저장할 변수 5개(A, B, C, D, F)를 0으로 초기화한 뒤, 학생 점수를 하나씩 확인하며 90점 이상인지, 아니면 80점 이상인지 순서대로(즉 큰 구간부터) 비교해서 해당하는 카운터를 늘린다. 구간이 서로 겹치지 않도록 elif로 연결하면 각 점수는 정확히 하나의 등급에만 속하게 된다.",
+    "정답_코드": "import sys\n\ndef solve():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    scores = list(map(int, data[1:1 + n]))\n\n    a = b = c = d = f = 0\n    for s in scores:\n        if s >= 90:\n            a += 1\n        elif s >= 80:\n            b += 1\n        elif s >= 70:\n            c += 1\n        elif s >= 60:\n            d += 1\n        else:\n            f += 1\n\n    print(a, b, c, d, f)\n\nsolve()\n",
+    "시간복잡도": "O(N) — 학생 점수를 한 번씩만 확인한다."
+  },
+  {
+    "id": "p_daily_20260728_c",
+    "유형": "C",
+    "title": "필요한 최소 회의실 개수",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "N개의 회의가 있다. i번째 회의는 시작 시각 s_i에 시작해서 종료 시각 e_i에 끝난다(s_i < e_i). 한 회의실에서는 한 번에 하나의 회의만 진행할 수 있으며, 한 회의의 종료 시각과 다른 회의의 시작 시각이 정확히 같다면 두 회의는 겹치지 않는 것으로 보고 같은 회의실을 이어서 사용할 수 있다. N개의 회의를 모두 문제없이 진행하기 위해 필요한 회의실의 최소 개수를 구하시오.",
+    "constraints": "1 ≤ N ≤ 100,000\n0 ≤ s_i < e_i ≤ 1,000,000,000",
+    "input_format": "첫째 줄에 회의의 개수 N이 주어진다.\n이후 N개의 줄에 걸쳐 각 회의의 시작 시각 s_i와 종료 시각 e_i가 공백으로 구분되어 주어진다.",
+    "output_format": "모든 회의를 진행하는 데 필요한 회의실의 최소 개수를 출력한다.",
+    "samples": [
+      {
+        "input": "4\n1 4\n2 5\n7 9\n8 10\n",
+        "output": "2\n",
+        "explanation": "[1,4)와 [2,5)가 겹치므로 회의실이 2개 필요하고, [7,9)와 [8,10)도 겹치므로 역시 2개가 필요하다. 두 그룹은 시간이 겹치지 않으므로 회의실 2개를 번갈아 사용하면 충분하다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4\n1 4\n2 5\n7 9\n8 10\n",
+        "output": "2\n"
+      },
+      {
+        "input": "1\n0 10\n",
+        "output": "1\n"
+      },
+      {
+        "input": "3\n1 2\n2 3\n3 4\n",
+        "output": "1\n"
+      },
+      {
+        "input": "3\n1 5\n1 5\n1 5\n",
+        "output": "3\n"
+      },
+      {
+        "input": "2\n1 3\n2 4\n",
+        "output": "2\n"
+      },
+      {
+        "input": "5\n0 30\n5 10\n15 20\n0 5\n25 30\n",
+        "output": "2\n"
+      },
+      {
+        "input": "4\n1 10\n2 7\n3 19\n8 12\n",
+        "output": "3\n"
+      }
+    ],
+    "힌트": "회의를 시작 시각 기준으로 정렬한 뒤, 지금까지 사용 중인 회의실들의 종료 시각을 최소 힙에 저장해 보자. 새 회의가 시작될 때 가장 먼저 끝나는 회의실의 종료 시각이 새 회의의 시작 시각보다 작거나 같다면 그 회의실을 재사용할 수 있다.",
+    "해설": "회의를 시작 시각 기준으로 정렬한 뒤 순서대로 처리한다. 현재 사용 중인 회의실들의 종료 시각을 최소 힙에 넣어 관리하다가, 새 회의를 배정하기 전에 힙의 최솟값(가장 먼저 끝나는 회의실의 종료 시각)이 새 회의의 시작 시각 이하이면 그 회의실이 이미 비었다는 뜻이므로 힙에서 꺼내 재사용하고, 그렇지 않으면 새 회의실이 필요하다. 이후 현재 회의의 종료 시각을 힙에 넣는다. 모든 회의를 처리한 뒤 힙에 남아 있는 원소의 개수가 동시에 필요했던 회의실의 최대 개수, 즉 정답이 된다.",
+    "정답_코드": "import sys\nimport heapq\n\ndef solve():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    idx = 1\n    meetings = []\n    for _ in range(n):\n        s = int(data[idx]); e = int(data[idx + 1])\n        idx += 2\n        meetings.append((s, e))\n\n    meetings.sort()  # 시작 시각 기준으로 정렬\n\n    heap = []  # 현재 사용 중인 회의실들의 종료 시각을 담는 최소 힙\n    for s, e in meetings:\n        if heap and heap[0] <= s:\n            heapq.heappop(heap)  # 가장 먼저 끝나는 회의실을 재사용한다\n        heapq.heappush(heap, e)\n\n    print(len(heap))  # 힙에 남아 있는 개수가 곧 필요한 회의실 수\n\nsolve()\n",
+    "시간복잡도": "O(N log N) — 정렬에 O(N log N), 각 회의마다 힙 연산에 O(log N)이 걸려 전체 N번 반복한다."
+  },
+  {
+    "id": "p_daily_20260728_d",
+    "유형": "D",
+    "title": "합이 S가 되는 부분집합 존재 여부",
+    "difficulty": "보통",
+    "time_limit_ms": 1500,
+    "statement": "N개의 양의 정수로 이루어진 수열 A와 정수 S가 주어진다. 수열 A의 원소 중 일부(0개 이상)를 골라 그 합이 정확히 S가 되도록 만들 수 있는지 판별하시오. 같은 인덱스의 원소를 두 번 이상 사용할 수 없다.",
+    "constraints": "1 ≤ N ≤ 1,000\n0 ≤ S ≤ 10,000\n1 ≤ A_i ≤ 10,000",
+    "input_format": "첫째 줄에 N과 S가 공백으로 구분되어 주어진다.\n둘째 줄에 N개의 정수 A_1, A_2, …, A_N이 공백으로 구분되어 주어진다.",
+    "output_format": "합이 정확히 S가 되도록 원소를 고를 수 있으면 \"YES\", 없으면 \"NO\"를 출력한다.",
+    "samples": [
+      {
+        "input": "5 9\n2 3 5 7 1\n",
+        "output": "YES\n",
+        "explanation": "2와 7을 고르면 합이 9가 된다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5 9\n2 3 5 7 1\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "3 100\n1 2 3\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "1 5\n5\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "1 5\n4\n",
+        "output": "NO\n"
+      },
+      {
+        "input": "4 0\n1 2 3 4\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "3 6\n1 2 3\n",
+        "output": "YES\n"
+      },
+      {
+        "input": "6 15\n5 5 5 5 5 5\n",
+        "output": "YES\n"
+      }
+    ],
+    "힌트": "j원을 만들 수 있는지 여부를 원소 하나씩 추가해 가며 갱신하는 boolean 배열 dp를 생각해 보자. 이미 만들 수 있던 합 j-x에 원소 x를 더하면 합 j도 만들 수 있게 된다.",
+    "해설": "dp[j]를 지금까지 고려한 원소들 중 일부로 합을 정확히 j로 만들 수 있는지 나타내는 불리언 값으로 정의한다. dp[0]=True로 시작하고, 원소 x를 하나씩 추가할 때마다 j를 S부터 x까지 감소시키면서 dp[j-x]가 True이면 dp[j]도 True로 갱신한다(j를 큰 값부터 갱신해야 같은 원소를 두 번 쓰는 것을 방지할 수 있다). 모든 원소를 처리한 뒤 dp[S]가 최종 답이 된다.",
+    "정답_코드": "import sys\n\ndef solve():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    s = int(data[1])\n    a = list(map(int, data[2:2 + n]))\n\n    # dp[j]: 지금까지 고려한 수들 중 일부를 골라 합을 정확히 j로 만들 수 있는지 여부\n    dp = [False] * (s + 1)\n    dp[0] = True  # 아무것도 고르지 않으면 합은 0\n\n    for x in a:\n        # 같은 수를 두 번 쓰지 않도록 합이 큰 쪽부터 갱신한다\n        for j in range(s, x - 1, -1):\n            if dp[j - x]:\n                dp[j] = True\n\n    print(\"YES\" if dp[s] else \"NO\")\n\nsolve()\n",
+    "시간복잡도": "O(N × S) — 원소 N개 각각에 대해 합 배열 크기 S만큼 갱신한다."
+  },
+  {
+    "id": "p_daily_20260728_e",
+    "유형": "E",
+    "title": "벽을 K번까지 부수고 이동하는 최단 경로",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "R행 C열의 격자가 주어진다. 각 칸은 '.'(빈 칸) 또는 '#'(벽)이며, (0, 0)에서 (R-1, C-1)까지 상하좌우로 인접한 칸으로만 이동할 수 있다. 이동 중 벽을 최대 K개까지 부수고 지나갈 수 있다(부순 벽은 그 순간부터 지나갈 수 있는 빈 칸처럼 취급된다). (0, 0)에서 (R-1, C-1)까지 이동하는 데 필요한 최소 이동 횟수를 구하시오. 도달할 수 없다면 -1을 출력한다. (0, 0)과 (R-1, C-1)은 항상 '.'이다.",
+    "constraints": "1 ≤ R, C ≤ 50\n0 ≤ K ≤ 10",
+    "input_format": "첫째 줄에 R, C, K가 공백으로 구분되어 주어진다.\n이후 R개의 줄에 걸쳐 각 줄에 C개의 문자로 이루어진 격자가 주어진다.",
+    "output_format": "(0, 0)에서 (R-1, C-1)까지의 최소 이동 횟수를 출력한다. 도달할 수 없으면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "3 3 0\n...\n.#.\n...\n",
+        "output": "4\n",
+        "explanation": "벽을 부수지 않고 (0,0)→(0,1)→(0,2)→(1,2)→(2,2)로 이동하면 4번 만에 도착할 수 있다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3 3 0\n...\n.#.\n...\n",
+        "output": "4\n"
+      },
+      {
+        "input": "3 3 0\n.#.\n.#.\n.#.\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "3 3 1\n.#.\n.#.\n.#.\n",
+        "output": "4\n"
+      },
+      {
+        "input": "1 1 0\n.\n",
+        "output": "0\n"
+      },
+      {
+        "input": "1 3 0\n.#.\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "1 3 1\n.#.\n",
+        "output": "2\n"
+      },
+      {
+        "input": "4 4 2\n....\n.##.\n.##.\n....\n",
+        "output": "6\n"
+      }
+    ],
+    "힌트": "일반적인 미로 BFS에 '지금까지 부순 벽의 개수'라는 상태를 하나 추가해 보자. 같은 칸이라도 부순 벽의 개수가 다르면 서로 다른 상태로 취급해야 한다.",
+    "해설": "각 상태를 (행, 열, 지금까지 부순 벽의 개수)로 정의하고 BFS를 수행한다. 빈 칸으로는 벽을 부순 횟수를 유지한 채 이동하고, 벽이 있는 칸으로는 부순 횟수를 1 늘릴 수 있을 때(그 값이 K 이하일 때)만 이동한다. 각 (행, 열, 부순 횟수) 조합을 한 번씩만 방문하도록 방문 배열을 3차원으로 관리하면, 큐에서 목표 칸을 처음 꺼냈을 때의 이동 횟수가 최단 이동 횟수가 된다.",
+    "정답_코드": "import sys\nfrom collections import deque\n\ndef solve():\n    data = sys.stdin.read().split(\"\\n\")\n    r, c, k = map(int, data[0].split())\n    grid = [data[1 + i] for i in range(r)]\n\n    # dist[y][x][b]: 벽을 b번 부순 상태로 (y, x)까지 오는 데 필요한 최소 이동 횟수\n    dist = [[[-1] * (k + 1) for _ in range(c)] for _ in range(r)]\n    dist[0][0][0] = 0\n    q = deque([(0, 0, 0)])\n\n    while q:\n        y, x, b = q.popleft()\n        if y == r - 1 and x == c - 1:\n            print(dist[y][x][b])\n            return\n        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):\n            ny, nx = y + dy, x + dx\n            if not (0 <= ny < r and 0 <= nx < c):\n                continue\n            if grid[ny][nx] == '.':\n                if dist[ny][nx][b] == -1:\n                    dist[ny][nx][b] = dist[y][x][b] + 1\n                    q.append((ny, nx, b))\n            else:\n                if b + 1 <= k and dist[ny][nx][b + 1] == -1:\n                    dist[ny][nx][b + 1] = dist[y][x][b] + 1  # 벽을 하나 더 부수고 진입\n                    q.append((ny, nx, b + 1))\n\n    print(-1)\n\nsolve()\n",
+    "시간복잡도": "O(R × C × K) — 방문 가능한 상태의 수가 R × C × (K+1)개이고 각 상태는 상수 시간에 한 번씩만 처리된다."
+  },
+  {
+    "id": "p_daily_20260728_f",
+    "유형": "F",
+    "title": "사전순으로 가장 빠른 작업 순서",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "1번부터 N번까지 번호가 매겨진 작업과 M개의 선행 관계가 주어진다. \"a b\"는 작업 a를 마친 후에야 작업 b를 시작할 수 있다는 뜻이다. 모든 작업을 한 번씩 수행하는 순서(위상 정렬) 중 사전순(숫자를 나열한 순서 기준)으로 가장 빠른 것을 출력하시오. 모든 작업을 수행할 수 없다면(즉 사이클이 존재한다면) -1을 출력한다.",
+    "constraints": "1 ≤ N ≤ 100,000\n0 ≤ M ≤ 100,000\n1 ≤ a, b ≤ N, a ≠ b\n같은 선행 관계가 여러 번 주어질 수 있다.",
+    "input_format": "첫째 줄에 N과 M이 주어진다.\n이후 M개의 줄에 걸쳐 선행 관계 a와 b가 주어진다.",
+    "output_format": "사전순으로 가장 빠른 위상 정렬 결과를 공백으로 구분해 한 줄에 출력한다. 불가능하면 -1을 출력한다.",
+    "samples": [
+      {
+        "input": "4 3\n1 2\n1 3\n2 4\n",
+        "output": "1 2 3 4\n",
+        "explanation": "1을 먼저 수행할 수 있고, 그다음 2와 3 중 번호가 작은 2를 먼저, 이어서 3을, 마지막으로 4를 수행하면 사전순으로 가장 빠르다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "4 3\n1 2\n1 3\n2 4\n",
+        "output": "1 2 3 4\n"
+      },
+      {
+        "input": "3 0\n",
+        "output": "1 2 3\n"
+      },
+      {
+        "input": "3 3\n1 2\n2 3\n3 1\n",
+        "output": "-1\n"
+      },
+      {
+        "input": "1 0\n",
+        "output": "1\n"
+      },
+      {
+        "input": "5 4\n2 1\n3 1\n4 1\n5 1\n",
+        "output": "2 3 4 5 1\n"
+      },
+      {
+        "input": "6 5\n1 2\n1 3\n3 4\n2 4\n4 5\n",
+        "output": "1 2 3 4 5 6\n"
+      },
+      {
+        "input": "4 2\n4 1\n1 2\n",
+        "output": "3 4 1 2\n"
+      }
+    ],
+    "힌트": "위상 정렬(칸의 알고리즘)에서 진입 차수가 0인 정점들을 큐 대신 최소 힙에 넣고 하나씩 꺼내면, 매 순간 선택 가능한 정점 중 가장 작은 번호를 고를 수 있다.",
+    "해설": "각 정점의 진입 차수를 계산한 뒤, 진입 차수가 0인 정점들을 최소 힙에 모두 넣는다. 힙에서 가장 작은 번호의 정점을 하나 꺼내 결과에 추가하고, 그 정점에서 나가는 간선들이 가리키는 정점들의 진입 차수를 1씩 줄인다. 이때 진입 차수가 0이 되는 정점이 있으면 힙에 새로 추가한다. 매 단계에서 선택 가능한 정점 중 가장 작은 번호를 고르므로 전체 결과는 사전순으로 가장 빠른 위상 정렬이 된다. 모든 정점을 꺼내지 못하고 힙이 먼저 비면 사이클이 있다는 뜻이므로 -1을 출력한다.",
+    "정답_코드": "import sys\nimport heapq\n\ndef solve():\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n\n    graph = [[] for _ in range(n + 1)]\n    indeg = [0] * (n + 1)\n    for _ in range(m):\n        a = int(data[idx]); b = int(data[idx + 1])\n        idx += 2\n        graph[a].append(b)\n        indeg[b] += 1\n\n    # 진입 차수가 0인 정점 중 번호가 가장 작은 것부터 꺼내야 하므로 최소 힙을 사용한다.\n    heap = [v for v in range(1, n + 1) if indeg[v] == 0]\n    heapq.heapify(heap)\n\n    order = []\n    while heap:\n        cur = heapq.heappop(heap)\n        order.append(cur)\n        for nxt in graph[cur]:\n            indeg[nxt] -= 1\n            if indeg[nxt] == 0:\n                heapq.heappush(heap, nxt)\n\n    if len(order) != n:\n        print(-1)  # 사이클이 있어 모든 작업을 수행할 수 없다\n    else:\n        print(' '.join(map(str, order)))\n\nsolve()\n",
+    "시간복잡도": "O((N + M) log N) — 정점마다 힙에 최대 한 번씩 들어가고 나오며, 힙 연산에 O(log N)이 걸린다."
+  },
+  {
+    "id": "p_daily_20260728_g",
+    "유형": "G",
+    "title": "모든 도시 쌍 최단 거리의 최댓값",
+    "difficulty": "어려움",
+    "time_limit_ms": 2000,
+    "statement": "정점이 N개, 양방향 가중치 간선이 M개인 그래프가 주어진다. 이 그래프는 항상 연결되어 있다(임의의 두 정점 사이에 이동 가능한 경로가 존재한다). 서로 다른 두 정점 i, j (i ≠ j) 사이의 최단 거리 중 가장 큰 값을 구하시오.",
+    "constraints": "2 ≤ N ≤ 200\nN-1 ≤ M ≤ 20,000\n1 ≤ a, b ≤ N, a ≠ b\n1 ≤ w ≤ 1,000\n두 정점 사이에 여러 간선이 존재할 수 있다(이 경우 가중치가 가장 작은 간선만 유효하다고 본다).\n주어진 그래프는 항상 연결되어 있다.",
+    "input_format": "첫째 줄에 정점의 개수 N과 간선의 개수 M이 주어진다.\n이후 M개의 줄에 걸쳐 간선의 양 끝 정점 a, b와 가중치 w가 주어진다.",
+    "output_format": "서로 다른 두 정점 사이의 최단 거리 중 최댓값을 출력한다.",
+    "samples": [
+      {
+        "input": "3 3\n1 2 1\n2 3 1\n1 3 3\n",
+        "output": "2\n",
+        "explanation": "1과 3 사이의 최단 거리는 1-2-3 경로를 이용한 2이다(직접 잇는 간선의 가중치 3보다 작다). 1-2, 2-3의 최단 거리는 각각 1이므로 전체 최댓값은 2이다."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3 3\n1 2 1\n2 3 1\n1 3 3\n",
+        "output": "2\n"
+      },
+      {
+        "input": "2 1\n1 2 7\n",
+        "output": "7\n"
+      },
+      {
+        "input": "4 3\n1 2 1\n2 3 1\n3 4 1\n",
+        "output": "3\n"
+      },
+      {
+        "input": "4 6\n1 2 1\n1 3 1\n1 4 1\n2 3 1\n2 4 1\n3 4 1\n",
+        "output": "1\n"
+      },
+      {
+        "input": "5 4\n1 2 5\n2 3 5\n3 4 5\n4 5 5\n",
+        "output": "20\n"
+      },
+      {
+        "input": "3 2\n1 2 1000\n2 3 1000\n",
+        "output": "2000\n"
+      },
+      {
+        "input": "2 2\n1 2 10\n1 2 3\n",
+        "output": "3\n"
+      }
+    ],
+    "힌트": "정점의 개수가 최대 200으로 작으므로, 모든 정점 쌍의 최단 거리를 한 번에 구할 수 있는 플로이드-워셜 알고리즘을 사용할 수 있다.",
+    "해설": "인접 행렬 dist를 만들어 자기 자신까지의 거리는 0으로, 직접 연결된 두 정점 사이는 간선 가중치로(여러 간선이 있으면 최솟값으로) 초기화한다. 이후 경유지 k를 1번 정점부터 N번 정점까지 하나씩 늘려가며 dist[i][j]를 dist[i][k] + dist[k][j]와 비교해 더 작은 값으로 갱신하는 플로이드-워셜 알고리즘을 수행하면 모든 정점 쌍의 최단 거리를 구할 수 있다. 그래프가 항상 연결되어 있으므로 모든 dist[i][j]는 유한한 값을 가지며, 그중 i ≠ j인 것들의 최댓값이 정답이다.",
+    "정답_코드": "import sys\n\ndef solve():\n    data = sys.stdin.read().split()\n    idx = 0\n    n = int(data[idx]); idx += 1\n    m = int(data[idx]); idx += 1\n\n    INF = float('inf')\n    dist = [[INF] * (n + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        dist[i][i] = 0\n\n    for _ in range(m):\n        a = int(data[idx]); b = int(data[idx + 1]); w = int(data[idx + 2])\n        idx += 3\n        if w < dist[a][b]:  # 같은 두 정점 사이에 여러 간선이 있으면 가장 작은 가중치만 남긴다\n            dist[a][b] = w\n            dist[b][a] = w\n\n    # 플로이드-워셜: 경유지 k를 하나씩 늘려가며 모든 정점 쌍의 최단 거리를 갱신한다.\n    for k in range(1, n + 1):\n        dk = dist[k]\n        for i in range(1, n + 1):\n            dik = dist[i][k]\n            if dik == INF:\n                continue\n            di = dist[i]\n            for j in range(1, n + 1):\n                nd = dik + dk[j]\n                if nd < di[j]:\n                    di[j] = nd\n\n    ans = 0\n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            if i != j:\n                ans = max(ans, dist[i][j])\n\n    print(ans)\n\nsolve()\n",
+    "시간복잡도": "O(N^3) — 경유지, 시작 정점, 끝 정점의 세 중첩 반복문을 모두 N번씩 수행한다."
+  }
+]
