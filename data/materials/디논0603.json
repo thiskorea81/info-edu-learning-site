@@ -5,12 +5,6 @@
   "단원": "6. 순서 논리 회로 설계",
   "sections": [
     {
-      "heading": "비동기 입력",
-      "content": "클록 펄스의 변화와 관계없이 플립플롭의 상태를 변하게 할 수 있는 입력을 비동기 입력이라고 한다. 비동기 입력은 클록 펄스의 입력과는 별도로 플립플롭의 작동을 결정한다.\n\n비동기 입력은 프리셋(PR)과 클리어(CLR) 두 개의 입력으로 구성되어 있으며 반전 입력으로 작동한다. 프리셋(PR) 입력이 '0'일 때 출력 Q는 다른 입력과 관계없이 무조건 '1'이 출력되고, 클리어(CLR) 입력이 '0'일 때 출력 Q는 무조건 '0'이 출력되도록 설계되어 있다.\n\n프리셋과 클리어 입력이 모두 '0'인 상태는 사용이 금지되며, 프리셋과 클리어 입력이 모두 '1'인 상태에서는 비동기 입력이 작동하지 않고 일반적인 플립플롭과 동일하게 클록의 변화에 따라 상태가 바뀐다.",
-      "표": "| 프리셋 | 클리어 | 동작 상태 |\n| :--- | :--- | :--- |\n| 0 | 0 | 사용 금지 |\n| 0 | 1 | 무조건 Q=1, Q̅=0 |\n| 1 | 0 | 무조건 Q=0, Q̅=1 |\n| 1 | 1 | 동기 입력으로 동작 |",
-      "image": "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='180' viewBox='0 0 200 180'><rect x='0' y='0' width='200' height='180' rx='10' fill='#ffffff' stroke='#e4e4e7' stroke-width='1.5'/><text x='100.0' y='20' text-anchor='middle' font-family='sans-serif' font-size='13' font-weight='bold' fill='#1f2328'></text><text x='100.0' y='18' text-anchor='middle' font-family='sans-serif' font-size='12' font-weight='bold' fill='#1f2328'>비동기 입력(PR·CLR) 논리 기호</text><rect x='60.0' y='30' width='80' height='140' fill='#eef0fb' stroke='#1f2328' stroke-width='2'/><line x1='38.0' y1='51.0' x2='60.0' y2='51.0' stroke='#1f2328' stroke-width='2'/><text x='34.0' y='55.0' text-anchor='end' font-family='ui-monospace,monospace' font-size='13' fill='#1f2328'>PR</text><line x1='38.0' y1='86.0' x2='60.0' y2='86.0' stroke='#1f2328' stroke-width='2'/><text x='34.0' y='90.0' text-anchor='end' font-family='ui-monospace,monospace' font-size='13' fill='#1f2328'>J</text><line x1='38.0' y1='114.0' x2='60.0' y2='114.0' stroke='#1f2328' stroke-width='2'/><path d='M 60.0,107.0 L 72.0,114.0 L 60.0,121.0' fill='none' stroke='#1f2328' stroke-width='1.6'/><text x='34.0' y='118.0' text-anchor='end' font-family='ui-monospace,monospace' font-size='13' fill='#1f2328'>CP</text><line x1='38.0' y1='142.0' x2='60.0' y2='142.0' stroke='#1f2328' stroke-width='2'/><text x='34.0' y='146.0' text-anchor='end' font-family='ui-monospace,monospace' font-size='13' fill='#1f2328'>K</text><line x1='38.0' y1='163.0' x2='60.0' y2='163.0' stroke='#1f2328' stroke-width='2'/><text x='34.0' y='167.0' text-anchor='end' font-family='ui-monospace,monospace' font-size='13' fill='#1f2328'>CLR</text><line x1='140.0' y1='65.0' x2='162.0' y2='65.0' stroke='#1f2328' stroke-width='2'/><text x='166.0' y='69.0' text-anchor='start' font-family='ui-monospace,monospace' font-size='13' fill='#1f2328'>Q</text><line x1='140.0' y1='135.0' x2='162.0' y2='135.0' stroke='#1f2328' stroke-width='2'/><text x='166.0' y='139.0' text-anchor='start' font-family='ui-monospace,monospace' font-size='13' fill='#1f2328'><tspan style='text-decoration:overline'>Q</tspan></text></svg>"
-    },
-    {
       "heading": "플립플롭의 여기표",
       "content": "플립플롭의 특성표는 현재 상태와 입력값이 주어졌을 때 다음 상태가 어떻게 변하는지를 나타내는 표이며, 플립플롭의 진리표에서 쉽게 얻을 수 있다.\n\n플립플롭의 여기표(excitation table)는 현재 상태에서 다음 상태로 변했을 때, 플립플롭의 입력 조건이 어떤 상태인지를 나타내는 표이다(특성표와 반대 방향으로 읽는 표라고 볼 수 있다). 여기표는 순서 논리 회로를 설계할 때 많이 사용한다.",
       "표": "| 플립플롭 | Q(t)→Q(t+1) | 요구 입력 |\n| :--- | :--- | :--- |\n| RS | 0→0 | S=0, R=× |\n| RS | 0→1 | S=1, R=0 |\n| RS | 1→0 | S=0, R=1 |\n| RS | 1→1 | S=×, R=0 |\n| JK | 0→0 | J=0, K=× |\n| JK | 0→1 | J=1, K=× |\n| JK | 1→0 | J=×, K=1 |\n| JK | 1→1 | J=×, K=0 |\n| D | 0→0 | D=0 |\n| D | 0→1 | D=1 |\n| D | 1→0 | D=0 |\n| D | 1→1 | D=1 |\n| T | 0→0 | T=0 |\n| T | 0→1 | T=1 |\n| T | 1→0 | T=1 |\n| T | 1→1 | T=0 |"
@@ -43,7 +37,7 @@
     },
     {
       "heading": "정리",
-      "content": "비동기 입력(프리셋·클리어)은 클록과 무관하게 즉시 플립플롭의 상태를 강제로 설정한다. 여기표는 원하는 상태 전이를 만들기 위해 플립플롭에 어떤 입력을 넣어야 하는지 알려주는 표로, JK·D·T 플립플롭을 활용해 동기 순서 논리 회로를 설계(상태도→상태표→여기표→간소화된 입력 함수→회로도)하거나, 반대로 이미 만들어진 회로를 해석(변수 명칭 부여→불 대수식 유도→상태표→상태도→상태 방정식→작동 설명)하는 데 핵심적으로 쓰인다."
+      "content": "여기표는 원하는 상태 전이를 만들기 위해 플립플롭에 어떤 입력을 넣어야 하는지 알려주는 표로, JK·D·T 플립플롭을 활용해 동기 순서 논리 회로를 설계(상태도→상태표→여기표→간소화된 입력 함수→회로도)하거나, 반대로 이미 만들어진 회로를 해석(변수 명칭 부여→불 대수식 유도→상태표→상태도→상태 방정식→작동 설명)하는 데 핵심적으로 쓰인다."
     }
   ]
 }
