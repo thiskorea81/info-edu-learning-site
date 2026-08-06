@@ -112,15 +112,15 @@ RUBRIC = [
      "교과서 소자 2개 이상을 조합해 새로운 기능 구성",
      "교과서 소자를 응용하여 교과서에 없는 새로운 회로 구조로 완성함"),
     ("동작 구현·검증 완성도",
-     "시뮬레이션 미완성 또는 미동작",
-     "일부 입력에서만 정상 동작",
-     "전체 입력에서 정상 동작하나 검증 기록 미흡",
+     "회로도 또는 진리표가 미완성이거나 논리적으로 맞지 않음",
+     "일부 입력 조건에서만 동작을 올바르게 검증함",
+     "전체 입력에서 논리적으로 정상 동작하나 검증 기록이 미흡함",
      "전체 동작을 진리표/타이밍도로 검증하고 기록함"),
     ("설계 근거의 논리성",
-     "소자 선택 이유를 설명하지 못함(AI 제안을 그대로 옮겨 말하는 수준 포함)",
-     "\"AI가 그렇게 하라고 해서\" 수준의 설명, 원리 설명 없음",
-     "소자 특성과 연결지어 설명하나, AI 제안을 검증 없이 수용한 부분이 남아있음",
-     "동작 원리에 근거해 논리적으로 설명하며, AI 제안 중 스스로 확인·수정한 부분을 구체적으로 제시함"),
+     "소자 선택 이유를 설명하지 못함(AI·인터넷에서 얻은 정보를 그대로 옮겨 말하는 수준 포함)",
+     "\"AI가(또는 인터넷에) 그렇게 하라고 해서\" 수준의 설명, 원리 설명 없음",
+     "소자 특성과 연결지어 설명하나, AI·인터넷에서 얻은 정보를 검증 없이 수용한 부분이 남아있음",
+     "동작 원리에 근거해 논리적으로 설명하며, AI·인터넷에서 얻은 정보 중 스스로 확인·수정한 부분을 구체적으로 제시함"),
     ("질의응답 대응력(즉석 변형 질문)",
      "교사의 즉석 변형 질문(예: 입력이 하나 늘어나면?)에 답하지 못함",
      "즉석 질문의 의도와 다른 답변을 하거나 암기한 내용만 반복함",
@@ -224,7 +224,7 @@ def build_body(unit, is_example=False, ex=None):
     parts = []
     tag = " — 예시 보고서(교사 전용)" if is_example else ""
     parts.append(heading(f"디지털논리회로 창의융합프로젝트 수행평가 보고서{tag}", 1))
-    parts.append(para(f"{info['label']} · Tinkercad 시뮬레이터 활용", align="center", space_after=120))
+    parts.append(para(f"{info['label']} · 직접 회로 설계(손으로 그리기) + AI·인터넷 활용", align="center", space_after=120))
     if is_example:
         parts.append(para("[교사 전용 — 학생에게 배포하지 마세요] 이 문서는 응용점수 루브릭의 상위 수준(6점)을 "
                            "보여주기 위한 채점 참고용 모범 예시입니다.",
@@ -261,15 +261,16 @@ def build_body(unit, is_example=False, ex=None):
         parts.append(para(label, bold=True, italic=True, space_after=40))
         parts.append(para(ptext, space_after=120))
 
-    parts.append(heading("2. AI 활용 및 검증 과정", 2))
-    parts.append(para("이 프로젝트는 AI의 도움을 받아도 됩니다. 다만 발표 중 교사가 회로를 즉석에서 바꿔보라고 "
-                       "요청할 수 있으므로, AI가 준 내용을 얼마나 이해하고 검증했는지를 이 section과 질의응답으로 평가합니다.",
+    parts.append(heading("2. AI·인터넷 활용 및 검증 과정", 2))
+    parts.append(para("이 프로젝트는 AI와 인터넷 검색의 도움을 받아도 됩니다. 다만 발표 중 교사가 회로를 즉석에서 "
+                       "바꿔보라고 요청할 수 있으므로, AI·인터넷에서 얻은 내용을 얼마나 이해하고 검증했는지를 이 "
+                       "section과 질의응답으로 평가합니다.",
                        italic=True, space_after=160))
-    parts.append(para("① 어떤 AI에게 무엇을 질문했는가", bold=True, space_after=80))
+    parts.append(para("① 어떤 AI에게 무엇을 질문했는가 / 인터넷에서 무엇을 검색했는가", bold=True, space_after=80))
     parts.append(blank_lines(2, filled=[ex["ai"]["question"]] if is_example else None))
-    parts.append(para("② AI 답변 중 틀렸거나 스스로 검증해서 수정한 부분", bold=True, space_after=80, space_before=160))
+    parts.append(para("② AI 답변·검색 결과 중 틀렸거나 스스로 검증해서 수정한 부분", bold=True, space_after=80, space_before=160))
     parts.append(blank_lines(3, filled=ex["ai"]["correction"] if is_example else None))
-    parts.append(para("③ AI 답변을 그대로 쓰지 않고 스스로 판단·추가한 부분", bold=True, space_after=80, space_before=160))
+    parts.append(para("③ AI 답변·검색 결과를 그대로 쓰지 않고 스스로 판단·추가한 부분", bold=True, space_after=80, space_before=160))
     parts.append(blank_lines(2, filled=[ex["ai"]["judgement"]] if is_example else None))
 
     parts.append(heading("3. 설계 내용", 2))
@@ -283,7 +284,8 @@ def build_body(unit, is_example=False, ex=None):
         device_rows.append(row([cell(d[0], hw[0]), cell(d[1], hw[1]), cell(d[2], hw[2])]))
     parts.append(table(device_rows, hw))
 
-    parts.append(para("② 회로도 (Tinkercad 회로 캡처를 붙여넣으세요)", bold=True, space_after=80))
+    parts.append(para("② 회로도 (아래 칸에 직접 손으로 그리거나, 손으로 그린 회로도를 사진으로 찍어 붙여넣으세요)",
+                       bold=True, space_after=80))
     if is_example:
         diagram = ex.get("diagram_emu")
         if diagram:
@@ -299,10 +301,8 @@ def build_body(unit, is_example=False, ex=None):
     parts.append(para("③ 동작 설명 (입력에 따른 출력 동작을 순서대로 서술)", bold=True, space_after=80, space_before=160))
     parts.append(blank_lines(4, filled=ex["operation"] if is_example else None))
 
-    parts.append(heading("4. Tinkercad 시뮬레이션 검증", 2))
-    parts.append(para("① Tinkercad 공유(Share) 링크", bold=True, space_after=80))
-    parts.append(blank_lines(1, filled=["https://www.tinkercad.com/things/xxxxxxxxxxx"] if is_example else None))
-    parts.append(para("② 진리표 / 동작표 (직접 표를 그리거나 아래 표를 활용)", bold=True, space_after=80, space_before=160))
+    parts.append(heading("4. 회로 동작 검증", 2))
+    parts.append(para("① 진리표 / 동작표 (직접 표를 그리거나 아래 표를 활용)", bold=True, space_after=80))
     if is_example:
         tbl_header = ex["table_header"]
         tbl_rows = ex["table_rows"]
@@ -315,13 +315,14 @@ def build_body(unit, is_example=False, ex=None):
     else:
         tw = [1128, 1128, 1128, 1128, 1128, 1128, 1128, 1130]
         parts.append(table([row([cell("", w) for w in tw]) for _ in range(6)], tw))
-    parts.append(para("③ 테스트 결과 요약 (정상 동작 여부, 발견한 문제와 해결 과정)", bold=True, space_after=80, space_before=160))
+    parts.append(para("② 검증 결과 요약 (진리표 계산·AI/인터넷 검산 등 검증 방법, 발견한 오류와 수정 과정)",
+                       bold=True, space_after=80, space_before=160))
     parts.append(blank_lines(3, filled=ex["test_result"] if is_example else None))
 
     parts.append(heading("5. 발표 준비 (1인당 발표 7분 + 질의응답 3분)", 2))
     for c in ["문제 상황 소개", "회로 설계 설명 (선택한 소자와 이유)",
-              "Tinkercad 시뮬레이션 시연 / 결과 제시", "교과서 예제 대비 응용 포인트 강조",
-              "AI 활용 및 검증 과정 설명", "마무리 및 소감"]:
+              "손으로 그린 회로도 설명 / 진리표로 결과 제시", "교과서 예제 대비 응용 포인트 강조",
+              "AI·인터넷 활용 및 검증 과정 설명", "마무리 및 소감"]:
         parts.append(checkbox(c, checked=is_example))
     parts.append(para("※ 질의응답 3분 중에는 교사가 회로를 즉석에서 바꿔보라고 요청할 수 있습니다.",
                        italic=True, space_before=100, space_after=0))
@@ -415,7 +416,7 @@ EXAMPLE_5 = {
         ("74148 우선순위 인코더", "1", "3개 층의 '자리 있음' 신호 중 최저 층 번호를 2진 코드로 변환"),
         ("7447 BCD-7세그먼트 디코더", "1", "인코더 출력을 7세그먼트 구동 신호로 변환"),
         ("7세그먼트 표시장치", "1", "최종 층 번호를 숫자로 출력"),
-        ("입력 스위치", "3", "1·2·3층의 '자리 있음(HIGH)' 신호를 시뮬레이션"),
+        ("입력 스위치", "3", "1·2·3층의 '자리 있음(HIGH)' 신호를 나타냄"),
     ],
     "circuit_note": "입력 스위치 3개(1~3층) → 74148 우선순위 인코더 → 7447 디코더 → 7세그먼트. "
                     "동시에 여러 층이 HIGH여도 가장 낮은 층 번호가 출력되도록 인코더의 우선순위 특성을 활용함.",
@@ -442,7 +443,7 @@ EXAMPLE_5 = {
     "ai": {
         "question": "AI에게 '동시에 여러 층에 자리가 있을 때 가장 낮은 층을 표시하려면 어떤 소자를 쓰면 좋을지' 물어봤다.",
         "correction": "AI는 처음에 단순 디코더만 쓰라고 제안했는데, 디코더는 입력이 한 번에 하나만 있을 때만 정확히 "
-                      "동작해 동시 입력 상황을 처리하지 못한다는 걸 시뮬레이션으로 확인하고 우선순위 인코더로 바꿨다.",
+                      "동작해 동시 입력 상황을 처리하지 못한다는 걸 진리표로 직접 확인하고 우선순위 인코더로 바꿨다.",
         "judgement": "AI가 제안한 7447 연결 방식은 그대로 썼지만, 모든 층이 만차일 때 표시를 끄는 부분은 AI 제안에 없어 "
                      "인코더의 Enable Output 신호를 직접 찾아 추가했다.",
     },
@@ -465,7 +466,7 @@ EXAMPLE_5_MUX = {
     "devices": [
         ("74151 8:1 멀티플렉서", "1", "3개 신호원(스위치) 중 선택된 신호 하나를 출력으로 전달"),
         ("74155 2:4 디멀티플렉서", "1", "MUX 출력 신호를 선택된 교실 LED 하나에만 전달"),
-        ("입력 신호 스위치", "3", "교장실·방송부·외부 입력 신호를 시뮬레이션"),
+        ("입력 신호 스위치", "3", "교장실·방송부·외부 입력 신호를 나타냄"),
         ("선택 스위치", "4", "입력 선택 2비트 + 출력(교실) 선택 2비트"),
         ("교실 표시 LED", "4", "선택된 교실에만 점등되어 신호 수신을 표시"),
     ],
@@ -492,7 +493,7 @@ EXAMPLE_5_MUX = {
     "ai": {
         "question": "AI에게 '여러 신호원 중 하나를 골라 여러 목적지 중 하나로 보내려면 어떻게 설계해야 하는지' 물어봤다.",
         "correction": "AI는 MUX 출력을 바로 LED에 연결하라고 했는데, 그러면 모든 교실에 신호가 동시에 전달돼 원하는 "
-                      "동작이 아니라는 걸 시뮬레이션으로 확인하고 DEMUX를 추가로 연결했다.",
+                      "동작이 아니라는 걸 진리표로 직접 확인하고 DEMUX를 추가로 연결했다.",
         "judgement": "MUX 선택 스위치와 DEMUX 선택 스위치를 분리한 것은 AI 제안이 아니라, '누가 방송하고 누가 듣는지'를 "
                      "따로 정하고 싶어서 스스로 추가한 설계다.",
     },
@@ -561,7 +562,7 @@ EXAMPLE_5_CODE = {
         "회전 다이얼의 위치를 사람이 읽을 수 있는 숫자로 실시간 표시되도록 응용했다.",
     ],
     "devices": [
-        ("그레이 코드 입력 스위치", "4", "회전 센서의 그레이 코드 출력을 시뮬레이션"),
+        ("그레이 코드 입력 스위치", "4", "회전 센서의 그레이 코드 출력을 나타냄"),
         ("XOR 게이트", "3", "그레이 코드를 2진수로 변환하는 조합 회로 구성"),
         ("7447 BCD-7세그먼트 디코더", "1", "변환된 2진수를 세그먼트 신호로 변환"),
         ("7세그먼트 표시장치", "1", "다이얼 위치를 숫자로 표시"),
@@ -614,7 +615,7 @@ EXAMPLE_7_REG = {
         ("7474 D 플립플롭 (송신용)", "4", "교실 4개 신호를 병렬로 저장 후 1비트씩 직렬 출력(PISO)"),
         ("74157 멀티플렉서", "4", "Load(병렬 입력)와 Shift(이전 단 출력) 중 하나를 D 플립플롭 입력으로 선택"),
         ("7474 D 플립플롭 (수신용)", "4", "직렬로 들어오는 비트를 순서대로 저장해 병렬 출력(SIPO)"),
-        ("입력 스위치", "4", "교실 1~4의 출입 센서 상태(1=사용 중)를 시뮬레이션"),
+        ("입력 스위치", "4", "교실 1~4의 출입 센서 상태(1=사용 중)를 나타냄"),
         ("표시 LED", "4", "관리실에서 복원된 교실별 상태를 표시"),
     ],
     "circuit_note": "D 플립플롭 4개 + 74157 MUX 4개로 병렬 입력-직렬 출력(PISO) 레지스터를 구성해 송신측으로, "
@@ -643,7 +644,7 @@ EXAMPLE_7_REG = {
         "question": "AI에게 '여러 센서 신호를 전선 하나로 보내는 방법'을 물어봤다.",
         "correction": "AI는 74165/74164 같은 기성 IC를 쓰라고 했는데, 교과서에서 배운 대로 D 플립플롭과 MUX로 "
                       "직접 구성해야 한다는 걸 알고 있어서 IC 대신 플립플롭 조합으로 다시 설계했다.",
-        "judgement": "송수신 클럭을 공유하지 않으면 비트가 밀린다는 것은 AI가 알려주지 않아서, 직접 시뮬레이션하다 "
+        "judgement": "송수신 클럭을 공유하지 않으면 비트가 밀린다는 것은 AI가 알려주지 않아서, 직접 타이밍도를 그려보다 "
                      "발견하고 스스로 고쳤다.",
     },
 }
